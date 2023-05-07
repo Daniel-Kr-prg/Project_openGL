@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pgr.h"
+#include <glm/gtx/quaternion.hpp>
 
 /**
  * \brief Shader program related stuff (id, locations, ...).
@@ -56,6 +57,14 @@ protected:
 	glm::mat4		localModelMatrix;
 	glm::mat4		globalModelMatrix;
 
+	glm::vec3 position;
+	glm::quat rotation;
+	glm::vec3 scale;
+
+	glm::vec3 up;
+	glm::vec3 right;
+	glm::vec3 forward;
+
 	// dynamic objects
 	// glm::vec3 direction;
 	// float     speed;
@@ -71,9 +80,170 @@ public:
 	 * \brief ObjectInstance constructor. Takes a pointer to the shader and must create object resources (VBO and VAO)
 	 * \param shdrPrg pointer to the shader program for rendering objects data
 	 */
-	ObjectInstance(ShaderProgram* shdrPrg = nullptr) : geometry(nullptr), shaderProgram(shdrPrg) {}
+	ObjectInstance(ShaderProgram* shdrPrg = nullptr) : geometry(nullptr), shaderProgram(shdrPrg) {
+		this->position = { 0, 0, 0 };
+		this->rotation = glm::quat(1, 0, 0, 0);
+		this->scale = { 1, 1, 1 };
+		updateLocalVectors();
+	}
+
 	~ObjectInstance() {}
   
+	/**
+	 * \brief Returns the current local position
+	 */
+	glm::vec3 getPosition() const {
+		return position;
+	}
+
+	/**
+	 * \brief Sets the current local position
+	 * \param position New local position
+	 */
+	void setPosition(glm::vec3 position) {
+		this->position = position;
+		updateLocalMatrix();
+	}
+
+	/**
+	 * \brief Returns the current local rotation (Euler angeles, in radians)
+	 */
+	glm::vec3 getRotationRad() const {
+		return glm::vec3(glm::eulerAngles(rotation));
+	}
+
+	/**
+	 * \brief Returns the current local rotation (Euler angeles, in degrees)
+	 */
+	glm::vec3 getRotationDeg() const {
+		return glm::vec3(glm::eulerAngles(rotation)) * 180.0f / glm::pi<float>();
+	}
+
+	/**
+	 * \brief Returns the current local rotation (quaternion)
+	 */
+	glm::quat getRotation() const {
+		return rotation;
+	}
+
+	/**
+	 * \brief Sets the current local rotation
+	 * \param rotation New local rotation (Euler angeles, in radians)
+	 */
+	void setRotationRad(glm::vec3 rotation) {
+		this->rotation = glm::quat(rotation);
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Sets the current local rotation
+	 * \param rotation New local rotation (Euler angeles, in degrees)
+	 */
+	void setRotationDeg(glm::vec3 rotation) {
+		this->rotation = glm::quat(rotation / 180.0f * glm::pi<float>());
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Sets the current local rotation
+	 * \param rotation New local rotation (quaternion)
+	 */
+	void setRotation(glm::quat rotation) {
+		this->rotation = rotation;
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Returns the current local scale
+	 */
+	glm::vec3 getScale() const {
+		return scale;
+	}
+
+	/**
+	 * \brief Sets the current local scale
+	 * \param scale New local scale
+	 */
+	void getScale(glm::vec3 scale) {
+		this->scale = scale;
+		updateLocalMatrix();
+	}
+
+	/**
+	 * \brief Returns the current local up vector
+	 */
+	glm::vec3 getUp() const {
+		return up;
+	}
+
+	/**
+	 * \brief Returns the current local right vector
+	 */
+	glm::vec3 getRight() const {
+		return right;
+	}
+
+	/**
+	 * \brief Returns the current local forward vector
+	 */
+	glm::vec3 getForward() const {
+		return forward;
+	}
+
+	/**
+	 * \brief Rotates the object around global X axis
+	 * \param angleRad Angle in radians
+	 */
+	void rotateRadX(float angleRad) {
+		rotation = glm::rotate(rotation, angleRad, { 1, 0, 0 });
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Rotates the object around global Y axis
+	 * \param angleRad Angle in radians
+	 */
+	void rotateRadY(float angleRad) {
+		rotation = glm::rotate(rotation, angleRad, { 0, 1, 0 });
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Rotates the object around global Z axis
+	 * \param angleRad Angle in radians
+	 */
+	void rotateRadZ(float angleRad) {
+		rotation = glm::rotate(rotation, angleRad, { 0, 0, 1 });
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Rotates the object around global X axis
+	 * \param angleRad Angle in degrees
+	 */
+	void rotateDegX(float angleRad) {
+		rotation = glm::rotate(rotation, float(angleRad / 180.0f * glm::pi<float>()), { 0, 0, 1 });
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Rotates the object around global Y axis
+	 * \param angleRad Angle in degrees
+	 */
+	void rotateDegY(float angleRad) {
+		rotation = glm::rotate(rotation, float(angleRad / 180.0f * glm::pi<float>()), { 0, 1, 0 });
+		updateLocalVectors();
+	}
+
+	/**
+	 * \brief Rotates the object around global Z axis
+	 * \param angleRad Angle in degrees
+	 */
+	void rotateDegZ(float angleRad) {
+		rotation = glm::rotate(rotation, float(angleRad / 180.0f * glm::pi<float>()), { 0, 0, 1 });
+		updateLocalVectors();
+	}
+
 	/**
 	* \brief Recalculates the global matrix and updates all children.
 	*   Derived classes should also call this method (using ObjectInstance::update()).
@@ -111,4 +281,26 @@ public:
 		}
 	}
 
+protected:
+
+	/**
+	 * \brief Updates object's local vectors (forward, up, right). Call after any rotation changes.
+	 */
+	void updateLocalVectors() {
+		forward = { -2 * (rotation.x * rotation.z + rotation.w * rotation.y), -2 * (rotation.y * rotation.z - rotation.w * rotation.x), -(1 - 2 * (rotation.x * rotation.x + rotation.y * rotation.y)) };
+		forward = glm::normalize(forward);
+		right = glm::normalize(glm::cross(forward, { 0, 1, 0 }));
+		up = glm::normalize(glm::cross(right, forward));
+		updateLocalMatrix();
+	}
+
+	/**
+	 * \brief Updates object's model matrix. Call after any transform changes.
+	 */
+	void updateLocalMatrix() {
+		localModelMatrix = glm::mat4(1.0f);
+		localModelMatrix = glm::translate(localModelMatrix, (glm::vec3)position);
+		localModelMatrix = localModelMatrix * glm::toMat4(rotation);
+		localModelMatrix = glm::scale(localModelMatrix, (glm::vec3)scale);
+	}
 };

@@ -33,17 +33,21 @@
 
 
 #include <iostream>
+#include <unordered_map>
 #include "pgr.h"
 #include "object.h"
 #include "triangle.h"
 #include "singlemesh.h"
+#include "camera.h"
 
 
-constexpr int WINDOW_WIDTH = 500;
-constexpr int WINDOW_HEIGHT = 500;
+constexpr int WINDOW_WIDTH = 1280;
+constexpr int WINDOW_HEIGHT = 720;
 constexpr char WINDOW_TITLE[] = "PGR: Application Skeleton";
 
 ObjectList objects;
+Camera camera;
+std::unordered_map<char, bool> keyPressedState;
 
 // shared shader programs
 ShaderProgram commonShaderProgram;
@@ -58,10 +62,10 @@ void loadShaderPrograms()
 {
 	std::string vertexShaderSrc =
 		"#version 140\n"
-		"in vec2 position;\n"
+		"in vec3 position;\n"
 		"uniform mat4 PVM;\n"
 		"void main() {\n"
-		"  gl_Position = PVM * vec4(position, 0.0f, 1.0f);\n"
+		"  gl_Position = PVM * vec4(position, 1.0f);\n"
 		"}\n"
 		;
 
@@ -105,8 +109,8 @@ void cleanupShaderPrograms(void) {
  */
 void drawScene(void)
 {
-	glm::mat4 viewMatrix = glm::mat4(1.0f);
-	glm::mat4 projectionMatrix = glm::mat4(1.0f);
+	glm::mat4x4 viewMatrix = camera.getView();
+	glm::mat4x4 projectionMatrix = camera.getProjection();
 
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
@@ -154,10 +158,27 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseY mouse (cursor) Y position
  */
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
-
-	if (keyPressed == 27) {
+	switch (keyPressed) {
+	case 27:
 		glutLeaveMainLoop();
 		exit(EXIT_SUCCESS);
+		break;
+	case 'w':
+	case 'W':
+		keyPressedState['w'] = true;
+		break;
+	case 's':
+	case 'S':
+		keyPressedState['s'] = true;
+		break;
+	case 'a':
+	case 'A':
+		keyPressedState['a'] = true;
+		break;
+	case 'd':
+	case 'D':
+		keyPressedState['d'] = true;
+		break;
 	}
 }
 
@@ -170,6 +191,24 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
+	switch (keyReleased) {
+	case 'w':
+	case 'W':
+		keyPressedState['w'] = false;
+		break;
+	case 's':
+	case 'S':
+		keyPressedState['s'] = false;
+		break;
+	case 'a':
+	case 'A':
+		keyPressedState['a'] = false;
+		break;
+	case 'd':
+	case 'D':
+		keyPressedState['d'] = false;
+		break;
+	}
 }
 
 //
@@ -237,6 +276,30 @@ void timerCb(int)
 	const glm::mat4 sceneRootMatrix = glm::mat4(1.0f);
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
+	glm::vec3 movementVector(0.0f);
+
+	if (keyPressedState['w'])
+	{ 
+		movementVector += camera.getForward();
+	}
+	else
+	if (keyPressedState['s'])
+	{
+		movementVector -= camera.getForward();
+	}
+
+	if (keyPressedState['a'])
+	{
+		movementVector -= camera.getRight();
+	}
+	else
+	if (keyPressedState['d'])
+	{
+		movementVector += camera.getRight();
+	}
+
+	movementVector *= elapsedTime * camera.getSpeed();
+	camera.setPosition(camera.getPosition() + movementVector);
 
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
@@ -311,7 +374,7 @@ int main(int argc, char** argv) {
 		glutDisplayFunc(displayCb);
 		glutReshapeFunc(reshapeCb);
 		glutKeyboardFunc(keyboardCb);
-		// glutKeyboardUpFunc(keyboardUpCb);
+		glutKeyboardUpFunc(keyboardUpCb);
 		// glutSpecialFunc(specialKeyboardCb);     // key pressed
 		// glutSpecialUpFunc(specialKeyboardUpCb); // key released
 		// glutMouseFunc(mouseCb);

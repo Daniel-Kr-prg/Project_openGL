@@ -152,16 +152,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="render.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="singlemesh.cpp" />
     <ClCompile Include="sem.cpp" />
     <ClCompile Include="triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="object.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="singlemesh.h" />
     <ClInclude Include="triangle.h" />
   </ItemGroup>

@@ -1,0 +1,48 @@
+{
+  "window": {
+    "windowWidth": 1280,
+    "windowHeight": 720,
+    "windowTitle": "Prikol"
+  },
+  "camera": {
+    "fov": 45.0,
+    "zNear": 0.1,
+    "zFar": 1000.0,
+    "speed": 0.01,
+    "keySensitivity": 0.005,
+    "mouseSensitivity": 0.005
+  },
+  "shaders": [
+    {
+      "fragmentPath": "data/basicShader.frag",
+      "vertexPath": "data/basicShader.vert"
+    }
+  ],
+  "sceneObjects": [
+    {
+      "filePath": "data/Island.obj",
+      "shaderIndex": 0,
+      "texturePath": ""
+    }
+  ],
+  "scene": [
+    {
+      "objectId": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 5,
+        "y": 5,
+        "z": 5
+      }
+    }
+  ]
+}

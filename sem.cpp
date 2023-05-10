@@ -39,72 +39,26 @@
 #include "triangle.h"
 #include "singlemesh.h"
 #include "camera.h"
-
-
-constexpr int WINDOW_WIDTH = 1280;
-constexpr int WINDOW_HEIGHT = 720;
-constexpr char WINDOW_TITLE[] = "PGR: Application Skeleton";
+#include "config.h"
 
 ObjectList objects;
-Camera camera;
+ShaderList shaders;
+Camera* camera;
+Config* config;
 std::unordered_map<char, bool> keyPressedState;
 std::unordered_map<int, bool> keyPressedSpecialState;
 int previousMouseX = 0;
 int previousMouseY = 0;
 
-// shared shader programs
-ShaderProgram commonShaderProgram;
-
 
 // -----------------------  OpenGL stuff ---------------------------------
-
-/**
- * \brief Load and compile shader programs. Get attribute locations.
- */
-void loadShaderPrograms()
-{
-	std::string vertexShaderSrc =
-		"#version 140\n"
-		"in vec3 position;\n"
-		"uniform mat4 PVM;\n"
-		"void main() {\n"
-		"  gl_Position = PVM * vec4(position, 1.0f);\n"
-		"}\n"
-		;
-
-	std::string fragmentShaderSrc =
-		"#version 140\n"
-		"out vec4 fragmentColor;"
-		"void main() {\n"
-		"  fragmentColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"}\n"
-		;
-
-	GLuint shaders[] = {
-	  pgr::createShaderFromSource(GL_VERTEX_SHADER, vertexShaderSrc),
-	  pgr::createShaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSrc),
-	  0
-	};
-
-	commonShaderProgram.program = pgr::createProgram(shaders);
-	commonShaderProgram.locations.position = glGetAttribLocation(commonShaderProgram.program, "position");
-
-	// other attributes and uniforms
-	commonShaderProgram.locations.PVMmatrix = glGetUniformLocation(commonShaderProgram.program, "PVM");
-
-	assert(commonShaderProgram.locations.PVMmatrix != -1);
-	assert(commonShaderProgram.locations.position != -1);
-	// ...
-
-	commonShaderProgram.initialized = true;
-}
 
 /**
  * \brief Delete all shader program objects.
  */
 void cleanupShaderPrograms(void) {
 
-	pgr::deleteProgramAndShaders(commonShaderProgram.program);
+	//TODO Delete all shaders
 }
 
 /**
@@ -112,8 +66,8 @@ void cleanupShaderPrograms(void) {
  */
 void drawScene(void)
 {
-	glm::mat4x4 viewMatrix = camera.getView();
-	glm::mat4x4 projectionMatrix = camera.getProjection();
+	glm::mat4x4 viewMatrix = camera->getView();
+	glm::mat4x4 projectionMatrix = camera->getProjection();
 
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
@@ -292,10 +246,10 @@ void passiveMouseMotionCb(int mouseX, int mouseY) {
 	int deltaX = previousMouseX - mouseX;
 	int deltaY = previousMouseY - mouseY;
 
-	camera.addYawPitch(deltaX * camera.getMouseSensitivity(), deltaY * camera.getMouseSensitivity());
+	camera->addYawPitch(deltaX * camera->getMouseSensitivity(), deltaY * camera->getMouseSensitivity());
 
-	int halfWidth = WINDOW_WIDTH / 2;
-	int halfHeight = WINDOW_HEIGHT / 2;
+	int halfWidth = config->getWindowWidth() / 2;
+	int halfHeight = config->getWindowHeight() / 2;
 
 	glutWarpPointer(halfWidth, halfHeight);
 
@@ -318,51 +272,51 @@ void timerCb(int)
 
 	if (keyPressedState['w'])
 	{ 
-		movementVector += camera.getForward();
+		movementVector += camera->getForward();
 	}
 	else
 	if (keyPressedState['s'])
 	{
-		movementVector -= camera.getForward();
+		movementVector -= camera->getForward();
 	}
 
 	if (keyPressedState['a'])
 	{
-		movementVector -= camera.getRight();
+		movementVector -= camera->getRight();
 	}
 	else
 	if (keyPressedState['d'])
 	{
-		movementVector += camera.getRight();
+		movementVector += camera->getRight();
 	}
 
-	movementVector *= elapsedTime * camera.getSpeed();
-	camera.setPosition(camera.getPosition() + movementVector);
+	movementVector *= elapsedTime * camera->getSpeed();
+	camera->setPosition(camera->getPosition() + movementVector);
 
 	float rotationX = 0;
 	float rotationY = 0;
 
 	if (keyPressedSpecialState[GLUT_KEY_UP])
 	{ 
-		rotationX += 1 * elapsedTime * camera.getKeySensitivity();
+		rotationX += 1 * elapsedTime * camera->getKeySensitivity();
 	}
 	else
 	if (keyPressedSpecialState[GLUT_KEY_DOWN])
 	{
-		rotationX -= 1 * elapsedTime * camera.getKeySensitivity();
+		rotationX -= 1 * elapsedTime * camera->getKeySensitivity();
 	}
 
 	if (keyPressedSpecialState[GLUT_KEY_LEFT])
 	{
-		rotationY += 1 * elapsedTime * camera.getKeySensitivity();
+		rotationY += 1 * elapsedTime * camera->getKeySensitivity();
 	}
 	else
 	if (keyPressedSpecialState[GLUT_KEY_RIGHT])
 	{
-		rotationY -= 1 * elapsedTime * camera.getKeySensitivity();
+		rotationY -= 1 * elapsedTime * camera->getKeySensitivity();
 	}
 
-	camera.addYawPitch(rotationY, rotationX);
+	camera->addYawPitch(rotationY, rotationX);
 
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
@@ -387,9 +341,9 @@ void timerCb(int)
 void initApplication() {
 	// init OpenGL
 	// - all programs (shaders), buffers, textures, ...
-	loadShaderPrograms();
+	camera = new Camera(config->getFov(), (float)config->getWindowWidth() / config->getWindowHeight(), config->getZNear(), config->getZFar(), config->getSpeed(), config->getKeySensitivity(), config->getMouseSensitivity());
+	config->loadScene(objects, shaders);
 
-	objects.push_back(new Triangle(&commonShaderProgram));
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 
 	// init your Application
@@ -420,6 +374,8 @@ void finalizeApplication(void) {
  */
 int main(int argc, char** argv) {
 
+	config = new Config("data/config.json");
+
 	// initialize the GLUT library (windowing system)
 	glutInit(&argc, argv);
 
@@ -431,8 +387,8 @@ int main(int argc, char** argv) {
 	// for each window
 	{
 		//   initial window size + title
-		glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-		glutCreateWindow(WINDOW_TITLE);
+		glutInitWindowSize(config->getWindowWidth(), config->getWindowHeight());
+		glutCreateWindow(config->getWindowTitle().c_str());
 
 		// callbacks - use only those you need
 		glutDisplayFunc(displayCb);

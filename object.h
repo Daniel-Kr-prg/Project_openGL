@@ -2,34 +2,7 @@
 
 #include "pgr.h"
 #include <glm/gtx/quaternion.hpp>
-
-/**
- * \brief Shader program related stuff (id, locations, ...).
- */
-typedef struct _ShaderProgram {
-	/// identifier for the shader program
-	GLuint program;
-
-	bool initialized;
-
-	/**
-	  * \brief Indices of the vertex shader inputs (locations)
-	  */
-	struct {
-		// vertex attributes locations
-		GLint position;
-		// uniforms locations
-		GLint PVMmatrix;
-	} locations;
-
-	// ...
-
-	_ShaderProgram() : program(0), initialized(false) {
-		locations.position = -1;
-		locations.PVMmatrix = -1;
-	}
-
-} ShaderProgram;
+#include "shader.h"
 
 /**
  * \brief Geometry of an object (vertices, triangles).
@@ -52,7 +25,8 @@ class ObjectInstance;
 /**
  * \brief Linear representation of the scene objects.  The objects themselves may represent the subtrees.
  */
-typedef std::vector<ObjectInstance*> ObjectList;  
+typedef std::vector<ObjectInstance*> ObjectList;
+typedef std::vector<Shader*> ShaderList;
 
 class ObjectInstance {
 
@@ -75,17 +49,17 @@ protected:
 	// float     speed;
 	// ...
 
-	ShaderProgram* shaderProgram;
-
-	ObjectList children;
+	Shader* shaderProgram;
 
 public:
+
+	ObjectList children;
 
 	/**
 	 * \brief ObjectInstance constructor. Takes a pointer to the shader and must create object resources (VBO and VAO)
 	 * \param shdrPrg pointer to the shader program for rendering objects data
 	 */
-	ObjectInstance(ShaderProgram* shdrPrg = nullptr) : geometry(nullptr), shaderProgram(shdrPrg) {
+	ObjectInstance(Shader* shdrPrg = nullptr) : geometry(nullptr), shaderProgram(shdrPrg) {
 		this->position = { 0, 0, 0 };
 		this->rotation = glm::quat(1, 0, 0, 0);
 		this->scale = { 1, 1, 1 };
@@ -169,7 +143,7 @@ public:
 	 * \brief Sets the current local scale
 	 * \param scale New local scale
 	 */
-	void getScale(glm::vec3 scale) {
+	void setScale(glm::vec3 scale) {
 		this->scale = scale;
 		updateLocalMatrix();
 	}

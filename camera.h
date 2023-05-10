@@ -2,6 +2,8 @@
 
 #include <pgr.h>
 #include "object.h"
+#include <unordered_map>
+
 
 class Camera : public ObjectInstance
 {
@@ -25,4 +27,7 @@ private:
 	float yaw = 0;
 	float pitch = 0;
 };
+
+void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
+
 

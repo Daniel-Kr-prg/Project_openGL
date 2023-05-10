@@ -1,6 +1,7 @@
 #include <iostream>
 #include "triangle.h"
 
+const char* TEXTURE = "data/boat.png";
 
 void Triangle::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	// instance specific stuff

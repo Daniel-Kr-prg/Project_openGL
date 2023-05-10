@@ -31,7 +31,6 @@
 
   // TODO: tabulka klaves a jeji obsluha keyPressed/keyReleased a timer
 
-
 #include <iostream>
 #include <unordered_map>
 #include "pgr.h"
@@ -47,8 +46,6 @@ Camera* camera;
 Config* config;
 std::unordered_map<char, bool> keyPressedState;
 std::unordered_map<int, bool> keyPressedSpecialState;
-int previousMouseX = 0;
-int previousMouseY = 0;
 
 
 // -----------------------  OpenGL stuff ---------------------------------
@@ -103,6 +100,7 @@ void reshapeCb(int newWidth, int newHeight) {
 	// glViewport(...);
 };
 
+
 // -----------------------  Keyboard ---------------------------------
 
 /**
@@ -114,6 +112,10 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
+
+
+
+
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	switch (keyPressed) {
 	case 27:
@@ -257,6 +259,7 @@ void passiveMouseMotionCb(int mouseX, int mouseY) {
 	previousMouseY = halfHeight;
 }
 
+
 // -----------------------  Timer ---------------------------------
 
 /**
@@ -268,56 +271,8 @@ void timerCb(int)
 	const glm::mat4 sceneRootMatrix = glm::mat4(1.0f);
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
-	glm::vec3 movementVector(0.0f);
-
-	if (keyPressedState['w'])
-	{ 
-		movementVector += camera->getForward();
-	}
-	else
-	if (keyPressedState['s'])
-	{
-		movementVector -= camera->getForward();
-	}
-
-	if (keyPressedState['a'])
-	{
-		movementVector -= camera->getRight();
-	}
-	else
-	if (keyPressedState['d'])
-	{
-		movementVector += camera->getRight();
-	}
-
-	movementVector *= elapsedTime * camera->getSpeed();
-	camera->setPosition(camera->getPosition() + movementVector);
-
-	float rotationX = 0;
-	float rotationY = 0;
-
-	if (keyPressedSpecialState[GLUT_KEY_UP])
-	{ 
-		rotationX += 1 * elapsedTime * camera->getKeySensitivity();
-	}
-	else
-	if (keyPressedSpecialState[GLUT_KEY_DOWN])
-	{
-		rotationX -= 1 * elapsedTime * camera->getKeySensitivity();
-	}
-
-	if (keyPressedSpecialState[GLUT_KEY_LEFT])
-	{
-		rotationY += 1 * elapsedTime * camera->getKeySensitivity();
-	}
-	else
-	if (keyPressedSpecialState[GLUT_KEY_RIGHT])
-	{
-		rotationY -= 1 * elapsedTime * camera->getKeySensitivity();
-	}
-
-	camera->addYawPitch(rotationY, rotationX);
-
+	
+	handleCameraMovement(camera, elapsedTime, keyPressedState, keyPressedSpecialState);
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)

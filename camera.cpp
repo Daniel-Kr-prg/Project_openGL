@@ -1,5 +1,4 @@
 #include "camera.h"
-
 /**
  * \brief Creates the camera object.
  * \param fov Field of view
@@ -13,6 +12,61 @@ Camera::Camera(float fov, float aspect, float zNear, float zFar, float speed, fl
 	this->keySensitivity = keySensitivity;
 	this->mouseSensitivity = mouseSensitivity;
 }
+
+
+void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState)
+{
+	glm::vec3 movementVector(0.0f);
+
+	if (keyPressedState['w'])
+	{
+		movementVector += camera.getForward();
+	}
+	else
+		if (keyPressedState['s'])
+		{
+			movementVector -= camera.getForward();
+		}
+
+	if (keyPressedState['a'])
+	{
+		movementVector -= camera.getRight();
+	}
+	else
+		if (keyPressedState['d'])
+		{
+			movementVector += camera.getRight();
+		}
+
+	movementVector *= elapsedTime * camera.getSpeed();
+	camera.setPosition(camera.getPosition() + movementVector);
+
+	float rotationX = 0;
+	float rotationY = 0;
+
+	if (keyPressedSpecialState[GLUT_KEY_UP])
+	{
+		rotationX += 1 * elapsedTime * camera.getKeySensitivity();
+	}
+	else
+		if (keyPressedSpecialState[GLUT_KEY_DOWN])
+		{
+			rotationX -= 1 * elapsedTime * camera.getKeySensitivity();
+		}
+
+	if (keyPressedSpecialState[GLUT_KEY_LEFT])
+	{
+		rotationY += 1 * elapsedTime * camera.getKeySensitivity();
+	}
+	else
+		if (keyPressedSpecialState[GLUT_KEY_RIGHT])
+		{
+			rotationY -= 1 * elapsedTime * camera.getKeySensitivity();
+		}
+
+	camera.addYawPitch(rotationY, rotationX);
+}
+
 
 /**
  * \brief Returns the current projection matrix

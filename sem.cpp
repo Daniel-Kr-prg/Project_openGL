@@ -47,6 +47,8 @@ Config* config;
 std::unordered_map<char, bool> keyPressedState;
 std::unordered_map<int, bool> keyPressedSpecialState;
 
+int previousMouseX = 0;
+int previousMouseY = 0;
 
 // -----------------------  OpenGL stuff ---------------------------------
 
@@ -272,7 +274,7 @@ void timerCb(int)
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
 	
-	handleCameraMovement(camera, elapsedTime, keyPressedState, keyPressedSpecialState);
+	handleCameraMovement(*camera, elapsedTime, keyPressedState, keyPressedSpecialState);
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)

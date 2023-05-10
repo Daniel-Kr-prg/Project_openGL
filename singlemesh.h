@@ -14,7 +14,7 @@ public:
 
 private:
 
-	bool loadSingleMesh(const std::string& fileName, Shader* shader, ObjectGeometry** geometry);
+	bool loadSingleMesh(std::string fileName, Shader* shader, ObjectGeometry** geometry);
 
 	bool initialized;  ///< object has the shader with defined locations
 };

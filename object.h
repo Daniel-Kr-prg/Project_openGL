@@ -40,7 +40,12 @@ typedef struct _ObjectGeometry {
 	GLuint        vertexArrayObject;    ///< identifier for the vertex array object
 	unsigned int  numTriangles;         ///< number of triangles in the mesh
 
-	// ...
+	// material
+	glm::vec3     ambient;
+	glm::vec3     diffuse;
+	glm::vec3     specular;
+	float         shininess;
+	GLuint        texture;
 } ObjectGeometry;
 
 class ObjectInstance;

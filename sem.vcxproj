@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="render.cpp" />
     <ClCompile Include="singlemesh.cpp" />
     <ClCompile Include="sem.cpp" />
     <ClCompile Include="triangle.cpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="singlemesh.h" />
     <ClInclude Include="triangle.h" />

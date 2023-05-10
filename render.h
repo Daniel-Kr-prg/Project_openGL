@@ -1,23 +1,9 @@
 #ifndef __RENDER_H
 #define __RENDER_H
 
+#include "pgr.h"
+
 //#include "data.h"
-
-// defines geometry of object in the scene (space ship, ufo, asteroid, etc.)
-// geometry is shared among all instances of the same object type
-typedef struct _MeshGeometry {
-	GLuint        vertexBufferObject;   // identifier for the vertex buffer object
-	GLuint        elementBufferObject;  // identifier for the element buffer object
-	GLuint        vertexArrayObject;    // identifier for the vertex array object
-	unsigned int  numTriangles;         // number of triangles in the mesh
-	// material
-	glm::vec3     ambient;
-	glm::vec3     diffuse;
-	glm::vec3     specular;
-	float         shininess;
-	GLuint        texture;
-
-} MeshGeometry;
 
 // parameters of individual objects in the scene (e.g. position, size, speed, etc.)
 typedef struct _Object {
@@ -62,8 +48,7 @@ typedef struct _commonShaderProgram {
 	GLint reflectorDirectionLocation; // = -1;
 } SCommonShaderProgram;
 
-
-void initializeShaderPrograms();
+void setMaterialUniforms(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
 void cleanupShaderPrograms();
 
 void initializeModels();

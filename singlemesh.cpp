@@ -1,5 +1,6 @@
 #include <iostream>
 #include "singlemesh.h"
+#include "render.h"
 
 
 void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
@@ -15,6 +16,14 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 		glUseProgram(shaderProgram->getShaderData().program);
 
 		glm::mat4 PVMmatrix = projectionMatrix * viewMatrix * globalModelMatrix;
+		setMaterialUniforms(
+			geometry->ambient,
+			geometry->diffuse,
+			geometry->specular,
+			geometry->shininess,
+			geometry->texture
+		);
+
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PVMmatrix, 1, GL_FALSE, glm::value_ptr(PVMmatrix));
 
 		glBindVertexArray(geometry->vertexArrayObject);
@@ -32,30 +41,30 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
  * \param shader [in] vao will connect loaded data to shader
  * \param geometry
  */
-bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, ObjectGeometry** geometry) {
+bool SingleMesh::loadSingleMesh(std::string fileName, Shader* shader, ObjectGeometry** geometry) {
 	Assimp::Importer importer;
 
-	// unitize object in size (scale the model to fit into (-1..1)^3)
+	// Unitize object in size (scale the model to fit into (-1..1)^3)
 	importer.SetPropertyInteger(AI_CONFIG_PP_PTV_NORMALIZE, 1);
 
-	// load asset from the file - you can play with various processing steps
+	// Load asset from the file - you can play with various processing steps
 	const aiScene* scn = importer.ReadFile(fileName.c_str(), 0
-		| aiProcess_Triangulate             // triangulate polygons (if any)
-		| aiProcess_PreTransformVertices    // transforms scene hierarchy into one root with geometry-leafs only, for more see Doc
-		| aiProcess_GenSmoothNormals        // calculate normals per vertex
+		| aiProcess_Triangulate             // Triangulate polygons (if any).
+		| aiProcess_PreTransformVertices    // Transforms scene hierarchy into one root with geometry-leafs only. For more see Doc.
+		| aiProcess_GenSmoothNormals        // Calculate normals per vertex.
 		| aiProcess_JoinIdenticalVertices);
 
 	// abort if the loader fails
 	if (scn == NULL) {
-		std::cerr << "SingleMesh::loadSingleMesh(): assimp error - " << importer.GetErrorString() << std::endl;
-		*geometry = NULL;
+		std::cerr << "assimp error: " << importer.GetErrorString() << std::endl;
+		geometry = NULL;
 		return false;
 	}
 
 	// some formats store whole scene (multiple meshes and materials, lights, cameras, ...) in one file, we cannot handle that in our simplified example
 	if (scn->mNumMeshes != 1) {
-		std::cerr << "SingleMesh::loadSingleMesh(): this simplified loader can only process files with only one mesh" << std::endl;
-		*geometry = NULL;
+		std::cerr << "this simplified loader can only process files with only one mesh" << std::endl;
+		geometry = NULL;
 		return false;
 	}
 
@@ -64,11 +73,33 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, Obj
 
 	*geometry = new ObjectGeometry;
 
-	// vertex buffer object, store all vertex positions
+	// vertex buffer object, store all vertex positions and normals
 	glGenBuffers(1, &((*geometry)->vertexBufferObject));
 	glBindBuffer(GL_ARRAY_BUFFER, (*geometry)->vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float) * mesh->mNumVertices, 0, GL_STATIC_DRAW);     // allocate memory for vertices
-	glBufferSubData(GL_ARRAY_BUFFER, 0, 3 * sizeof(float) * mesh->mNumVertices, mesh->mVertices); // store all vertices
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * mesh->mNumVertices, 0, GL_STATIC_DRAW); // allocate memory for vertices, normals, and texture coordinates
+	// first store all vertices
+	glBufferSubData(GL_ARRAY_BUFFER, 0, 3 * sizeof(float) * mesh->mNumVertices, mesh->mVertices);
+	// then store all normals
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float) * mesh->mNumVertices, 3 * sizeof(float) * mesh->mNumVertices, mesh->mNormals);
+
+	// just texture 0 for now
+	float* textureCoords = new float[2 * mesh->mNumVertices];  // 2 floats per vertex
+	float* currentTextureCoord = textureCoords;
+
+	// copy texture coordinates
+	aiVector3D vect;
+
+	if (mesh->HasTextureCoords(0)) {
+		// we use 2D textures with 2 coordinates and ignore the third coordinate
+		for (unsigned int idx = 0; idx < mesh->mNumVertices; idx++) {
+			vect = (mesh->mTextureCoords[0])[idx];
+			*currentTextureCoord++ = vect.x;
+			*currentTextureCoord++ = vect.y;
+		}
+	}
+
+	// finally store all texture coordinates
+	glBufferSubData(GL_ARRAY_BUFFER, 6 * sizeof(float) * mesh->mNumVertices, 2 * sizeof(float) * mesh->mNumVertices, textureCoords);
 
 	// copy all mesh faces into one big array (assimp supports faces with ordinary number of vertices, we use only 3 -> triangles)
 	unsigned int* indices = new unsigned int[mesh->mNumFaces * 3];
@@ -81,7 +112,7 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, Obj
 	// copy our temporary index array to OpenGL and free the array
 	glGenBuffers(1, &((*geometry)->elementBufferObject));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*geometry)->elementBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(unsigned int) * mesh->mNumFaces, indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(unsigned) * mesh->mNumFaces, indices, GL_STATIC_DRAW);
 
 	delete[] indices;
 
@@ -91,11 +122,54 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, Obj
 	aiString name;
 	aiReturn retValue = AI_SUCCESS;
 
-	// get returns: aiReturn_SUCCESS 0 | aiReturn_FAILURE -1 | aiReturn_OUTOFMEMORY -3
-	mat->Get(AI_MATKEY_NAME, name); // may be "" after the input mesh processing, must be aiString type!
+	// Get returns: aiReturn_SUCCESS 0 | aiReturn_FAILURE -1 | aiReturn_OUTOFMEMORY -3
+	mat->Get(AI_MATKEY_NAME, name); // may be "" after the input mesh processing. Must be aiString type!
 
 	if ((retValue = aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &color)) != AI_SUCCESS)
 		color = aiColor4D(0.0f, 0.0f, 0.0f, 0.0f);
+
+	(*geometry)->diffuse = glm::vec3(color.r, color.g, color.b);
+
+	if ((retValue = aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &color)) != AI_SUCCESS)
+		color = aiColor4D(0.0f, 0.0f, 0.0f, 0.0f);
+	(*geometry)->ambient = glm::vec3(color.r, color.g, color.b);
+
+	if ((retValue = aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &color)) != AI_SUCCESS)
+		color = aiColor4D(0.0f, 0.0f, 0.0f, 0.0f);
+	(*geometry)->specular = glm::vec3(color.r, color.g, color.b);
+
+	ai_real shininess, strength;
+	unsigned int max;	// changed: to unsigned
+
+	max = 1;
+	if ((retValue = aiGetMaterialFloatArray(mat, AI_MATKEY_SHININESS, &shininess, &max)) != AI_SUCCESS)
+		shininess = 1.0f;
+	max = 1;
+	if ((retValue = aiGetMaterialFloatArray(mat, AI_MATKEY_SHININESS_STRENGTH, &strength, &max)) != AI_SUCCESS)
+		strength = 1.0f;
+	(*geometry)->shininess = shininess * strength;
+
+	(*geometry)->texture = 0;
+
+	// load texture image
+	if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+		// get texture name 
+		aiString path; // filename
+
+		aiReturn texFound = mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		std::string textureName = path.data;
+
+		size_t found = fileName.find_last_of("/\\");
+		// insert correct texture file path 
+		if (found != std::string::npos) { // not found
+			//subMesh_p->textureName.insert(0, "/");
+			textureName.insert(0, fileName.substr(0, found + 1));
+		}
+
+		std::cout << "Loading texture file: " << textureName << std::endl;
+		(*geometry)->texture = pgr::createTexture(textureName);
+	}
+	CHECK_GL_ERROR();
 
 	glGenVertexArrays(1, &((*geometry)->vertexArrayObject));
 	glBindVertexArray((*geometry)->vertexArrayObject);
@@ -103,30 +177,31 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, Obj
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*geometry)->elementBufferObject); // bind our element array buffer (indices) to vao
 	glBindBuffer(GL_ARRAY_BUFFER, (*geometry)->vertexBufferObject);
 
-	bool validInit = false;
-
-	if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.position != -1)) {
-
-		glEnableVertexAttribArray(shader->getShaderData().locations.position);
-		glVertexAttribPointer(shader->getShaderData().locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-		CHECK_GL_ERROR();
-
-		validInit = true;
+	glEnableVertexAttribArray(shader->getShaderData().locations.position);
+	glVertexAttribPointer(shader->getShaderData().locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	CHECK_GL_ERROR();
+	bool useLighting = false; //TODO Move it somewhere
+	if (useLighting == true) {
+		glEnableVertexAttribArray(shader->getShaderData().locations.normal);
+		glVertexAttribPointer(shader->getShaderData().locations.normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)(3 * sizeof(float) * mesh->mNumVertices));
 	}
+
+	glEnableVertexAttribArray(shader->getShaderData().locations.texCoord);
+	glVertexAttribPointer(shader->getShaderData().locations.texCoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(6 * sizeof(float) * mesh->mNumVertices));
+	CHECK_GL_ERROR();
 
 	glBindVertexArray(0);
 
 	(*geometry)->numTriangles = mesh->mNumFaces;
 
-	return validInit;
+	return true;
 }
 
 
 SingleMesh::SingleMesh(const char* filename, Shader* shdrPrg) : ObjectInstance(shdrPrg), initialized(false)
 {
 
-	if (!loadSingleMesh(filename, shdrPrg, &geometry)) {
+	if (!loadSingleMesh(std::string(filename), shdrPrg, &geometry)) {
 		if (geometry == nullptr) {
 			std::cerr << "SingleMesh::SingleMesh(): geometry not initialized!" << std::endl;
 		}

@@ -30,6 +30,7 @@ typedef struct _ShaderProgram {
 		GLint specular;
 		GLint shininess;
 		GLint texSampler;
+		GLint useTexture;
 	} locations;
 
 	// ...

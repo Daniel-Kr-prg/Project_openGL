@@ -35,20 +35,20 @@ void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMat
 // материал + текстура при draw методе
 void setMaterialUniforms(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture) {
 
-    //glUniform3fv(shaderProgram.diffuseLocation, 1, glm::value_ptr(diffuse));  // 2nd parameter must be 1 - it declares number of vectors in the vector array
-    //glUniform3fv(shaderProgram.ambientLocation, 1, glm::value_ptr(ambient));
-    //glUniform3fv(shaderProgram.specularLocation, 1, glm::value_ptr(specular));
-    //glUniform1f(shaderProgram.shininessLocation, shininess);
+    glUniform3fv(shaderProgram.locations.diffuse, 1, glm::value_ptr(diffuse));  // 2nd parameter must be 1 - it declares number of vectors in the vector array
+    glUniform3fv(shaderProgram.locations.ambient, 1, glm::value_ptr(ambient));
+    glUniform3fv(shaderProgram.locations.specular, 1, glm::value_ptr(specular));
+    glUniform1f(shaderProgram.locations.shininess, shininess);
 
-    //if (texture != 0) {
-    //    glUniform1i(shaderProgram.useTextureLocation, 1);  // do texture sampling
-    //    glUniform1i(shaderProgram.texSamplerLocation, 0);  // texturing unit 0 -> samplerID   [for the GPU linker]
-    //    glActiveTexture(GL_TEXTURE0 + 0);                  // texturing unit 0 -> to be bound [for OpenGL BindTexture]
-    //    glBindTexture(GL_TEXTURE_2D, texture);
-    //}
-    //else {
-    //    glUniform1i(shaderProgram.useTextureLocation, 0);  // do not sample the texture
-    //}
+    if (texture != 0) {
+        glUniform1i(shaderProgram.locations.useTexture, 1);  // do texture sampling
+        glUniform1i(shaderProgram.locations.texSampler, 0);  // texturing unit 0 -> samplerID   [for the GPU linker]
+        glActiveTexture(GL_TEXTURE0 + 0);                  // texturing unit 0 -> to be bound [for OpenGL BindTexture]
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+    else {
+        glUniform1i(shaderProgram.locations.useTexture, 0);  // do not sample the texture
+    }
 }
 
 // ПОД ЛОДКУ
@@ -121,24 +121,3 @@ void cleanupModels() {
         // cleanupGeometry(...);
 
 }
-
-
-//const char* CONFIG_FILE_PATH = "lox";
-//
-//const char* SUS_FILENAME = "data/monstrum.obj";
-//
-//SCommonShaderProgram shaderProgram;
-//
-//bool LoadConfigFile()
-//{
-//
-//    return true;
-//}
-//
-//
-//
-//void InitializeModels() {
-//
-//    SingleMesh sus = SingleMesh(SUS_FILENAME, );
-//}
-

@@ -21,9 +21,11 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 
 		shaderData.program = pgr::createProgram(shaders);
 		shaderData.locations.position = glGetAttribLocation(shaderData.program, "position");
+		shaderData.locations.texCoord = glGetAttribLocation(shaderData.program, "texCoord");
 
 		// other attributes and uniforms
 		shaderData.locations.PVMmatrix = glGetUniformLocation(shaderData.program, "PVM");
+		shaderData.locations.texSampler = glGetUniformLocation(shaderData.program, "texSampler");
 
 		assert(shaderData.locations.PVMmatrix != -1);
 		assert(shaderData.locations.position != -1);

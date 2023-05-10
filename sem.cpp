@@ -297,6 +297,7 @@ void timerCb(int)
  */
 void initApplication() {
 	// init OpenGL
+	glEnable(GL_DEPTH_TEST);
 	// - all programs (shaders), buffers, textures, ...
 	camera = new Camera(config->getFov(), (float)config->getWindowWidth() / config->getWindowHeight(), config->getZNear(), config->getZFar(), config->getSpeed(), config->getKeySensitivity(), config->getMouseSensitivity());
 	config->loadScene(objects, shaders);

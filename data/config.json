@@ -23,6 +23,11 @@
       "filePath": "data/Island.obj",
       "shaderIndex": 0,
       "texturePath": ""
+    },
+	{
+      "filePath": "data/Crate.obj",
+      "shaderIndex": 0,
+      "texturePath": ""
     }
   ],
   "scene": [
@@ -31,6 +36,24 @@
       "position": {
         "x": 0,
         "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 5,
+        "y": 5,
+        "z": 5
+      }
+    },
+	{
+      "objectId": 1,
+      "position": {
+        "x": 0,
+        "y": 100,
         "z": 0
       },
       "rotation": {

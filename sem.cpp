@@ -48,6 +48,9 @@ constexpr char WINDOW_TITLE[] = "PGR: Application Skeleton";
 ObjectList objects;
 Camera camera;
 std::unordered_map<char, bool> keyPressedState;
+std::unordered_map<int, bool> keyPressedSpecialState;
+int previousMouseX = 0;
+int previousMouseY = 0;
 
 // shared shader programs
 ShaderProgram commonShaderProgram;
@@ -221,9 +224,37 @@ void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
+	switch (specKeyPressed) {
+	case GLUT_KEY_UP:
+		keyPressedSpecialState[GLUT_KEY_UP] = true;
+		break;
+	case GLUT_KEY_DOWN:
+		keyPressedSpecialState[GLUT_KEY_DOWN] = true;
+		break;
+	case GLUT_KEY_LEFT:
+		keyPressedSpecialState[GLUT_KEY_LEFT] = true;
+		break;
+	case GLUT_KEY_RIGHT:
+		keyPressedSpecialState[GLUT_KEY_RIGHT] = true;
+		break;
+	}
 }
 
 void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
+	switch (specKeyReleased) {
+	case GLUT_KEY_UP:
+		keyPressedSpecialState[GLUT_KEY_UP] = false;
+		break;
+	case GLUT_KEY_DOWN:
+		keyPressedSpecialState[GLUT_KEY_DOWN] = false;
+		break;
+	case GLUT_KEY_LEFT:
+		keyPressedSpecialState[GLUT_KEY_LEFT] = false;
+		break;
+	case GLUT_KEY_RIGHT:
+		keyPressedSpecialState[GLUT_KEY_RIGHT] = false;
+		break;
+	}
 } // key released
 
 // -----------------------  Mouse ---------------------------------
@@ -258,11 +289,18 @@ void mouseMotionCb(int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void passiveMouseMotionCb(int mouseX, int mouseY) {
+	int deltaX = previousMouseX - mouseX;
+	int deltaY = previousMouseY - mouseY;
 
-	// mouse hovering over window
+	camera.addYawPitch(deltaX * camera.getMouseSensitivity(), deltaY * camera.getMouseSensitivity());
 
-	// create display event to redraw window contents if needed (and not handled in the timer callback)
-	// glutPostRedisplay();
+	int halfWidth = WINDOW_WIDTH / 2;
+	int halfHeight = WINDOW_HEIGHT / 2;
+
+	glutWarpPointer(halfWidth, halfHeight);
+
+	previousMouseX = halfWidth;
+	previousMouseY = halfHeight;
 }
 
 // -----------------------  Timer ---------------------------------
@@ -301,6 +339,31 @@ void timerCb(int)
 	movementVector *= elapsedTime * camera.getSpeed();
 	camera.setPosition(camera.getPosition() + movementVector);
 
+	float rotationX = 0;
+	float rotationY = 0;
+
+	if (keyPressedSpecialState[GLUT_KEY_UP])
+	{ 
+		rotationX += 1 * elapsedTime * camera.getKeySensitivity();
+	}
+	else
+	if (keyPressedSpecialState[GLUT_KEY_DOWN])
+	{
+		rotationX -= 1 * elapsedTime * camera.getKeySensitivity();
+	}
+
+	if (keyPressedSpecialState[GLUT_KEY_LEFT])
+	{
+		rotationY += 1 * elapsedTime * camera.getKeySensitivity();
+	}
+	else
+	if (keyPressedSpecialState[GLUT_KEY_RIGHT])
+	{
+		rotationY -= 1 * elapsedTime * camera.getKeySensitivity();
+	}
+
+	camera.addYawPitch(rotationY, rotationX);
+
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
@@ -331,6 +394,7 @@ void initApplication() {
 
 	// init your Application
 	// - setup the initial application state
+	glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 /**
@@ -375,8 +439,9 @@ int main(int argc, char** argv) {
 		glutReshapeFunc(reshapeCb);
 		glutKeyboardFunc(keyboardCb);
 		glutKeyboardUpFunc(keyboardUpCb);
-		// glutSpecialFunc(specialKeyboardCb);     // key pressed
-		// glutSpecialUpFunc(specialKeyboardUpCb); // key released
+		glutSpecialFunc(specialKeyboardCb);     // key pressed
+		glutSpecialUpFunc(specialKeyboardUpCb); // key released
+		glutPassiveMotionFunc(passiveMouseMotionCb);
 		// glutMouseFunc(mouseCb);
 		// glutMotionFunc(mouseMotionCb);
 #ifndef SKELETON // @task_1_0

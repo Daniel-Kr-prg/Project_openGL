@@ -7,7 +7,7 @@ class Camera : public ObjectInstance
 {
 public:
 	//TODO Move to config
-	Camera(float fov = 45.0f, float aspect = 16.0f / 9.0f, float zNear = 0.1f, float zFar = 1000.0f, float speed = 0.01f, float keySensitivity = 0.005f, float mouseSensitivity = 0.005f);
+	Camera(float fov, float aspect, float zNear, float zFar, float speed, float keySensitivity, float mouseSensitivity);
 	~Camera();
 
 	glm::mat4 getProjection();

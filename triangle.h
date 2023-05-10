@@ -6,7 +6,7 @@ class Triangle : public ObjectInstance
 {
 public:
 
-	Triangle(ShaderProgram* shdrPrg = nullptr);
+	Triangle(Shader* shdrPrg = nullptr);
 	~Triangle();
 
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;

@@ -58,14 +58,14 @@ void Camera::addYawPitch(float yaw, float pitch) {
 	this->yaw += yaw;
 	this->pitch += pitch;
 
-	if (this->pitch > 1.55)
+	if (this->pitch > 1.55f)
 	{
-		this->pitch = 1.55;
+		this->pitch = 1.55f;
 	}
 	else
-	if (this->pitch < -1.55)
+	if (this->pitch < -1.55f)
 	{
-		this->pitch = -1.55;
+		this->pitch = -1.55f;
 	}
 
 	setRotation(glm::quat());

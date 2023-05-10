@@ -12,9 +12,10 @@ void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
 {
 	if (initialized && (shaderProgram != nullptr)) {
-		glUseProgram(shaderProgram->program);
+		glUseProgram(shaderProgram->getShaderData().program);
 
-		glUniformMatrix4fv(shaderProgram->locations.PVMmatrix, 1, GL_FALSE, glm::value_ptr(globalModelMatrix));
+		glm::mat4 PVMmatrix = projectionMatrix * viewMatrix * globalModelMatrix;
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PVMmatrix, 1, GL_FALSE, glm::value_ptr(PVMmatrix));
 
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -31,7 +32,7 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
  * \param shader [in] vao will connect loaded data to shader
  * \param geometry
  */
-bool SingleMesh::loadSingleMesh(const std::string& fileName, ShaderProgram* shader, ObjectGeometry** geometry) {
+bool SingleMesh::loadSingleMesh(const std::string& fileName, Shader* shader, ObjectGeometry** geometry) {
 	Assimp::Importer importer;
 
 	// unitize object in size (scale the model to fit into (-1..1)^3)
@@ -104,10 +105,10 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, ShaderProgram* shad
 
 	bool validInit = false;
 
-	if ((shaderProgram != nullptr) && shaderProgram->initialized && (shaderProgram->locations.position != -1)) {
+	if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.position != -1)) {
 
-		glEnableVertexAttribArray(shader->locations.position);
-		glVertexAttribPointer(shader->locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(shader->getShaderData().locations.position);
+		glVertexAttribPointer(shader->getShaderData().locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 		CHECK_GL_ERROR();
 
@@ -122,7 +123,7 @@ bool SingleMesh::loadSingleMesh(const std::string& fileName, ShaderProgram* shad
 }
 
 
-SingleMesh::SingleMesh(char* filename, ShaderProgram* shdrPrg) : ObjectInstance(shdrPrg), initialized(false)
+SingleMesh::SingleMesh(const char* filename, Shader* shdrPrg) : ObjectInstance(shdrPrg), initialized(false)
 {
 
 	if (!loadSingleMesh(filename, shdrPrg, &geometry)) {
@@ -134,7 +135,7 @@ SingleMesh::SingleMesh(char* filename, ShaderProgram* shdrPrg) : ObjectInstance(
 		}
 	}
 	else {
-		if ((shaderProgram != nullptr) && shaderProgram->initialized && (shaderProgram->locations.PVMmatrix != -1)) {
+		if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.PVMmatrix != -1)) {
 			initialized = true;
 		}
 		else {

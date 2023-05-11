@@ -38,6 +38,63 @@ Config::Config(const char* filename)
 				mouseSensitivity = cameraData["mouseSensitivity"].get<float>();
 		}
 
+		if (data.contains("light"))
+		{
+			nlohmann::json lightData = data["light"];
+
+			if (lightData.contains("ambient"))
+			{
+				nlohmann::json ambientData = lightData["ambient"];
+
+				if (ambientData.contains("intensity"))
+					ambientLightIntensity = ambientData["intensity"].get<float>();
+				if (ambientData.contains("lightColor"))
+					ambientLightColor = readVector(ambientData["lightColor"], glm::vec3(1));
+			}
+
+			if (lightData.contains("directional"))
+			{
+				nlohmann::json directionalData = lightData["directional"];
+
+				if (directionalData.contains("direction"))
+					directionalLightDirection = readVector(directionalData["direction"], glm::vec3(0));
+				if (directionalData.contains("intensity"))
+					directionalLightIntensity = directionalData["intensity"].get<float>();
+				if (directionalData.contains("lightColor"))
+					directionalLightColor = readVector(directionalData["lightColor"], glm::vec3(1));
+			}
+
+			if (lightData.contains("point"))
+			{
+				nlohmann::json pointData = lightData["point"];
+
+				if (pointData.contains("position"))
+					pointLightPosition = readVector(pointData["position"], glm::vec3(0));
+				if (pointData.contains("intensity"))
+					pointLightIntensity = pointData["intensity"].get<float>();
+				if (pointData.contains("lightColor"))
+					pointLightColor = readVector(pointData["lightColor"], glm::vec3(1));
+			}
+
+			if (lightData.contains("spot"))
+			{
+				nlohmann::json spotData = lightData["spot"];
+
+				if (spotData.contains("position"))
+					spotLightPosition = readVector(spotData["position"], glm::vec3(0));
+				if (spotData.contains("direction"))
+					spotLightDirection = readVector(spotData["direction"], glm::vec3(0));
+				if (spotData.contains("intensity"))
+					spotLightIntensity = spotData["intensity"].get<float>();
+				if (spotData.contains("lightColor"))
+					spotLightColor = readVector(spotData["lightColor"], glm::vec3(1));
+				if (spotData.contains("innerCutoff"))
+					spotLightInnerCutoff = spotData["innerCutoff"].get<float>();
+				if (spotData.contains("outerCutoff"))
+					spotLightOuterCutoff = spotData["outerCutoff"].get<float>();
+			}
+		}
+
 		if (data.contains("shaders"))
 		{
 			for (nlohmann::json shaderData : data["shaders"])
@@ -103,6 +160,62 @@ float Config::getMouseSensitivity()
 	return mouseSensitivity;
 }
 
+float Config::getAmbientLightIntensity() {
+	return ambientLightIntensity;
+}
+
+glm::vec3 Config::getAmbientLightColor() {
+	return ambientLightColor;
+}
+
+glm::vec3 Config::getDirectionalLightDirection() {
+	return directionalLightDirection;
+}
+
+float Config::getDirectionalLightIntensity() {
+	return directionalLightIntensity;
+}
+
+glm::vec3 Config::getDirectionalLightColor() {
+	return directionalLightColor;
+}
+
+glm::vec3 Config::getPointLightPosition() {
+	return pointLightPosition;
+}
+
+float Config::getPointLightIntensity() {
+	return pointLightIntensity;
+}
+
+glm::vec3 Config::getPointLightColor() {
+	return pointLightColor;
+}
+
+glm::vec3 Config::getSpotLightPosition() {
+	return spotLightPosition;
+}
+
+glm::vec3 Config::getSpotLightDirection() {
+	return spotLightDirection;
+}
+
+float Config::getSpotLightIntensity() {
+	return spotLightIntensity;
+}
+
+glm::vec3 Config::getSpotLightColor() {
+	return spotLightColor;
+}
+
+float Config::getSpotLightInnerCutoff() {
+	return spotLightInnerCutoff;
+}
+
+float Config::getSpotLightOuterCutoff() {
+	return spotLightOuterCutoff;
+}
+
 /**
  * \brief Loads objects from json to scene
  * \param scene List of objects in scene
@@ -148,25 +261,19 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 		if (data.contains("position"))
 		{
 			nlohmann::json positionData = data["position"];
-
-			if (positionData.contains("x") && positionData.contains("y") && positionData.contains("z"))
-				mesh->setPosition(glm::vec3(positionData["x"].get<float>(), positionData["y"].get<float>(), positionData["z"].get<float>()));
+			mesh->setPosition(readVector(positionData, glm::vec3(0)));
 		}
 
 		if (data.contains("rotation"))
 		{
-			nlohmann::json positionData = data["rotation"];
-
-			if (positionData.contains("x") && positionData.contains("y") && positionData.contains("z"))
-				mesh->setRotationRad(glm::vec3(positionData["x"].get<float>(), positionData["y"].get<float>(), positionData["z"].get<float>()));
+			nlohmann::json rotationData = data["rotation"];
+			mesh->setRotationRad(readVector(rotationData, glm::vec3(0)));
 		}
 
 		if (data.contains("scale"))
 		{
-			nlohmann::json positionData = data["scale"];
-
-			if (positionData.contains("x") && positionData.contains("y") && positionData.contains("z"))
-				mesh->setScale(glm::vec3(positionData["x"].get<float>(), positionData["y"].get<float>(), positionData["z"].get<float>()));
+			nlohmann::json scaleData = data["scale"];
+			mesh->setScale(readVector(scaleData, glm::vec3(1)));
 		}
 
 		scene.push_back(mesh);
@@ -179,6 +286,17 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 			}
 		}
 	}
+}
+
+glm::vec3 Config::readVector(nlohmann::json data, glm::vec3 defaultValue)
+{
+	if (data.contains("x") && data.contains("y") && data.contains("z"))
+		return glm::vec3(data["x"].get<float>(), data["y"].get<float>(), data["z"].get<float>());
+	else
+	if (data.contains("r") && data.contains("g") && data.contains("b"))
+		return glm::vec3(data["r"].get<float>(), data["g"].get<float>(), data["b"].get<float>());
+	else
+		return defaultValue;
 }
 
 Config::~Config()

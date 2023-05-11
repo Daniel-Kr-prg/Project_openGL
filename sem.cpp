@@ -70,7 +70,7 @@ void drawScene(void)
 
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
-			object->draw(viewMatrix, projectionMatrix);
+			object->draw(viewMatrix, projectionMatrix, *camera, *config);
 	}
 }
 

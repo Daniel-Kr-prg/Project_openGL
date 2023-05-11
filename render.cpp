@@ -5,8 +5,6 @@
 #include "singlemesh.h"
 #include "object.h"
 
-ShaderProgram shaderProgram;
-
 // при draw методе
 void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
 
@@ -33,7 +31,7 @@ void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMat
 }
 
 // материал + текстура при draw методе
-void setMaterialUniforms(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture) {
+void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture) {
 
     glUniform3fv(shaderProgram.locations.diffuse, 1, glm::value_ptr(diffuse));  // 2nd parameter must be 1 - it declares number of vectors in the vector array
     glUniform3fv(shaderProgram.locations.ambient, 1, glm::value_ptr(ambient));

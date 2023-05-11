@@ -1,7 +1,4 @@
-#include <iostream>
 #include "singlemesh.h"
-#include "render.h"
-
 
 void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	// instance specific stuff
@@ -10,13 +7,13 @@ void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
 }
 
-void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config)
 {
 	if (initialized && (shaderProgram != nullptr)) {
 		glUseProgram(shaderProgram->getShaderData().program);
 
-		glm::mat4 PVMmatrix = projectionMatrix * viewMatrix * globalModelMatrix;
 		setMaterialUniforms(
+			shaderProgram->getShaderData(),
 			geometry->ambient,
 			geometry->diffuse,
 			geometry->specular,
@@ -24,7 +21,19 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 			geometry->texture
 		);
 
-		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PVMmatrix, 1, GL_FALSE, glm::value_ptr(PVMmatrix));
+		glUniform3fv(shaderProgram->getShaderData().locations.viewPosition, 1, glm::value_ptr(camera.getPosition()));
+
+		glUniform1f(shaderProgram->getShaderData().locations.ambientLightIntensity, config.getAmbientLightIntensity());
+		glUniform3fv(shaderProgram->getShaderData().locations.ambientLightColor, 1, glm::value_ptr(config.getAmbientLightColor()));
+		glUniform3fv(shaderProgram->getShaderData().locations.normalMatrix, 1, glm::value_ptr(glm::transpose(glm::inverse(globalModelMatrix))));
+		// Directional light
+		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(config.getDirectionalLightDirection()));
+		glUniform1f(shaderProgram->getShaderData().locations.directionalLightIntensity, config.getDirectionalLightIntensity());
+		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightColor, 1, glm::value_ptr(config.getDirectionalLightColor()));
+
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.MMatrix, 1, GL_FALSE, glm::value_ptr(globalModelMatrix));
 
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -180,11 +189,8 @@ bool SingleMesh::loadSingleMesh(std::string fileName, Shader* shader, ObjectGeom
 	glEnableVertexAttribArray(shader->getShaderData().locations.position);
 	glVertexAttribPointer(shader->getShaderData().locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	CHECK_GL_ERROR();
-	bool useLighting = false; //TODO Move it somewhere
-	if (useLighting == true) {
-		glEnableVertexAttribArray(shader->getShaderData().locations.normal);
-		glVertexAttribPointer(shader->getShaderData().locations.normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)(3 * sizeof(float) * mesh->mNumVertices));
-	}
+	glEnableVertexAttribArray(shader->getShaderData().locations.normal);
+	glVertexAttribPointer(shader->getShaderData().locations.normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)(3 * sizeof(float) * mesh->mNumVertices));
 
 	glEnableVertexAttribArray(shader->getShaderData().locations.texCoord);
 	glVertexAttribPointer(shader->getShaderData().locations.texCoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(6 * sizeof(float) * mesh->mNumVertices));
@@ -210,7 +216,7 @@ SingleMesh::SingleMesh(const char* filename, Shader* shdrPrg) : ObjectInstance(s
 		}
 	}
 	else {
-		if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.PVMmatrix != -1)) {
+		if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.PMatrix != -1 && shaderProgram->getShaderData().locations.VMatrix != -1 && shaderProgram->getShaderData().locations.MMatrix != -1)) {
 			initialized = true;
 		}
 		else {

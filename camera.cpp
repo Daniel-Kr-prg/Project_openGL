@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "object.h"
 /**
  * \brief Creates the camera object.
  * \param fov Field of view
@@ -13,33 +14,92 @@ Camera::Camera(float fov, float aspect, float zNear, float zFar, float speed, fl
 	this->mouseSensitivity = mouseSensitivity;
 }
 
+/**
+ * \brief Set camera parameters.
+ * \param fov Field of view
+ * \param aspect Screen aspect ratio
+ * \param zNear Near clipping plane distance
+ * \param zFar Far clipping plane distance
+ */
+void Camera::setCameraView(float fov, float aspect, float zNear, float zFar)
+{
+	projectionMatrix = glm::perspective(fov, aspect, zNear, zFar);
+}
+
+/**
+ * \brief Allows camera to move
+ */
+void Camera::setDynamicCamera()
+{
+	setCameraState(DYNAMIC_CAMERA);
+}
+
+/**
+ * \brief TODO: add parameters for cameraView
+ */
+void Camera::setStaticView1()
+{
+	setCameraState(STATIC_CAMERA);
+	setCameraView(0.0f, 0.0f, 0.0f, 0.0f);
+}
+/**
+ * \brief TODO: add parameters for cameraView
+ */
+void Camera::setStaticView2()
+{
+	setCameraState(STATIC_CAMERA);
+	setCameraView(0.0f, 0.0f, 0.0f, 0.0f);
+}
+void Camera::setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance)
+{
+	camInstance->setCameraState(CAMERA_ON_OBJECT);
+	objectToFollow->setCameraOnObject(camInstance);
+}
+
+void Camera::setCameraState(camState newState)
+{
+	cameraState = newState;
+}
+
+camState Camera::getCameraState()
+{
+	return cameraState;
+}
 
 void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState)
 {
-	glm::vec3 movementVector(0.0f);
+	if (camera.getCameraState() == STATIC_CAMERA)
+		return;
 
-	if (keyPressedState['w'])
+	if (camera.getCameraState() == DYNAMIC_CAMERA)
 	{
-		movementVector += camera.getForward();
-	}
-	else
-		if (keyPressedState['s'])
-		{
-			movementVector -= camera.getForward();
-		}
+		glm::vec3 movementVector(0.0f);
 
-	if (keyPressedState['a'])
-	{
-		movementVector -= camera.getRight();
-	}
-	else
-		if (keyPressedState['d'])
+		if (keyPressedState['w'])
 		{
-			movementVector += camera.getRight();
+			movementVector += camera.getForward();
 		}
+		else
+			if (keyPressedState['s'])
+			{
+				movementVector -= camera.getForward();
+			}
 
-	movementVector *= elapsedTime * camera.getSpeed();
-	camera.setPosition(camera.getPosition() + movementVector);
+		if (keyPressedState['a'])
+		{
+			movementVector -= camera.getRight();
+		}
+		else
+			if (keyPressedState['d'])
+			{
+				movementVector += camera.getRight();
+			}
+
+		movementVector *= elapsedTime * camera.getSpeed();
+		camera.setPosition(camera.getPosition() + movementVector);
+
+	}
+
 
 	float rotationX = 0;
 	float rotationY = 0;

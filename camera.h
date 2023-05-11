@@ -5,6 +5,8 @@
 #include <unordered_map>
 
 
+enum camState { STATIC_CAMERA, CAMERA_ON_OBJECT, DYNAMIC_CAMERA };
+
 class Camera : public ObjectInstance
 {
 public:
@@ -19,6 +21,18 @@ public:
 	glm::mat4 getView();
 
 	void addYawPitch(float yaw, float pitch);
+	camState getCameraState();
+
+	void setCameraState(camState newState);
+
+	void setCameraView(float fov, float aspect, float zNear, float zFar);
+
+	void setStaticView1();
+	void setStaticView2();
+	void setDynamicCamera();
+
+	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance);
+
 private:
 	glm::mat4 projectionMatrix;
 	float speed;
@@ -26,8 +40,9 @@ private:
 	float mouseSensitivity;
 	float yaw = 0;
 	float pitch = 0;
+
+	camState cameraState = STATIC_CAMERA;
 };
 
 void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
-
 

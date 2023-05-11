@@ -119,27 +119,18 @@ void reshapeCb(int newWidth, int newHeight) {
 
 
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
-	switch (keyPressed) {
-	case 27:
+	if (keyPressed == 27)
+	{
 		glutLeaveMainLoop();
 		exit(EXIT_SUCCESS);
-		break;
-	case 'w':
-	case 'W':
-		keyPressedState['w'] = true;
-		break;
-	case 's':
-	case 'S':
-		keyPressedState['s'] = true;
-		break;
-	case 'a':
-	case 'A':
-		keyPressedState['a'] = true;
-		break;
-	case 'd':
-	case 'D':
-		keyPressedState['d'] = true;
-		break;
+	}
+	else if (keyPressed >= 'A' && keyPressed <= 'Z') {
+		char lowerCaseKey = keyPressed + 32; // Преобразование в маленькую букву
+		keyPressedState[lowerCaseKey] = true;
+	}
+	else
+	{
+		keyPressedState[keyPressed] = true;
 	}
 }
 
@@ -152,23 +143,13 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
-	switch (keyReleased) {
-	case 'w':
-	case 'W':
-		keyPressedState['w'] = false;
-		break;
-	case 's':
-	case 'S':
-		keyPressedState['s'] = false;
-		break;
-	case 'a':
-	case 'A':
-		keyPressedState['a'] = false;
-		break;
-	case 'd':
-	case 'D':
-		keyPressedState['d'] = false;
-		break;
+	if (keyReleased >= 'A' && keyReleased <= 'Z') {
+		char lowerCaseKey = keyReleased + 32; // Преобразование в маленькую букву
+		keyPressedState[lowerCaseKey] = false;
+	}
+	else
+	{
+		keyPressedState[keyReleased] = false;
 	}
 }
 
@@ -182,37 +163,11 @@ void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
-	switch (specKeyPressed) {
-	case GLUT_KEY_UP:
-		keyPressedSpecialState[GLUT_KEY_UP] = true;
-		break;
-	case GLUT_KEY_DOWN:
-		keyPressedSpecialState[GLUT_KEY_DOWN] = true;
-		break;
-	case GLUT_KEY_LEFT:
-		keyPressedSpecialState[GLUT_KEY_LEFT] = true;
-		break;
-	case GLUT_KEY_RIGHT:
-		keyPressedSpecialState[GLUT_KEY_RIGHT] = true;
-		break;
-	}
+	keyPressedSpecialState[specKeyPressed] = true;
 }
 
 void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
-	switch (specKeyReleased) {
-	case GLUT_KEY_UP:
-		keyPressedSpecialState[GLUT_KEY_UP] = false;
-		break;
-	case GLUT_KEY_DOWN:
-		keyPressedSpecialState[GLUT_KEY_DOWN] = false;
-		break;
-	case GLUT_KEY_LEFT:
-		keyPressedSpecialState[GLUT_KEY_LEFT] = false;
-		break;
-	case GLUT_KEY_RIGHT:
-		keyPressedSpecialState[GLUT_KEY_RIGHT] = false;
-		break;
-	}
+	keyPressedSpecialState[specKeyReleased] = false;
 } // key released
 
 // -----------------------  Mouse ---------------------------------

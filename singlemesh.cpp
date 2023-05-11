@@ -25,7 +25,7 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 
 		glUniform1f(shaderProgram->getShaderData().locations.ambientLightIntensity, config.getAmbientLightIntensity());
 		glUniform3fv(shaderProgram->getShaderData().locations.ambientLightColor, 1, glm::value_ptr(config.getAmbientLightColor()));
-		glUniform3fv(shaderProgram->getShaderData().locations.normalMatrix, 1, glm::value_ptr(glm::transpose(glm::inverse(globalModelMatrix))));
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.normalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(globalModelMatrix))));
 		// Directional light
 		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(config.getDirectionalLightDirection()));
 		glUniform1f(shaderProgram->getShaderData().locations.directionalLightIntensity, config.getDirectionalLightIntensity());

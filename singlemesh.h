@@ -1,6 +1,10 @@
 #pragma once
 
 #include "object.h"
+#include <iostream>
+#include "render.h"
+#include "camera.h"
+#include "config.h"
 
 class SingleMesh : public ObjectInstance
 {
@@ -10,7 +14,7 @@ public:
 	~SingleMesh();
 
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
-	void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) override;
+	void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config) override;
 
 private:
 

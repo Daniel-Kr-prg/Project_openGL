@@ -12,6 +12,29 @@
     "keySensitivity": 0.005,
     "mouseSensitivity": 0.005
   },
+  "light": {
+    "ambient": {
+      "intensity": 0.2,
+      "lightColor": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      }
+    },
+    "directional": {
+      "direction": {
+        "x": 4.5,
+        "y": 6.3,
+        "z": 7.2
+      },
+      "intensity": 0.8,
+      "lightColor": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      }
+    }
+  },
   "shaders": [
     {
       "fragmentPath": "data/basicShader.frag",
@@ -24,7 +47,7 @@
       "shaderIndex": 0,
       "texturePath": ""
     },
-	{
+    {
       "filePath": "data/Crate.obj",
       "shaderIndex": 0,
       "texturePath": ""
@@ -49,7 +72,7 @@
         "z": 5
       }
     },
-	{
+    {
       "objectId": 1,
       "position": {
         "x": 0,

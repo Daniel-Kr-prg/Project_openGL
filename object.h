@@ -4,6 +4,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include "shader.h"
 
+class Config;
+class Camera;
+
 /**
  * \brief Geometry of an object (vertices, triangles).
  */
@@ -249,14 +252,14 @@ public:
 	/**
 	 * \brief Draw instance geometry and calls the draw() on child nodes.
 	 */
-	virtual void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+	virtual void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config) {
 		// draw instance geometry using globalModelMatrix
 		// ...
 
 		// process all children
 		for (ObjectInstance* child : children) {   //for (auto child : children) {
 			if (child != nullptr)
-				child->draw(viewMatrix, projectionMatrix);
+				child->draw(viewMatrix, projectionMatrix, camera, config);
 		}
 	}
 

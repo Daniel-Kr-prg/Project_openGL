@@ -37,6 +37,8 @@ private:
 	bool cameraOnObject = false;
 
 public:
+	MovingObject(const char* filename, Shader* shdrPrg = nullptr) : SingleMesh(filename, shdrPrg) {};
+
 	float getSpeed() const {
 		return currentSpeed;
 	}
@@ -49,11 +51,20 @@ public:
 		return drag;
 	}
 
-	void timerHandle(std::unordered_map<char, bool> keyPressedState, float elapsedTime)
+	void timerHandle(std::unordered_map<char, bool> keyPressedState, float elapsedTime, bool movingAllowed)
 	{
 		float elapsedSeconds = elapsedTime * 1000;
 
-		float direction = keyPressedState['w'] - keyPressedState['s'];
+		float direction = 0;
+		if (movingAllowed)
+		{
+			direction = keyPressedState['w'] - keyPressedState['s'];
+
+			float rotation = keyPressedState['a'] - keyPressedState['d'];
+			if (rotation != 0)
+				rotateDegY(rotationSpeed * elapsedSeconds * rotation);
+		}
+
 		if (direction == 0)
 		{
 			currentSpeed = glm::max(0.0f, currentSpeed - drag * elapsedSeconds);
@@ -62,10 +73,6 @@ public:
 		{
 			currentSpeed = direction * glm::max(maxSpeed, glm::abs(currentSpeed) + acceleration * elapsedSeconds);
 		}
-
-		float rotation = keyPressedState['a'] - keyPressedState['d'];
-		if (rotation != 0)
-			rotateDegY(rotationSpeed * elapsedSeconds * rotation);
 
 		addPosition(currentSpeed * elapsedTime * forward);
 	}

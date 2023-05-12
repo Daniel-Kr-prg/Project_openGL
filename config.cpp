@@ -307,7 +307,30 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 	if (data.contains("objectId"))
 	{
 		SceneObject object = sceneObjects[data["objectId"].get<int>()];
-		SingleMesh* mesh = new SingleMesh(object.filePath.c_str(), shaderList[object.shaderIndex]);
+		SingleMesh* mesh;
+
+		if (data.contains("type"))
+		{
+			nlohmann::json typeData = data["type"];
+			ObjectType type = typeData.get<ObjectType>();
+
+			switch (type)
+			{
+				case PLAYER:
+					interactObjects.player = new MovingObject(object.filePath.c_str(), shaderList[object.shaderIndex]);;
+					mesh = (SingleMesh*)interactObjects.player;
+					break;
+				default:
+					mesh = new SingleMesh(object.filePath.c_str(), shaderList[object.shaderIndex]);
+					break;
+			}
+
+			mesh->setType(type);
+		}
+		else
+		{
+			mesh = new SingleMesh(object.filePath.c_str(), shaderList[object.shaderIndex]);
+		}
 
 		if (data.contains("position"))
 		{
@@ -327,26 +350,7 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 			mesh->setScale(readVector(scaleData, glm::vec3(1)));
 		}
 
-		if (data.contains("type"))
-		{
-			nlohmann::json typeData = data["type"];
-			ObjectType type = typeData.get<ObjectType>();
-			
-			mesh->setType(type);
-			if (type > STATIC_OBJECT)
-			{
-				switch (type)
-				{
-					case PLAYER:
-						//interactObjects.player = mesh;
-						break;
-				}
-
-
-			}
-
-			
-		}
+		
 
 		scene.push_back(mesh);
 		

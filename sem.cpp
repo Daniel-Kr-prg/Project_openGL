@@ -260,6 +260,11 @@ void timerCb(int)
 		if (object != nullptr)
 			object->update(elapsedTime, &sceneRootMatrix);
 	}
+
+	if (interactableObjects.player != nullptr)
+	{
+		interactableObjects.player->timerHandle(keyPressedState, elapsedTime, camera->getCameraState() == CAMERA_ON_OBJECT);
+	}
 #endif // task_1_0
 
 	

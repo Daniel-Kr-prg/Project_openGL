@@ -306,6 +306,27 @@ public:
 		}
 	}
 
+	virtual void deserialize(nlohmann::json data)
+	{
+		if (data.contains("position"))
+		{
+			nlohmann::json positionData = data["position"];
+			setPosition(readVectorFromJSON(positionData, glm::vec3(0)));
+		}
+
+		if (data.contains("rotation"))
+		{
+			nlohmann::json rotationData = data["rotation"];
+			setRotationRad(readVectorFromJSON(rotationData, glm::vec3(0)));
+		}
+
+		if (data.contains("scale"))
+		{
+			nlohmann::json scaleData = data["scale"];
+			setScale(readVectorFromJSON(scaleData, glm::vec3(1)));
+		}
+	}
+
 protected:
 
 	/**

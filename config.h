@@ -59,7 +59,6 @@ public:
 private:
 
 	void getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &shaderList, InteractableObjects& interactObjects);
-	glm::vec3 readVector(nlohmann::json data, glm::vec3 defaultValue);
 
 	const char* configFilename;
 
@@ -100,3 +99,13 @@ private:
 
 };
 
+glm::vec3 readVectorFromJSON(nlohmann::json data, glm::vec3 defaultValue)
+{
+	if (data.contains("x") && data.contains("y") && data.contains("z"))
+		return glm::vec3(data["x"].get<float>(), data["y"].get<float>(), data["z"].get<float>());
+	else
+		if (data.contains("r") && data.contains("g") && data.contains("b"))
+			return glm::vec3(data["r"].get<float>(), data["g"].get<float>(), data["b"].get<float>());
+		else
+			return defaultValue;
+}

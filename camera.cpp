@@ -15,6 +15,10 @@ Camera::Camera(float fov, float aspect, float zNear, float zFar, float speed, fl
 	this->mouseSensitivity = mouseSensitivity;
 }
 
+Camera::Camera() {
+
+}
+
 /**
  * \brief Set camera parameters.
  * \param fov Field of view
@@ -238,6 +242,29 @@ float Camera::getPitch()
 {
 	return this->pitch;
 }
+
+void Camera::deserialize(nlohmann::json data)
+{
+	ObjectInstance::deserialize(data);
+
+	if (data.contains("camera"))
+	{
+		nlohmann::json cameraData = data["camera"];
+		if (cameraData.contains("fov") && cameraData.contains("zNear") && cameraData.contains("zFar"))
+			projectionMatrix = glm::perspective(
+				cameraData["fov"].get<float>(),
+				render.getCurrentAspect(),
+				cameraData["zNear"].get<float>(),
+				cameraData["zFar"].get<float>());
+		if (cameraData.contains("speed"))
+			speed = cameraData["speed"].get<float>();
+		if (cameraData.contains("keySensitivity"))
+			keySensitivity = cameraData["keySensitivity"].get<float>();
+		if (cameraData.contains("mouseSensitivity"))
+			mouseSensitivity = cameraData["mouseSensitivity"].get<float>();
+	}
+}
+
 /**
  * \brief Destroys the camera object
  */

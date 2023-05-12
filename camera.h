@@ -11,7 +11,7 @@ enum camState { STATIC_CAMERA, CAMERA_ON_OBJECT, DYNAMIC_CAMERA };
 class Camera : public ObjectInstance
 {
 public:
-	//TODO Move to config
+	Camera();
 	Camera(float fov, float aspect, float zNear, float zFar, float speed, float keySensitivity, float mouseSensitivity);
 	~Camera();
 
@@ -40,6 +40,7 @@ public:
 	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
 	void handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
 
+	void deserialize(nlohmann::json data) override;
 private:
 	glm::mat4 projectionMatrix;
 	float speed;

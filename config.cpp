@@ -22,36 +22,19 @@ Config::Config(const char* filename)
 				windowTitle = windowData["windowTitle"].get<std::string>();
 		}
 
-		if (data.contains("camera"))
+		if (data.contains("ambient"))
 		{
-			nlohmann::json cameraData = data["camera"];
-			if (cameraData.contains("fov"))
-				fov = cameraData["fov"].get<float>();
-			if (cameraData.contains("zNear"))
-				zNear = cameraData["zNear"].get<float>();
-			if (cameraData.contains("zFar"))
-				zFar = cameraData["zFar"].get<float>();
-			if (cameraData.contains("speed"))
-				speed = cameraData["speed"].get<float>();
-			if (cameraData.contains("keySensitivity"))
-				keySensitivity = cameraData["keySensitivity"].get<float>();
-			if (cameraData.contains("mouseSensitivity"))
-				mouseSensitivity = cameraData["mouseSensitivity"].get<float>();
+			nlohmann::json ambientData = data["ambient"];
+
+			if (ambientData.contains("intensity"))
+				ambientLightIntensity = ambientData["intensity"].get<float>();
+			if (ambientData.contains("lightColor"))
+				ambientLightColor = readVector(ambientData["lightColor"], glm::vec3(1));
 		}
 
 		if (data.contains("light"))
 		{
 			nlohmann::json lightData = data["light"];
-
-			if (lightData.contains("ambient"))
-			{
-				nlohmann::json ambientData = lightData["ambient"];
-
-				if (ambientData.contains("intensity"))
-					ambientLightIntensity = ambientData["intensity"].get<float>();
-				if (ambientData.contains("lightColor"))
-					ambientLightColor = readVector(ambientData["lightColor"], glm::vec3(1));
-			}
 
 			if (lightData.contains("directional"))
 			{
@@ -332,25 +315,26 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 			mesh = new SingleMesh(object.filePath.c_str(), shaderList[object.shaderIndex]);
 		}
 
-		if (data.contains("position"))
+		if (data.contains("type"))
 		{
-			nlohmann::json positionData = data["position"];
-			mesh->setPosition(readVector(positionData, glm::vec3(0)));
-		}
+			nlohmann::json typeData = data["type"];
+			ObjectType type = typeData.get<ObjectType>();
+			
+			mesh->setType(type);
+			if (type > STATIC_OBJECT)
+			{
+				switch (type)
+				{
+					case PLAYER:
+						//interactObjects.player = mesh;
+						break;
+				}
 
-		if (data.contains("rotation"))
-		{
-			nlohmann::json rotationData = data["rotation"];
-			mesh->setRotationRad(readVector(rotationData, glm::vec3(0)));
-		}
 
-		if (data.contains("scale"))
-		{
-			nlohmann::json scaleData = data["scale"];
-			mesh->setScale(readVector(scaleData, glm::vec3(1)));
-		}
+			}
 
-		
+			
+		}
 
 		scene.push_back(mesh);
 		
@@ -362,17 +346,6 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 			}
 		}
 	}
-}
-
-glm::vec3 Config::readVector(nlohmann::json data, glm::vec3 defaultValue)
-{
-	if (data.contains("x") && data.contains("y") && data.contains("z"))
-		return glm::vec3(data["x"].get<float>(), data["y"].get<float>(), data["z"].get<float>());
-	else
-	if (data.contains("r") && data.contains("g") && data.contains("b"))
-		return glm::vec3(data["r"].get<float>(), data["g"].get<float>(), data["b"].get<float>());
-	else
-		return defaultValue;
 }
 
 Config::~Config()

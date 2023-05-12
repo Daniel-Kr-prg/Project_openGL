@@ -48,10 +48,21 @@ typedef struct _commonShaderProgram {
 	GLint reflectorDirectionLocation; // = -1;
 } SCommonShaderProgram;
 
-void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
-void cleanupShaderPrograms();
+class Render {
 
-void initializeModels();
-void cleanupModels();
+public:
+	void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
+	void cleanupShaderPrograms();
+
+	float getCurrentAspect();
+
+	void initializeModels();
+	void cleanupModels();
+
+private:
+
+};
+
+Render render;
 
 #endif // __RENDER_H

@@ -36,11 +36,11 @@ public:
 	float getAmbientLightIntensity();
 	glm::vec3 getAmbientLightColor();
 
-	void loadScene(ObjectList &scene, InteractableObjects& interactableObjects);
+	void loadScene(ObjectInstance& rootNode, InteractableObjects& interactableObjects);
 	ObjectInstance* createObjectByType(std::string typeName, InteractableObjects& interactableObjects);
 private:
 
-	void getNextObject(nlohmann::json data, ObjectList &scene, InteractableObjects& interactableObjects);
+	void getNextObject(nlohmann::json data, ObjectInstance& node, InteractableObjects& interactableObjects);
 
 	const char* configFilename;
 

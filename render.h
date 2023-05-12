@@ -54,6 +54,7 @@ typedef struct _commonShaderProgram {
 class Render {
 
 public:
+
 	void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
 	void cleanupShaderPrograms();
 
@@ -73,8 +74,11 @@ public:
 	void initializeModels();
 	void cleanupModels();
 
+	ObjectInstance* getRootNode();
+
 	static Render* getRender();
 private:
+	ObjectInstance rootNode;
 	ShaderList shaders;
 
 	Config* config;

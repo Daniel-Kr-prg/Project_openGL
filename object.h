@@ -71,10 +71,11 @@ protected:
 
 	float lastUpdateTime;
 	float frameTime;
+	ObjectList children;
+	ObjectInstance* parent = nullptr;
+	std::vector<ObjectInstance*>::iterator iteratorAtParent;
 
 public:
-
-	ObjectList children;
 
 	/**
 	 * \brief ObjectInstance constructor. Takes a pointer to the shader and must create object resources (VBO and VAO)
@@ -89,6 +90,22 @@ public:
 
 	~ObjectInstance() {}
   
+	void addChild(ObjectInstance* child)
+	{
+		children.push_back(child);
+		child->parent = this;
+		child->iteratorAtParent = children.end() - 1;
+	}
+
+	void removeChild(ObjectInstance* childToRemove)
+	{
+		if (childToRemove != nullptr && childToRemove->parent == this)
+		{
+			children.erase(childToRemove->iteratorAtParent);
+			Render::getRender()->getRootNode()->addChild(childToRemove);
+		}
+	}
+
 	/**
 	 * \brief Returns the current local position
 	 */
@@ -295,6 +312,30 @@ public:
 		}
 	}
 
+	virtual void onKeyPress(unsigned char key) {
+		// update all children
+		for (ObjectInstance* child : children) {
+			if (child != nullptr)
+				child->onKeyPress(key);
+		}
+	}
+
+	virtual void onSpecialKeyPress(int key) {
+		// update all children
+		for (ObjectInstance* child : children) {
+			if (child != nullptr)
+				child->onKeyPress(key);
+		}
+	}
+
+	virtual void onMouseMove(int deltaX, int deltaY, int mouseX, int mouseY) {
+		// update all children
+		for (ObjectInstance* child : children) {
+			if (child != nullptr)
+				child->onMouseMove(deltaX, deltaY, mouseX, mouseY);
+		}
+	}
+
 	virtual void deserialize(nlohmann::json data)
 	{
 		if (data.contains("position"))
@@ -338,6 +379,7 @@ protected:
 		localModelMatrix = localModelMatrix * glm::toMat4(rotation);
 		localModelMatrix = glm::scale(localModelMatrix, (glm::vec3)scale);
 	}
+
 	void updateWorldMatrix(glm::mat4 parentMatrix) {
 		globalModelMatrix = parentMatrix * localModelMatrix;
 	}

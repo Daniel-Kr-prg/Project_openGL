@@ -10,12 +10,12 @@ class SingleMesh : public ObjectInstance
 {
 public:
 
-	SingleMesh(const char* filename, Shader* shdrPrg = nullptr);
+	SingleMesh();
 	~SingleMesh();
 
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
-	void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config) override;
-
+	void draw() override;
+	void deserialize(nlohmann::json data) override;
 private:
 
 	bool loadSingleMesh(std::string fileName, Shader* shader, ObjectGeometry** geometry);
@@ -37,7 +37,7 @@ private:
 	bool cameraOnObject = false;
 
 public:
-	MovingObject(const char* filename, Shader* shdrPrg = nullptr) : SingleMesh(filename, shdrPrg) {};
+	MovingObject() : SingleMesh() {};
 
 	float getSpeed() const {
 		return currentSpeed;
@@ -95,11 +95,15 @@ public:
 		camera->setPosition(cameraPosition);
 		cameraOnObject = true;
 	}
-	void freeCamera()
+
+	void freeCamera(ObjectList* objects, InteractableObjects* interactableObjects)
 	{
 		if (!cameraOnObject)
 			return;
+		Camera* camera = (Camera*)*cameraIterator;
 		children.erase(cameraIterator);
+		objects->push_back((ObjectInstance*)camera);
+		interactableObjects->cameraIterator = objects->end() - 1;
 		cameraOnObject = false;
 	}
 };

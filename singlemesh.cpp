@@ -7,12 +7,12 @@ void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
 }
 
-void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config)
+void SingleMesh::draw()
 {
 	if (initialized && (shaderProgram != nullptr)) {
 		glUseProgram(shaderProgram->getShaderData().program);
 
-		setMaterialUniforms(
+		Render::getRender()->setMaterialUniforms(
 			shaderProgram->getShaderData(),
 			geometry->ambient,
 			geometry->diffuse,
@@ -21,38 +21,16 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 			geometry->texture
 		);
 
-		glUniform3fv(shaderProgram->getShaderData().locations.viewPosition, 1, glm::value_ptr(camera.getPosition()));
+		Render::getRender()->setCameraAndLightsUniforms(shaderProgram);
 
-		glUniform1f(shaderProgram->getShaderData().locations.ambientLightIntensity, config.getAmbientLightIntensity());
-		glUniform3fv(shaderProgram->getShaderData().locations.ambientLightColor, 1, glm::value_ptr(config.getAmbientLightColor()));
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.normalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(globalModelMatrix))));
-		// Directional light
-		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(config.getDirectionalLightDirection()));
-		glUniform1f(shaderProgram->getShaderData().locations.directionalLightIntensity, config.getDirectionalLightIntensity());
-		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightColor, 1, glm::value_ptr(config.getDirectionalLightColor()));
-		// Point light
-		glUniform1f(shaderProgram->getShaderData().locations.pointLightAttenuation, config.getPointLightAttenuation());
-		glUniform3fv(shaderProgram->getShaderData().locations.pointLightPosition, 1, glm::value_ptr(config.getPointLightPosition()));
-		glUniform1f(shaderProgram->getShaderData().locations.pointLightIntensity, config.getPointLightIntensity());
-		glUniform3fv(shaderProgram->getShaderData().locations.pointLightColor, 1, glm::value_ptr(config.getPointLightColor()));
-		// Spot light
-		glUniform1f(shaderProgram->getShaderData().locations.spotLightAttenuation, config.getSpotLightAttenuation());
-		glUniform3fv(shaderProgram->getShaderData().locations.spotLightPosition, 1, glm::value_ptr(config.getSpotLightPosition()));
-		glUniform3fv(shaderProgram->getShaderData().locations.spotLightDirection, 1, glm::value_ptr(config.getSpotLightDirection()));
-		glUniform1f(shaderProgram->getShaderData().locations.spotLightIntensity, config.getSpotLightIntensity());
-		glUniform3fv(shaderProgram->getShaderData().locations.spotLightColor, 1, glm::value_ptr(config.getSpotLightColor()));
-		glUniform1f(shaderProgram->getShaderData().locations.spotLightInnerCutoff, config.getSpotLightInnerCutoff());
-		glUniform1f(shaderProgram->getShaderData().locations.spotLightOuterCutoff, config.getSpotLightOuterCutoff());
-
-		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-		glUniformMatrix4fv(shaderProgram->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.MMatrix, 1, GL_FALSE, glm::value_ptr(globalModelMatrix));
 
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		ObjectInstance::draw(viewMatrix,projectionMatrix,camera,config);
+		ObjectInstance::draw();
 	}
 	else {
 		std::cerr << "SingleMesh::draw(): Can't draw, mesh not initialized properly!" << std::endl;
@@ -219,23 +197,32 @@ bool SingleMesh::loadSingleMesh(std::string fileName, Shader* shader, ObjectGeom
 }
 
 
-SingleMesh::SingleMesh(const char* filename, Shader* shdrPrg) : ObjectInstance(shdrPrg), initialized(false)
+SingleMesh::SingleMesh() : ObjectInstance(), initialized(false)
 {
+}
 
-	if (!loadSingleMesh(std::string(filename), shdrPrg, &geometry)) {
-		if (geometry == nullptr) {
-			std::cerr << "SingleMesh::SingleMesh(): geometry not initialized!" << std::endl;
+void SingleMesh::deserialize(nlohmann::json data)
+{
+	ObjectInstance::deserialize(data);
+
+	shaderProgram = Render::getRender()->getShader(data["shaderIndex"].get<int>());
+	if (data.contains("filePath") && data.contains("shaderIndex"))
+	{
+		if (!loadSingleMesh(std::string(data["filePath"].get<std::string>()), shaderProgram, &geometry)) {
+			if (geometry == nullptr) {
+				std::cerr << "SingleMesh::SingleMesh(): geometry not initialized!" << std::endl;
+			}
+			else {
+				std::cerr << "SingleMesh::SingleMesh(): shaderProgram struct not initialized!" << std::endl;
+			}
 		}
 		else {
-			std::cerr << "SingleMesh::SingleMesh(): shaderProgram struct not initialized!" << std::endl;
-		}
-	}
-	else {
-		if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.PMatrix != -1 && shaderProgram->getShaderData().locations.VMatrix != -1 && shaderProgram->getShaderData().locations.MMatrix != -1)) {
-			initialized = true;
-		}
-		else {
-			std::cerr << "SingleMesh::SingleMesh(): shaderProgram struct not initialized!" << std::endl;
+			if ((shaderProgram != nullptr) && shaderProgram->getShaderData().initialized && (shaderProgram->getShaderData().locations.PMatrix != -1 && shaderProgram->getShaderData().locations.VMatrix != -1 && shaderProgram->getShaderData().locations.MMatrix != -1)) {
+				initialized = true;
+			}
+			else {
+				std::cerr << "SingleMesh::SingleMesh(): shaderProgram struct not initialized!" << std::endl;
+			}
 		}
 	}
 }
@@ -253,6 +240,3 @@ SingleMesh::~SingleMesh() {
 
 	initialized = false;
 }
-
-
-

@@ -1,7 +1,10 @@
-#ifndef __RENDER_H
-#define __RENDER_H
+#pragma once
 
 #include "pgr.h"
+
+class DirectionalLight;
+class PointLight;
+class SpotLight;
 
 //#include "data.h"
 
@@ -48,10 +51,37 @@ typedef struct _commonShaderProgram {
 	GLint reflectorDirectionLocation; // = -1;
 } SCommonShaderProgram;
 
-void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
-void cleanupShaderPrograms();
+class Render {
 
-void initializeModels();
-void cleanupModels();
+public:
+	void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture);
+	void cleanupShaderPrograms();
 
-#endif // __RENDER_H
+	void initialize(Config* config);
+
+	void addShader(Shader* shader);
+
+	void setCamera(Camera* camera);
+	void setDirectionalLight(DirectionalLight* light);
+	void setPointLight(PointLight* light);
+	void setSpotLight(SpotLight* light);
+	void setCameraAndLightsUniforms(Shader* shader);
+
+	float getCurrentAspect();
+	Shader* getShader(int index);
+
+	void initializeModels();
+	void cleanupModels();
+
+	static Render* getRender();
+private:
+	ShaderList shaders;
+
+	Config* config;
+	Camera* camera;
+	DirectionalLight* directionalLight;
+	PointLight* pointLight;
+	SpotLight* spotLight;
+
+	bool initialized = false;
+};

@@ -5,16 +5,20 @@
 #include <glm/gtx/quaternion.hpp>
 #include "shader.h"
 #include <unordered_map>
-
-class Config;
+#include "json.hpp"
+#include "jsonutils.h"
 
 class Config;
 class Camera;
 
 class MovingObject;
 
+class ObjectInstance;
+
 typedef struct _InteractableObjects {
 	MovingObject* player;
+	Camera* camera;
+	std::vector<ObjectInstance*>::iterator cameraIterator;
 	// ...
 
 } InteractableObjects;
@@ -36,16 +40,11 @@ typedef struct _ObjectGeometry {
 	GLuint        texture;
 } ObjectGeometry;
 
-class ObjectInstance;
 /**
  * \brief Linear representation of the scene objects.  The objects themselves may represent the subtrees.
  */
 typedef std::vector<ObjectInstance*> ObjectList;
 typedef std::vector<Shader*> ShaderList;
-
-enum ObjectType {
-	STATIC_OBJECT, PLAYER
-};
 
 class ObjectInstance {
 
@@ -63,7 +62,6 @@ protected:
 	glm::vec3 right;
 	glm::vec3 forward;
 
-	ObjectType type;
 	// dynamic objects
 	// glm::vec3 direction;
 	// float     speed;
@@ -252,16 +250,6 @@ public:
 		updateLocalVectors();
 	}
 
-	void setType(ObjectType newType)
-	{
-		type = newType;
-	}
-
-	ObjectType getType()
-	{
-		return type;
-	}
-
 	float getLastUpdateTime()
 	{
 		return lastUpdateTime;
@@ -270,6 +258,7 @@ public:
 	{
 		return frameTime;
 	}
+
 	/**
 	* \brief Recalculates the global matrix and updates all children.
 	*   Derived classes should also call this method (using ObjectInstance::update()).
@@ -295,14 +284,35 @@ public:
 	/**
 	 * \brief Draw instance geometry and calls the draw() on child nodes.
 	 */
-	virtual void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config) {
+	virtual void draw() {
 		// draw instance geometry using globalModelMatrix
 		// ...
 
 		// process all children
 		for (ObjectInstance* child : children) {   //for (auto child : children) {
 			if (child != nullptr)
-				child->draw(viewMatrix, projectionMatrix, camera, config);
+				child->draw();
+		}
+	}
+
+	virtual void deserialize(nlohmann::json data)
+	{
+		if (data.contains("position"))
+		{
+			nlohmann::json positionData = data["position"];
+			setPosition(readVectorFromJSON(positionData, glm::vec3(0)));
+		}
+
+		if (data.contains("rotation"))
+		{
+			nlohmann::json rotationData = data["rotation"];
+			setRotationRad(readVectorFromJSON(rotationData, glm::vec3(0)));
+		}
+
+		if (data.contains("scale"))
+		{
+			nlohmann::json scaleData = data["scale"];
+			setScale(readVectorFromJSON(scaleData, glm::vec3(1)));
 		}
 	}
 
@@ -329,12 +339,7 @@ protected:
 		localModelMatrix = glm::scale(localModelMatrix, (glm::vec3)scale);
 	}
 	void updateWorldMatrix(glm::mat4 parentMatrix) {
-		globalModelMatrix = parentMatrix;
-		globalModelMatrix = glm::translate(globalModelMatrix, (glm::vec3)position);
-		globalModelMatrix = globalModelMatrix * glm::toMat4(rotation);
-		globalModelMatrix = glm::scale(globalModelMatrix, (glm::vec3)scale);
-
-		localModelMatrix = globalModelMatrix;
+		globalModelMatrix = parentMatrix * localModelMatrix;
 	}
 };
 

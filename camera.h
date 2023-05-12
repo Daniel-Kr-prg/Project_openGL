@@ -2,6 +2,7 @@
 
 #include <pgr.h>
 #include "object.h"
+#include "singlemesh.h"
 #include <unordered_map>
 
 

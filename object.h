@@ -11,6 +11,7 @@ class Config;
 class Config;
 class Camera;
 
+class MovingObject;
 
 typedef struct _InteractableObjects {
 	MovingObject* player;
@@ -318,70 +319,7 @@ protected:
 };
 
 
-class MovingObject : ObjectInstance
-{
-	private: 
-		float maxSpeed = 5.0f;
-		float currentSpeed = 0.0f;
-		float acceleration = 0.5f;
-		float rotationSpeed = 0.75f;
-		float drag = 0.1f;
 
-		glm::vec3 cameraPosition = glm::vec3(0.0f, 1.0f, 0.0f);
-		std::vector<ObjectInstance*>::iterator cameraIterator;
-		bool cameraOnObject = false;
-
-	public:
-		float getSpeed() const {
-			return currentSpeed;
-		}
-
-		float getRotationSpeed() const {
-			return rotationSpeed;
-		}
-
-		float getDrag() const {
-			return drag;
-		}
-
-		void timerHandle(std::unordered_map<char, bool> keyPressedState, float elapsedTime)
-		{
-			float elapsedSeconds = elapsedTime * 1000;
-
-			float direction = keyPressedState['w'] - keyPressedState['s'];
-			if (direction == 0)
-			{
-				currentSpeed = glm::max(0.0f, currentSpeed - drag * elapsedSeconds);
-			}
-			else
-			{
-				currentSpeed = direction * glm::max(maxSpeed, glm::abs(currentSpeed) + acceleration * elapsedSeconds);
-			}
-
-			float rotation = keyPressedState['a'] - keyPressedState['d'];
-			if (rotation != 0)
-				rotateDegY(rotationSpeed * elapsedSeconds * rotation);
-
-			addPosition(currentSpeed * elapsedTime * forward);
-		}
-
-		void setCameraOnObject(ObjectInstance* camera)
-		{
-			if (cameraOnObject)
-				return;
-			children.push_back(camera);
-			cameraIterator = children.end() - 1;
-			camera->setPosition(cameraPosition);
-			cameraOnObject = true;
-		}
-		void freeCamera()
-		{
-			if (!cameraOnObject)
-				return;
-			children.erase(cameraIterator);
-			cameraOnObject = false;
-		}
-};
 
 
  

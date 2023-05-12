@@ -42,7 +42,7 @@
 
 
 ObjectList objects;
-InteractableObjects objects;
+InteractableObjects interactableObjects;
 
 ShaderList shaders;
 Config* config;
@@ -188,9 +188,9 @@ void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
 		camera->setStaticView2();
 		break;
 	case GLUT_KEY_F3:
-		if (player == nullptr)
+		if (interactableObjects.player == nullptr)
 			break;
-		camera->setCameraOnObject(player, camera);
+		camera->setCameraOnObject(interactableObjects.player, camera);
 		break;
 	case GLUT_KEY_F4:
 		camera->setDynamicCamera();
@@ -280,7 +280,7 @@ void initApplication() {
 	glEnable(GL_DEPTH_TEST);
 	// - all programs (shaders), buffers, textures, ...
 	camera = new Camera(config->getFov(), (float)config->getWindowWidth() / config->getWindowHeight(), config->getZNear(), config->getZFar(), config->getSpeed(), config->getKeySensitivity(), config->getMouseSensitivity());
-	config->loadScene(objects, shaders);
+	config->loadScene(objects, shaders, interactableObjects);
 	camera->setStaticView1();
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 

@@ -6,7 +6,6 @@
 
 #include "json.hpp"
 #include "object.h"
-#include "singlemesh.h"
 
 
 
@@ -57,7 +56,7 @@ public:
 
 private:
 
-	void getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &shaderList);
+	void getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &shaderList, InteractableObjects& interactObjects);
 	glm::vec3 readVector(nlohmann::json data, glm::vec3 defaultValue);
 
 	const char* configFilename;
@@ -94,5 +93,6 @@ private:
 	// Graphics objects
 	std::vector<ShaderObject> shaders;
 	std::vector<SceneObject> sceneObjects;
+
 };
 

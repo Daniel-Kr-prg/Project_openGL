@@ -1,5 +1,5 @@
 #include "config.h"
-#include "sem.cpp"
+#include "singlemesh.h"
 
 Config::Config(const char* filename)
 {
@@ -277,7 +277,7 @@ void Config::loadScene(ObjectList &scene, ShaderList &shaderList, InteractableOb
 		{
 			for (nlohmann::json sceneObjectData : data["scene"])
 			{
-				getNextObject(sceneObjectData, scene, shaderList);
+				getNextObject(sceneObjectData, scene, shaderList, interactObjects);
 			}
 		}
 	}
@@ -289,7 +289,7 @@ void Config::loadScene(ObjectList &scene, ShaderList &shaderList, InteractableOb
  * \param scene Scene objects list
  * \param shaderList List of shaders
  */
-void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &shaderList)
+void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &shaderList, InteractableObjects& interactObjects)
 {
 	if (data.contains("objectId"))
 	{
@@ -317,7 +317,22 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 		if (data.contains("type"))
 		{
 			nlohmann::json typeData = data["type"];
-			mesh->setType(typeData);
+			ObjectType type = typeData.get<ObjectType>();
+			
+			mesh->setType(type);
+			if (type > STATIC_OBJECT)
+			{
+				switch (type)
+				{
+					case PLAYER:
+						//interactObjects.player = mesh;
+						break;
+				}
+
+
+			}
+
+			
 		}
 
 		scene.push_back(mesh);
@@ -326,7 +341,7 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 		{
 			for (nlohmann::json childrenData : data["next"])
 			{
-				getNextObject(childrenData, mesh->children, shaderList);
+				getNextObject(childrenData, mesh->children, shaderList, interactObjects);
 			}
 		}
 	}

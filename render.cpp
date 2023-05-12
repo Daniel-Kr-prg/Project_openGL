@@ -5,6 +5,18 @@
 #include "singlemesh.h"
 #include "object.h"
 
+#include "directionallight.h"
+#include "pointlight.h"
+#include "spotlight.h"
+
+
+static Render render;
+
+Render* Render::getRender()
+{
+    return &render;
+}
+
 // при draw методе
 void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
 
@@ -31,7 +43,7 @@ void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMat
 }
 
 // материал + текстура при draw методе
-void setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture) {
+void Render::setMaterialUniforms(const ShaderProgram& shaderProgram, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess, GLuint texture) {
 
     glUniform3fv(shaderProgram.locations.diffuse, 1, glm::value_ptr(diffuse));  // 2nd parameter must be 1 - it declares number of vectors in the vector array
     glUniform3fv(shaderProgram.locations.ambient, 1, glm::value_ptr(ambient));
@@ -93,7 +105,7 @@ void initBoatGeometry(ShaderProgram& shader, ObjectGeometry** geometry) {
 
 /** Initialize vertex buffers and vertex arrays for all objects.
  */
-void initializeModels() {
+void Render::initializeModels() {
 
     // ЗАГРУЖАЕМ МОДЕЛИ
 
@@ -113,9 +125,98 @@ void cleanupGeometry(ObjectGeometry* geometry) {
         glDeleteTextures(1, &(geometry->texture));
 }
 
-void cleanupModels() {
+void Render::cleanupModels() {
 
     // for геометрии 
         // cleanupGeometry(...);
 
+}
+
+/**
+ * \brief Delete all shader program objects.
+ */
+void Render::cleanupShaderPrograms(void) {
+
+    //TODO Delete all shaders
+}
+
+void Render::initialize(Config* config)
+{
+    if (config != nullptr)
+    {
+        this->config = config;
+        initialized = true;
+    }
+}
+
+void Render::addShader(Shader* shader) {
+    shaders.push_back(shader);
+}
+
+void Render::setCamera(Camera* camera)
+{
+    this->camera = camera;
+}
+
+void Render::setDirectionalLight(DirectionalLight* light)
+{
+    directionalLight = light;
+}
+
+void Render::setPointLight(PointLight* light)
+{
+    pointLight = light;
+}
+
+void Render::setSpotLight(SpotLight* light)
+{
+    spotLight = light;
+}
+
+void Render::setCameraAndLightsUniforms(Shader* shader)
+{
+    // Camera
+    glUniform3fv(shader->getShaderData().locations.viewPosition, 1, glm::value_ptr(camera->getPosition()));
+    glUniformMatrix4fv(shader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
+    glUniformMatrix4fv(shader->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(camera->getView()));
+
+    // Ambient light
+    glUniform1f(shader->getShaderData().locations.ambientLightIntensity, config->getAmbientLightIntensity());
+    glUniform3fv(shader->getShaderData().locations.ambientLightColor, 1, glm::value_ptr(config->getAmbientLightColor()));
+
+    // Directional light
+    if (directionalLight != nullptr)
+    {
+        directionalLight->setUniforms(shader);
+    }
+    // Point light
+    if (pointLight != nullptr)
+    {
+        pointLight->setUniforms(shader);
+    }
+    // Spot light
+    if (spotLight != nullptr)
+    {
+        spotLight->setUniforms(shader);
+    }
+}
+
+float Render::getCurrentAspect()
+{
+    //TODO handle resize event
+    if (!initialized)
+        throw "Render::getCurrentAspect(): Render is not initialized";
+    return (float)config->getWindowWidth() / config->getWindowHeight();
+}
+
+Shader* Render::getShader(int index)
+{
+    if (shaders.size() > index && index != -1)
+    {
+        return shaders[index];
+    }
+    else
+    {
+        return nullptr;
+    }
 }

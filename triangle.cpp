@@ -12,7 +12,7 @@ void Triangle::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
 }
 
-void Triangle::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config)
+void Triangle::draw()
 {
 	//if(initialized && (shaderProgram != nullptr)) {
 	//	glUseProgram(shaderProgram->getShaderData().program);

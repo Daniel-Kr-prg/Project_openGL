@@ -40,6 +40,7 @@ public:
 	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
 	void handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
 
+	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
 	void deserialize(nlohmann::json data) override;
 private:
 	glm::mat4 projectionMatrix;
@@ -54,4 +55,3 @@ private:
 
 	camState cameraState = STATIC_CAMERA;
 };
-

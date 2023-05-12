@@ -243,26 +243,28 @@ float Camera::getPitch()
 	return this->pitch;
 }
 
+void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
+{
+	ObjectInstance::update(elapsedTime, parentModelMatrix);
+	Render::getRender()->setCamera(this);
+}
+
 void Camera::deserialize(nlohmann::json data)
 {
 	ObjectInstance::deserialize(data);
 
-	if (data.contains("camera"))
-	{
-		nlohmann::json cameraData = data["camera"];
-		if (cameraData.contains("fov") && cameraData.contains("zNear") && cameraData.contains("zFar"))
-			projectionMatrix = glm::perspective(
-				cameraData["fov"].get<float>(),
-				render.getCurrentAspect(),
-				cameraData["zNear"].get<float>(),
-				cameraData["zFar"].get<float>());
-		if (cameraData.contains("speed"))
-			speed = cameraData["speed"].get<float>();
-		if (cameraData.contains("keySensitivity"))
-			keySensitivity = cameraData["keySensitivity"].get<float>();
-		if (cameraData.contains("mouseSensitivity"))
-			mouseSensitivity = cameraData["mouseSensitivity"].get<float>();
-	}
+	if (data.contains("fov") && data.contains("zNear") && data.contains("zFar"))
+		projectionMatrix = glm::perspective(
+			data["fov"].get<float>(),
+			Render::getRender()->getCurrentAspect(),
+			data["zNear"].get<float>(),
+			data["zFar"].get<float>());
+	if (data.contains("speed"))
+		speed = data["speed"].get<float>();
+	if (data.contains("keySensitivity"))
+		keySensitivity = data["keySensitivity"].get<float>();
+	if (data.contains("mouseSensitivity"))
+		mouseSensitivity = data["mouseSensitivity"].get<float>();
 }
 
 /**

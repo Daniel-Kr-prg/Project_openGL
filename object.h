@@ -5,8 +5,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include "shader.h"
 #include <unordered_map>
-
-class Config;
+#include "json.hpp"
+#include "jsonutils.h"
 
 class Config;
 class Camera;
@@ -15,6 +15,7 @@ class MovingObject;
 
 typedef struct _InteractableObjects {
 	MovingObject* player;
+	Camera* camera;
 	// ...
 
 } InteractableObjects;
@@ -43,10 +44,6 @@ class ObjectInstance;
 typedef std::vector<ObjectInstance*> ObjectList;
 typedef std::vector<Shader*> ShaderList;
 
-enum ObjectType {
-	STATIC_OBJECT, PLAYER
-};
-
 class ObjectInstance {
 
 protected:
@@ -63,7 +60,6 @@ protected:
 	glm::vec3 right;
 	glm::vec3 forward;
 
-	ObjectType type;
 	// dynamic objects
 	// glm::vec3 direction;
 	// float     speed;
@@ -252,16 +248,6 @@ public:
 		updateLocalVectors();
 	}
 
-	void setType(ObjectType newType)
-	{
-		type = newType;
-	}
-
-	ObjectType getType()
-	{
-		return type;
-	}
-
 	float getLastUpdateTime()
 	{
 		return lastUpdateTime;
@@ -270,6 +256,7 @@ public:
 	{
 		return frameTime;
 	}
+
 	/**
 	* \brief Recalculates the global matrix and updates all children.
 	*   Derived classes should also call this method (using ObjectInstance::update()).
@@ -295,14 +282,14 @@ public:
 	/**
 	 * \brief Draw instance geometry and calls the draw() on child nodes.
 	 */
-	virtual void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, Camera& camera, Config& config) {
+	virtual void draw() {
 		// draw instance geometry using globalModelMatrix
 		// ...
 
 		// process all children
 		for (ObjectInstance* child : children) {   //for (auto child : children) {
 			if (child != nullptr)
-				child->draw(viewMatrix, projectionMatrix, camera, config);
+				child->draw();
 		}
 	}
 

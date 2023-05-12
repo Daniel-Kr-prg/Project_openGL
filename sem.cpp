@@ -43,11 +43,7 @@
 
 ObjectList objects;
 InteractableObjects interactableObjects;
-
-ShaderList shaders;
 Config* config;
-
-Camera* camera;
 
 std::unordered_map<char, bool> keyPressedState;
 std::unordered_map<int, bool> keyPressedSpecialState;
@@ -57,24 +53,13 @@ std::unordered_map<int, bool> keyPressedSpecialState;
 // -----------------------  OpenGL stuff ---------------------------------
 
 /**
- * \brief Delete all shader program objects.
- */
-void cleanupShaderPrograms(void) {
-
-	//TODO Delete all shaders
-}
-
-/**
  * \brief Draw all scene objects.
  */
 void drawScene(void)
 {
-	glm::mat4x4 viewMatrix = camera->getView();
-	glm::mat4x4 projectionMatrix = camera->getProjection();
-
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
-			object->draw(viewMatrix, projectionMatrix, *camera, *config);
+			object->draw();
 	}
 }
 
@@ -140,8 +125,8 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 		//RESTART
 		break;
 	case 'c':
-		std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
-		std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
+		//std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
+		//std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
 		break;
 	}
 }
@@ -183,20 +168,20 @@ void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
 	{
 	case GLUT_KEY_F1:
 		interactableObjects.player->freeCamera();
-		camera->setStaticView1();
+		interactableObjects.camera->setStaticView1();
 		break;
 	case GLUT_KEY_F2:
 		interactableObjects.player->freeCamera();
-		camera->setStaticView2();
+		interactableObjects.camera->setStaticView2();
 		break;
 	case GLUT_KEY_F3:
 		if (interactableObjects.player == nullptr)
 			break;
-		camera->setCameraOnObject(interactableObjects.player, camera);
+		interactableObjects.camera->setCameraOnObject(interactableObjects.player, interactableObjects.camera);
 		break;
 	case GLUT_KEY_F4:
 		interactableObjects.player->freeCamera();
-		camera->setDynamicCamera();
+		interactableObjects.camera->setDynamicCamera();
 		break;
 
 	default:
@@ -241,7 +226,7 @@ void mouseMotionCb(int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void passiveMouseMotionCb(int mouseX, int mouseY) {
-	camera->handlePassiveMouseMotion(mouseX, mouseY, config);
+	interactableObjects.camera->handlePassiveMouseMotion(mouseX, mouseY, config);
 }
 
 
@@ -257,7 +242,7 @@ void timerCb(int)
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
 	
-	camera->handleCameraMovement(elapsedTime, keyPressedState, keyPressedSpecialState);
+	interactableObjects.camera->handleCameraMovement(elapsedTime, keyPressedState, keyPressedSpecialState);
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
@@ -266,7 +251,7 @@ void timerCb(int)
 
 	if (interactableObjects.player != nullptr)
 	{
-		interactableObjects.player->timerHandle(keyPressedState, camera->getCameraState() == CAMERA_ON_OBJECT);
+		interactableObjects.player->timerHandle(keyPressedState, elapsedTime, interactableObjects.camera->getCameraState() == CAMERA_ON_OBJECT);
 	}
 #endif // task_1_0
 
@@ -286,10 +271,10 @@ void timerCb(int)
 void initApplication() {
 	// init OpenGL
 	glEnable(GL_DEPTH_TEST);
+	//TODO glCullFace(GL_BACK);
 	// - all programs (shaders), buffers, textures, ...
-	camera = new Camera(config->getFov(), (float)config->getWindowWidth() / config->getWindowHeight(), config->getZNear(), config->getZFar(), config->getSpeed(), config->getKeySensitivity(), config->getMouseSensitivity());
-	config->loadScene(objects, shaders, interactableObjects);
-	camera->setStaticView1();
+	config->loadScene(objects, interactableObjects);
+	interactableObjects.camera->setStaticView1();
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 
 	// init your Application
@@ -308,7 +293,7 @@ void finalizeApplication(void) {
 	// cleanupModels();
 
 	// delete shaders
-	cleanupShaderPrograms();
+	Render::getRender()->cleanupShaderPrograms();
 }
 
 

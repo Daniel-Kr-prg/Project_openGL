@@ -8,6 +8,8 @@
 #include "object.h"
 #include "singlemesh.h"
 
+
+
 typedef struct _ShaderObject {
 	std::string fragmentPath;
 	std::string vertexPath;
@@ -51,7 +53,7 @@ public:
 	float getSpotLightInnerCutoff();
 	float getSpotLightOuterCutoff();
 
-	void loadScene(ObjectList &scene, ShaderList &shaderList);
+	void loadScene(ObjectList &scene, ShaderList &shaderList, InteractableObjects& interactObjects);
 
 private:
 

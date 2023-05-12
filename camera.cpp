@@ -22,9 +22,10 @@ Camera::Camera(float fov, float aspect, float zNear, float zFar, float speed, fl
  * \param zNear Near clipping plane distance
  * \param zFar Far clipping plane distance
  */
-void Camera::setCameraView(float fov, float aspect, float zNear, float zFar)
+void Camera::setCameraView(glm::vec3 position, float yaw, float pitch)
 {
-	projectionMatrix = glm::perspective(fov, aspect, zNear, zFar);
+	setYawPitch(yaw, pitch);
+	setPosition(position);
 }
 
 /**
@@ -41,7 +42,7 @@ void Camera::setDynamicCamera()
 void Camera::setStaticView1()
 {
 	setCameraState(STATIC_CAMERA);
-	setCameraView(0.0f, 0.0f, 0.0f, 0.0f);
+	setCameraView(glm::vec3(3.98f, 0.637f, 4.60f), -5.54f, -0.14f);
 }
 /**
  * \brief TODO: add parameters for cameraView
@@ -49,7 +50,7 @@ void Camera::setStaticView1()
 void Camera::setStaticView2()
 {
 	setCameraState(STATIC_CAMERA);
-	setCameraView(0.0f, 0.0f, 0.0f, 0.0f);
+	setCameraView(glm::vec3(5.516f, 4.74f, -2.87f), -4.31f, -0.71f);
 }
 void Camera::setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance)
 {
@@ -67,37 +68,37 @@ camState Camera::getCameraState()
 	return cameraState;
 }
 
-void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState)
+void Camera::handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState)
 {
-	if (camera.getCameraState() == STATIC_CAMERA)
+	if (getCameraState() == STATIC_CAMERA)
 		return;
 
-	if (camera.getCameraState() == DYNAMIC_CAMERA)
+	if (getCameraState() == DYNAMIC_CAMERA)
 	{
 		glm::vec3 movementVector(0.0f);
 
 		if (keyPressedState['w'])
 		{
-			movementVector += camera.getForward();
+			movementVector += getForward();
 		}
 		else
 			if (keyPressedState['s'])
 			{
-				movementVector -= camera.getForward();
+				movementVector -= getForward();
 			}
 
 		if (keyPressedState['a'])
 		{
-			movementVector -= camera.getRight();
+			movementVector -= getRight();
 		}
 		else
 			if (keyPressedState['d'])
 			{
-				movementVector += camera.getRight();
+				movementVector += getRight();
 			}
 
-		movementVector *= elapsedTime * camera.getSpeed();
-		camera.setPosition(camera.getPosition() + movementVector);
+		movementVector *= elapsedTime * getSpeed();
+		setPosition(getPosition() + movementVector);
 
 	}
 
@@ -107,39 +108,44 @@ void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<
 
 	if (keyPressedSpecialState[GLUT_KEY_UP])
 	{
-		rotationX += 1 * elapsedTime * camera.getKeySensitivity();
+		rotationX += 1 * elapsedTime * getKeySensitivity();
 	}
 	else
 		if (keyPressedSpecialState[GLUT_KEY_DOWN])
 		{
-			rotationX -= 1 * elapsedTime * camera.getKeySensitivity();
+			rotationX -= 1 * elapsedTime * getKeySensitivity();
 		}
 
 	if (keyPressedSpecialState[GLUT_KEY_LEFT])
 	{
-		rotationY += 1 * elapsedTime * camera.getKeySensitivity();
+		rotationY += 1 * elapsedTime * getKeySensitivity();
 	}
 	else
 		if (keyPressedSpecialState[GLUT_KEY_RIGHT])
 		{
-			rotationY -= 1 * elapsedTime * camera.getKeySensitivity();
+			rotationY -= 1 * elapsedTime * getKeySensitivity();
 		}
 
-	camera.addYawPitch(rotationY, rotationX);
+	addYawPitch(rotationY, rotationX);
 }
 
 void Camera::handlePassiveMouseMotion(int mouseX, int mouseY, Config* config)
 {
+	int halfWidth = config->getWindowWidth() / 2;
+	int halfHeight = config->getWindowHeight() / 2;
+
 	if (cameraState == STATIC_CAMERA)
+	{
+		glutWarpPointer(halfWidth, halfHeight);
+		previousMouseX = halfWidth;
+		previousMouseY = halfHeight;
 		return;
+	}
 
 	int deltaX = previousMouseX - mouseX;
 	int deltaY = previousMouseY - mouseY;
 
 	addYawPitch(deltaX * getMouseSensitivity(), deltaY * getMouseSensitivity());
-
-	int halfWidth = config->getWindowWidth() / 2;
-	int halfHeight = config->getWindowHeight() / 2;
 
 	glutWarpPointer(halfWidth, halfHeight);
 
@@ -205,7 +211,32 @@ void Camera::addYawPitch(float yaw, float pitch) {
 	rotateRadY(this->yaw);
 	rotateRadX(this->pitch);
 }
+void Camera::setYawPitch(float yaw, float pitch) {
+	this->yaw = yaw;
+	this->pitch = pitch;
 
+	if (this->pitch > 1.55f)
+	{
+		this->pitch = 1.55f;
+	}
+	else
+		if (this->pitch < -1.55f)
+		{
+			this->pitch = -1.55f;
+		}
+
+	setRotation(glm::quat());
+	rotateRadY(this->yaw);
+	rotateRadX(this->pitch);
+}
+float Camera::getYaw()
+{
+	return this->yaw;
+}
+float Camera::getPitch()
+{
+	return this->pitch;
+}
 /**
  * \brief Destroys the camera object
  */

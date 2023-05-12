@@ -42,7 +42,7 @@
 
 
 ObjectList objects;
-MovingObject* player;
+InteractableObjects objects;
 
 ShaderList shaders;
 Config* config;
@@ -138,6 +138,10 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	{
 	case 'r':
 		//RESTART
+		break;
+	case 'c':
+		std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
+		std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
 		break;
 	}
 }
@@ -250,7 +254,7 @@ void timerCb(int)
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
 	
-	handleCameraMovement(*camera, elapsedTime, keyPressedState, keyPressedSpecialState);
+	camera->handleCameraMovement(elapsedTime, keyPressedState, keyPressedSpecialState);
 	// update the application state
 	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
 		if (object != nullptr)
@@ -258,13 +262,13 @@ void timerCb(int)
 	}
 #endif // task_1_0
 
+	
 	// and plan a new event
 	glutTimerFunc(33, timerCb, 0);
 
 	// create display event
 	glutPostRedisplay();
 }
-
 
 // -----------------------  Application ---------------------------------
 
@@ -277,7 +281,7 @@ void initApplication() {
 	// - all programs (shaders), buffers, textures, ...
 	camera = new Camera(config->getFov(), (float)config->getWindowWidth() / config->getWindowHeight(), config->getZNear(), config->getZFar(), config->getSpeed(), config->getKeySensitivity(), config->getMouseSensitivity());
 	config->loadScene(objects, shaders);
-
+	camera->setStaticView1();
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 
 	// init your Application

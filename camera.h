@@ -21,19 +21,23 @@ public:
 	glm::mat4 getView();
 
 	void addYawPitch(float yaw, float pitch);
-	camState getCameraState();
+	void setYawPitch(float yaw, float pitch);
+	float getYaw();
+	float getPitch();
 
+	camState getCameraState();
 	void setCameraState(camState newState);
 
-	void setCameraView(float fov, float aspect, float zNear, float zFar);
+	void setCameraView(glm::vec3 position, float yaw, float pitch);
 
 	void setStaticView1();
 	void setStaticView2();
 	void setDynamicCamera();
 	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance);
 
-	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
 
+	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
+	void handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
 
 private:
 	glm::mat4 projectionMatrix;

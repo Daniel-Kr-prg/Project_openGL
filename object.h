@@ -11,6 +11,13 @@ class Config;
 class Config;
 class Camera;
 
+
+typedef struct _InteractableObjects {
+	MovingObject* player;
+	// ...
+
+} InteractableObjects;
+
 /**
  * \brief Geometry of an object (vertices, triangles).
  */
@@ -35,6 +42,10 @@ class ObjectInstance;
 typedef std::vector<ObjectInstance*> ObjectList;
 typedef std::vector<Shader*> ShaderList;
 
+enum ObjectType {
+	STATIC_OBJECT, PLAYER
+};
+
 class ObjectInstance {
 
 protected:
@@ -51,6 +62,7 @@ protected:
 	glm::vec3 right;
 	glm::vec3 forward;
 
+	ObjectType type;
 	// dynamic objects
 	// glm::vec3 direction;
 	// float     speed;
@@ -235,6 +247,15 @@ public:
 		updateLocalVectors();
 	}
 
+	void setType(ObjectType newType)
+	{
+		type = newType;
+	}
+
+	ObjectType getType()
+	{
+		return type;
+	}
 	/**
 	* \brief Recalculates the global matrix and updates all children.
 	*   Derived classes should also call this method (using ObjectInstance::update()).
@@ -361,3 +382,6 @@ class MovingObject : ObjectInstance
 			cameraOnObject = false;
 		}
 };
+
+
+ 

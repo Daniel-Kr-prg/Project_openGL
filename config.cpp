@@ -1,4 +1,5 @@
 #include "config.h"
+#include "sem.cpp"
 
 Config::Config(const char* filename)
 {
@@ -258,7 +259,7 @@ float Config::getSpotLightOuterCutoff() {
  * \param scene List of objects in scene
  * \param shaderList List of shaders
  */
-void Config::loadScene(ObjectList &scene, ShaderList &shaderList)
+void Config::loadScene(ObjectList &scene, ShaderList &shaderList, InteractableObjects& interactObjects)
 {
 	std::ifstream file(configFilename);
 
@@ -311,6 +312,12 @@ void Config::getNextObject(nlohmann::json data, ObjectList &scene, ShaderList &s
 		{
 			nlohmann::json scaleData = data["scale"];
 			mesh->setScale(readVector(scaleData, glm::vec3(1)));
+		}
+
+		if (data.contains("type"))
+		{
+			nlohmann::json typeData = data["type"];
+			mesh->setType(typeData);
 		}
 
 		scene.push_back(mesh);

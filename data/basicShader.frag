@@ -27,7 +27,7 @@ out vec4 fragmentColor;
 vec4 getDirectionalLightColor(vec3 normalizedNormal) {
   // Directional light
   // 
-  vec3 lightDirection = normalize(directionalLightDirection);
+  vec3 lightDirection = normalize(-directionalLightDirection);
   // Diffuse
   vec3 directionalDiffuse = directionalLightIntensity * max(dot(normalizedNormal, lightDirection), 0.0) * diffuse;
   // Specular

@@ -42,9 +42,11 @@ public:
 	glm::vec3 getDirectionalLightDirection();
 	float getDirectionalLightIntensity();
 	glm::vec3 getDirectionalLightColor();
+	float getPointLightAttenuation();
 	glm::vec3 getPointLightPosition();
 	float getPointLightIntensity();
 	glm::vec3 getPointLightColor();
+	float getSpotLightAttenuation();
 	glm::vec3 getSpotLightPosition();
 	glm::vec3 getSpotLightDirection();
 	float getSpotLightIntensity();
@@ -80,9 +82,11 @@ private:
 	glm::vec3 directionalLightDirection;
 	float directionalLightIntensity;
 	glm::vec3 directionalLightColor;
+	float pointLightAttenuation;
 	glm::vec3 pointLightPosition;
 	float pointLightIntensity;
 	glm::vec3 pointLightColor;
+	float spotLightAttenuation;
 	glm::vec3 spotLightPosition;
 	glm::vec3 spotLightDirection;
 	float spotLightIntensity;

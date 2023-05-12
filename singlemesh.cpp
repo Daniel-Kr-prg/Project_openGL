@@ -30,6 +30,19 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(config.getDirectionalLightDirection()));
 		glUniform1f(shaderProgram->getShaderData().locations.directionalLightIntensity, config.getDirectionalLightIntensity());
 		glUniform3fv(shaderProgram->getShaderData().locations.directionalLightColor, 1, glm::value_ptr(config.getDirectionalLightColor()));
+		// Point light
+		glUniform1f(shaderProgram->getShaderData().locations.pointLightAttenuation, config.getPointLightAttenuation());
+		glUniform3fv(shaderProgram->getShaderData().locations.pointLightPosition, 1, glm::value_ptr(config.getPointLightPosition()));
+		glUniform1f(shaderProgram->getShaderData().locations.pointLightIntensity, config.getPointLightIntensity());
+		glUniform3fv(shaderProgram->getShaderData().locations.pointLightColor, 1, glm::value_ptr(config.getPointLightColor()));
+		// Spot light
+		glUniform1f(shaderProgram->getShaderData().locations.spotLightAttenuation, config.getSpotLightAttenuation());
+		glUniform3fv(shaderProgram->getShaderData().locations.spotLightPosition, 1, glm::value_ptr(config.getSpotLightPosition()));
+		glUniform3fv(shaderProgram->getShaderData().locations.spotLightDirection, 1, glm::value_ptr(config.getSpotLightDirection()));
+		glUniform1f(shaderProgram->getShaderData().locations.spotLightIntensity, config.getSpotLightIntensity());
+		glUniform3fv(shaderProgram->getShaderData().locations.spotLightColor, 1, glm::value_ptr(config.getSpotLightColor()));
+		glUniform1f(shaderProgram->getShaderData().locations.spotLightInnerCutoff, config.getSpotLightInnerCutoff());
+		glUniform1f(shaderProgram->getShaderData().locations.spotLightOuterCutoff, config.getSpotLightOuterCutoff());
 
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));

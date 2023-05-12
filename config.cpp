@@ -69,6 +69,8 @@ Config::Config(const char* filename)
 			{
 				nlohmann::json pointData = lightData["point"];
 
+				if (pointData.contains("attenuation"))
+					pointLightAttenuation = pointData["attenuation"].get<float>();
 				if (pointData.contains("position"))
 					pointLightPosition = readVector(pointData["position"], glm::vec3(0));
 				if (pointData.contains("intensity"))
@@ -81,6 +83,8 @@ Config::Config(const char* filename)
 			{
 				nlohmann::json spotData = lightData["spot"];
 
+				if (spotData.contains("attenuation"))
+					spotLightAttenuation = spotData["attenuation"].get<float>();
 				if (spotData.contains("position"))
 					spotLightPosition = readVector(spotData["position"], glm::vec3(0));
 				if (spotData.contains("direction"))
@@ -218,6 +222,10 @@ glm::vec3 Config::getDirectionalLightColor() {
 	return directionalLightColor;
 }
 
+float Config::getPointLightAttenuation() {
+	return pointLightAttenuation;
+}
+
 glm::vec3 Config::getPointLightPosition() {
 	return pointLightPosition;
 }
@@ -228,6 +236,11 @@ float Config::getPointLightIntensity() {
 
 glm::vec3 Config::getPointLightColor() {
 	return pointLightColor;
+}
+
+float Config::getSpotLightAttenuation()
+{
+	return spotLightAttenuation;
 }
 
 glm::vec3 Config::getSpotLightPosition() {

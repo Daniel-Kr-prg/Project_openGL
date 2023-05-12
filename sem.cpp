@@ -40,20 +40,19 @@
 #include "camera.h"
 #include "config.h"
 
+
 ObjectList objects;
 MovingObject* player;
 
 ShaderList shaders;
-
-
+Config* config;
 
 Camera* camera;
-Config* config;
+
 std::unordered_map<char, bool> keyPressedState;
 std::unordered_map<int, bool> keyPressedSpecialState;
 
-int previousMouseX = 0;
-int previousMouseY = 0;
+
 
 // -----------------------  OpenGL stuff ---------------------------------
 
@@ -119,10 +118,6 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
-
-
-
-
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	if (keyPressed == 27)
 	{
@@ -136,6 +131,14 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	else
 	{
 		keyPressedState[keyPressed] = true;
+	}
+
+	// ON KEY DOWN HANDLE
+	switch (keyPressed)
+	{
+	case 'r':
+		//RESTART
+		break;
 	}
 }
 
@@ -169,6 +172,30 @@ void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
  */
 void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
 	keyPressedSpecialState[specKeyPressed] = true;
+
+
+	// ON KEY DOWN HANDLE
+	switch (specKeyPressed)
+	{
+	case GLUT_KEY_F1:
+		camera->setStaticView1();
+		break;
+	case GLUT_KEY_F2:
+		camera->setStaticView2();
+		break;
+	case GLUT_KEY_F3:
+		if (player == nullptr)
+			break;
+		camera->setCameraOnObject(player, camera);
+		break;
+	case GLUT_KEY_F4:
+		camera->setDynamicCamera();
+		break;
+
+	default:
+		break;
+	}
+
 }
 
 void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
@@ -207,18 +234,7 @@ void mouseMotionCb(int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void passiveMouseMotionCb(int mouseX, int mouseY) {
-	int deltaX = previousMouseX - mouseX;
-	int deltaY = previousMouseY - mouseY;
-
-	camera->addYawPitch(deltaX * camera->getMouseSensitivity(), deltaY * camera->getMouseSensitivity());
-
-	int halfWidth = config->getWindowWidth() / 2;
-	int halfHeight = config->getWindowHeight() / 2;
-
-	glutWarpPointer(halfWidth, halfHeight);
-
-	previousMouseX = halfWidth;
-	previousMouseY = halfHeight;
+	camera->handlePassiveMouseMotion(mouseX, mouseY, config);
 }
 
 

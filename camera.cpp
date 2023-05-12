@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "object.h"
+#include "config.h"
 /**
  * \brief Creates the camera object.
  * \param fov Field of view
@@ -127,6 +128,24 @@ void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<
 	camera.addYawPitch(rotationY, rotationX);
 }
 
+void Camera::handlePassiveMouseMotion(int mouseX, int mouseY, Config* config)
+{
+	if (cameraState == STATIC_CAMERA)
+		return;
+
+	int deltaX = previousMouseX - mouseX;
+	int deltaY = previousMouseY - mouseY;
+
+	addYawPitch(deltaX * getMouseSensitivity(), deltaY * getMouseSensitivity());
+
+	int halfWidth = config->getWindowWidth() / 2;
+	int halfHeight = config->getWindowHeight() / 2;
+
+	glutWarpPointer(halfWidth, halfHeight);
+
+	previousMouseX = halfWidth;
+	previousMouseY = halfHeight;
+}
 
 /**
  * \brief Returns the current projection matrix

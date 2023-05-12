@@ -19,6 +19,7 @@ typedef struct _SceneObject {
 	std::string texturePath;
 } SceneObject;
 
+
 class Config
 {
 public:

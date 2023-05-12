@@ -30,8 +30,10 @@ public:
 	void setStaticView1();
 	void setStaticView2();
 	void setDynamicCamera();
-
 	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance);
+
+	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
+
 
 private:
 	glm::mat4 projectionMatrix;
@@ -40,6 +42,9 @@ private:
 	float mouseSensitivity;
 	float yaw = 0;
 	float pitch = 0;
+
+	int previousMouseX = 0;
+	int previousMouseY = 0;
 
 	camState cameraState = STATIC_CAMERA;
 };

@@ -34,7 +34,7 @@ public:
 	void setStaticView1();
 	void setStaticView2();
 	void setDynamicCamera();
-	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance);
+	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance, ObjectList* objects, InteractableObjects* interactableObjects);
 
 
 	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);

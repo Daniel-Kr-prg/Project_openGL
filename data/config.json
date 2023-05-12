@@ -40,7 +40,7 @@
       }
     },
     {
-      "objectType": "SingleMesh",
+      "objectType": "MovingObject",
       "filePath": "data/Crate.obj",
       "shaderIndex": 0,
       "position": {
@@ -48,7 +48,6 @@
         "y": 10,
         "z": 0
       },
-	  "type": 1,
       "rotation": {
         "x": 0,
         "y": 0,
@@ -81,7 +80,27 @@
             "g": 0,
             "b": 0
           }
-        }
+        },
+		{
+      "objectType": "SingleMesh",
+      "filePath": "data/Crate.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    }
       ]
     },
     {

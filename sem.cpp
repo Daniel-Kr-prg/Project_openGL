@@ -167,20 +167,20 @@ void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
 	switch (specKeyPressed)
 	{
 	case GLUT_KEY_F1:
-		interactableObjects.player->freeCamera();
+		interactableObjects.player->freeCamera(&objects, &interactableObjects);
 		interactableObjects.camera->setStaticView1();
 		break;
 	case GLUT_KEY_F2:
-		interactableObjects.player->freeCamera();
+		interactableObjects.player->freeCamera(&objects, &interactableObjects);
 		interactableObjects.camera->setStaticView2();
 		break;
 	case GLUT_KEY_F3:
 		if (interactableObjects.player == nullptr)
 			break;
-		interactableObjects.camera->setCameraOnObject(interactableObjects.player, interactableObjects.camera);
+		interactableObjects.camera->setCameraOnObject(interactableObjects.player, interactableObjects.camera, &objects, &interactableObjects);
 		break;
 	case GLUT_KEY_F4:
-		interactableObjects.player->freeCamera();
+		interactableObjects.player->freeCamera(&objects, &interactableObjects);
 		interactableObjects.camera->setDynamicCamera();
 		break;
 
@@ -251,7 +251,7 @@ void timerCb(int)
 
 	if (interactableObjects.player != nullptr)
 	{
-		interactableObjects.player->timerHandle(keyPressedState, elapsedTime, interactableObjects.camera->getCameraState() == CAMERA_ON_OBJECT);
+		interactableObjects.player->timerHandle(keyPressedState, interactableObjects.camera->getCameraState() == CAMERA_ON_OBJECT);
 	}
 #endif // task_1_0
 

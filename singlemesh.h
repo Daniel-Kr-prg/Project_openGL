@@ -95,11 +95,15 @@ public:
 		camera->setPosition(cameraPosition);
 		cameraOnObject = true;
 	}
-	void freeCamera()
+
+	void freeCamera(ObjectList* objects, InteractableObjects* interactableObjects)
 	{
 		if (!cameraOnObject)
 			return;
+		Camera* camera = (Camera*)*cameraIterator;
 		children.erase(cameraIterator);
+		objects->push_back((ObjectInstance*)camera);
+		interactableObjects->cameraIterator = objects->end() - 1;
 		cameraOnObject = false;
 	}
 };

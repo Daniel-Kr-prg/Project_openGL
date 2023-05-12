@@ -57,9 +57,10 @@ void Camera::setStaticView2()
 	setCameraState(STATIC_CAMERA);
 	setCameraView(glm::vec3(5.516f, 4.74f, -2.87f), -4.31f, -0.71f);
 }
-void Camera::setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance)
+void Camera::setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance, ObjectList* objects, InteractableObjects* interactableObjects)
 {
 	camInstance->setCameraState(CAMERA_ON_OBJECT);
+	objects->erase(interactableObjects->cameraIterator);
 	objectToFollow->setCameraOnObject(camInstance);
 }
 
@@ -192,7 +193,7 @@ float Camera::getMouseSensitivity()
  * \brief Returns the current view matrix
  */
 glm::mat4 Camera::getView() {
-	return glm::inverse(localModelMatrix);
+	return glm::inverse(globalModelMatrix);
 }
 
 /**

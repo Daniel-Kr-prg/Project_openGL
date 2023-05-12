@@ -13,9 +13,12 @@ class Camera;
 
 class MovingObject;
 
+class ObjectInstance;
+
 typedef struct _InteractableObjects {
 	MovingObject* player;
 	Camera* camera;
+	std::vector<ObjectInstance*>::iterator cameraIterator;
 	// ...
 
 } InteractableObjects;
@@ -37,7 +40,6 @@ typedef struct _ObjectGeometry {
 	GLuint        texture;
 } ObjectGeometry;
 
-class ObjectInstance;
 /**
  * \brief Linear representation of the scene objects.  The objects themselves may represent the subtrees.
  */
@@ -337,12 +339,7 @@ protected:
 		localModelMatrix = glm::scale(localModelMatrix, (glm::vec3)scale);
 	}
 	void updateWorldMatrix(glm::mat4 parentMatrix) {
-		globalModelMatrix = parentMatrix;
-		globalModelMatrix = glm::translate(globalModelMatrix, (glm::vec3)position);
-		globalModelMatrix = globalModelMatrix * glm::toMat4(rotation);
-		globalModelMatrix = glm::scale(globalModelMatrix, (glm::vec3)scale);
-
-		localModelMatrix = globalModelMatrix;
+		globalModelMatrix = parentMatrix * localModelMatrix;
 	}
 };
 

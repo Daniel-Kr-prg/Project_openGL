@@ -179,6 +179,12 @@ void Config::getNextObject(nlohmann::json data, ObjectList& scene, InteractableO
 		object->deserialize(data);
 		scene.push_back(object);
 
+		//TODO refactor
+		if (dynamic_cast<Camera*>(object) != nullptr)
+		{
+			interactableObjects.cameraIterator = scene.end() - 1;
+		}
+
 		if (data.contains("children"))
 		{
 			for (nlohmann::json childrenData : data["children"])

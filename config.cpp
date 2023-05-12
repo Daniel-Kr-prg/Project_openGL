@@ -140,7 +140,7 @@ glm::vec3 Config::getAmbientLightColor() {
  * \param scene List of objects in scene
  * \param shaderList List of shaders
  */
-void Config::loadScene(ObjectList &scene, InteractableObjects &interactableObjects)
+void Config::loadScene(ObjectInstance& rootNode, InteractableObjects &interactableObjects)
 {
 	std::ifstream file(configFilename);
 
@@ -158,7 +158,7 @@ void Config::loadScene(ObjectList &scene, InteractableObjects &interactableObjec
 		{
 			for (nlohmann::json sceneObjectData : data["scene"])
 			{
-				getNextObject(sceneObjectData, scene, interactableObjects);
+				getNextObject(sceneObjectData, rootNode, interactableObjects);
 			}
 		}
 	}
@@ -170,26 +170,26 @@ void Config::loadScene(ObjectList &scene, InteractableObjects &interactableObjec
  * \param scene Scene objects list
  * \param shaderList List of shaders
  */
-void Config::getNextObject(nlohmann::json data, ObjectList& scene, InteractableObjects& interactableObjects)
+void Config::getNextObject(nlohmann::json data, ObjectInstance& node, InteractableObjects& interactableObjects)
 {
 	if (data.contains("objectType"))
 	{
 		ObjectInstance* object = createObjectByType(data["objectType"].get<std::string>(), interactableObjects);
 
 		object->deserialize(data);
-		scene.push_back(object);
+		node.addChild(object);
 
 		//TODO refactor
-		if (dynamic_cast<Camera*>(object) != nullptr)
-		{
-			interactableObjects.cameraIterator = scene.end() - 1;
-		}
+		//if (dynamic_cast<Camera*>(object) != nullptr)
+		//{
+		//	interactableObjects.cameraIterator = scene.end() - 1;
+		//}
 
 		if (data.contains("children"))
 		{
 			for (nlohmann::json childrenData : data["children"])
 			{
-				getNextObject(childrenData, object->children, interactableObjects);
+				getNextObject(childrenData, *object, interactableObjects);
 			}
 		}
 	}

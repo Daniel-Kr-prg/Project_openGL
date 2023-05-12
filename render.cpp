@@ -17,6 +17,11 @@ Render* Render::getRender()
     return &render;
 }
 
+ObjectInstance* Render::getRootNode()
+{
+    return &rootNode;
+}
+
 // при draw методе
 void setTransformUniforms(const glm::mat4& modelMatrix, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
 

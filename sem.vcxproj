@@ -154,6 +154,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="directionallight.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="pointlight.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="shader.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="directionallight.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="jsonutils.h" />
     <ClInclude Include="object.h" />

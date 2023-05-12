@@ -39,16 +39,10 @@
 #include "singlemesh.h"
 #include "camera.h"
 #include "config.h"
+#include "input.h"
 
-
-ObjectList objects;
 InteractableObjects interactableObjects;
 Config* config;
-
-std::unordered_map<char, bool> keyPressedState;
-std::unordered_map<int, bool> keyPressedSpecialState;
-
-
 
 // -----------------------  OpenGL stuff ---------------------------------
 
@@ -57,10 +51,7 @@ std::unordered_map<int, bool> keyPressedSpecialState;
  */
 void drawScene(void)
 {
-	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
-		if (object != nullptr)
-			object->draw();
-	}
+	Render::getRender()->getRootNode()->draw();
 }
 
 
@@ -104,31 +95,7 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseY mouse (cursor) Y position
  */
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
-	if (keyPressed == 27)
-	{
-		glutLeaveMainLoop();
-		exit(EXIT_SUCCESS);
-	}
-	else if (keyPressed >= 'A' && keyPressed <= 'Z') {
-		char lowerCaseKey = keyPressed + 32; // Преобразование в маленькую букву
-		keyPressedState[lowerCaseKey] = true;
-	}
-	else
-	{
-		keyPressedState[keyPressed] = true;
-	}
-
-	// ON KEY DOWN HANDLE
-	switch (keyPressed)
-	{
-	case 'r':
-		//RESTART
-		break;
-	case 'c':
-		//std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
-		//std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
-		break;
-	}
+	Input::processKeyPressed(keyPressed);
 }
 
 // Called whenever a key on the keyboard was released. The key is given by
@@ -140,14 +107,7 @@ void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
-	if (keyReleased >= 'A' && keyReleased <= 'Z') {
-		char lowerCaseKey = keyReleased + 32; // Преобразование в маленькую букву
-		keyPressedState[lowerCaseKey] = false;
-	}
-	else
-	{
-		keyPressedState[keyReleased] = false;
-	}
+	Input::processKeyReleased(keyReleased);
 }
 
 //
@@ -160,38 +120,11 @@ void keyboardUpCb(unsigned char keyReleased, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void specialKeyboardCb(int specKeyPressed, int mouseX, int mouseY) {
-	keyPressedSpecialState[specKeyPressed] = true;
-
-
-	// ON KEY DOWN HANDLE
-	switch (specKeyPressed)
-	{
-	case GLUT_KEY_F1:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setStaticView1();
-		break;
-	case GLUT_KEY_F2:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setStaticView2();
-		break;
-	case GLUT_KEY_F3:
-		if (interactableObjects.player == nullptr)
-			break;
-		interactableObjects.camera->setCameraOnObject(interactableObjects.player, interactableObjects.camera, &objects, &interactableObjects);
-		break;
-	case GLUT_KEY_F4:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setDynamicCamera();
-		break;
-
-	default:
-		break;
-	}
-
+	Input::processSpecialKeyPressed(specKeyPressed);
 }
 
 void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
-	keyPressedSpecialState[specKeyReleased] = false;
+	Input::processSpecialKeyReleased(specKeyReleased);
 } // key released
 
 // -----------------------  Mouse ---------------------------------
@@ -226,7 +159,7 @@ void mouseMotionCb(int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void passiveMouseMotionCb(int mouseX, int mouseY) {
-	interactableObjects.camera->handlePassiveMouseMotion(mouseX, mouseY, config);
+	Input::processPassiveMouseMotion(mouseX, mouseY);
 }
 
 
@@ -242,12 +175,9 @@ void timerCb(int)
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
 	
-	interactableObjects.camera->handleCameraMovement(elapsedTime, keyPressedState, keyPressedSpecialState);
+	interactableObjects.camera->handleCameraMovement(elapsedTime);
 	// update the application state
-	for (ObjectInstance* object : objects) {   // for (auto object : objects) {
-		if (object != nullptr)
-			object->update(elapsedTime, &sceneRootMatrix);
-	}
+	Render::getRender()->getRootNode()->update(elapsedTime, &sceneRootMatrix);
 
 	if (interactableObjects.player != nullptr)
 	{
@@ -273,7 +203,7 @@ void initApplication() {
 	glEnable(GL_DEPTH_TEST);
 	//TODO glCullFace(GL_BACK);
 	// - all programs (shaders), buffers, textures, ...
-	config->loadScene(objects, interactableObjects);
+	config->loadScene(Render::getRender()->getRootNode(), interactableObjects);
 	interactableObjects.camera->setStaticView1();
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 

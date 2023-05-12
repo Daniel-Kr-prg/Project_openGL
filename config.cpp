@@ -115,46 +115,83 @@ Config::Config(const char* filename)
 	}
 }
 
+/**
+
+\brief Returns the width of the window
+\return The width of the window
+*/
 int Config::getWindowWidth()
 {
 	return windowWidth;
 }
+/**
 
+\brief Returns the height of the window
+\return The height of the window
+*/
 int Config::getWindowHeight()
 {
 	return windowHeight;
 }
+/**
 
+\brief Returns the title of the window
+\return The title of the window
+*/
 std::string Config::getWindowTitle()
 {
 	return windowTitle;
 }
+/**
 
+\brief Returns the field of view (FOV) of the camera
+\return The field of view (FOV) of the camera
+*/
 float Config::getFov()
 {
 	return fov;
 }
+/**
 
+\brief Returns the near clipping plane value (ZNear) of the camera
+\return The near clipping plane value (ZNear) of the camera
+*/
 float Config::getZNear()
 {
 	return zNear;
 }
+/**
 
+\brief Returns the far clipping plane value (ZFar) of the camera
+\return The far clipping plane value (ZFar) of the camera
+*/
 float Config::getZFar()
 {
 	return zFar;
 }
+/**
 
+\brief Returns the speed value for movement
+\return The speed value for movement
+*/
 float Config::getSpeed()
 {
 	return speed;
 }
+/**
 
+\brief Returns the sensitivity value for keyboard input
+\return The sensitivity value for keyboard input
+*/
 float Config::getKeySensitivity()
 {
 	return keySensitivity;
 }
+/**
 
+\brief Returns the sensitivity value for mouse input
+\return The sensitivity value for mouse input
+*/
 float Config::getMouseSensitivity()
 {
 	return mouseSensitivity;

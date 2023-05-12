@@ -41,7 +41,12 @@
 #include "config.h"
 
 ObjectList objects;
+MovingObject* player;
+
 ShaderList shaders;
+
+
+
 Camera* camera;
 Config* config;
 std::unordered_map<char, bool> keyPressedState;

@@ -42,9 +42,11 @@ typedef struct _ShaderProgram {
 		GLint directionalLightDirection;
 		GLint directionalLightIntensity;
 		GLint directionalLightColor;
+		GLint pointLightAttenuation;
 		GLint pointLightPosition;
 		GLint pointLightIntensity;
 		GLint pointLightColor;
+		GLint spotLightAttenuation;
 		GLint spotLightPosition;
 		GLint spotLightDirection;
 		GLint spotLightIntensity;

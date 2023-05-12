@@ -19,29 +19,89 @@ uniform vec3 directionalLightDirection;
 uniform float directionalLightIntensity;
 uniform vec3 directionalLightColor;
 
+// Point light
+uniform float pointLightAttenuation;
+uniform vec3 pointLightPosition;
+uniform float pointLightIntensity;
+uniform vec3 pointLightColor;
+
+// Spot light
+uniform float spotLightAttenuation;
+uniform vec3 spotLightPosition;
+uniform vec3 spotLightDirection;
+uniform float spotLightIntensity;
+uniform vec3 spotLightColor;
+uniform float spotLightInnerCutoff;
+uniform float spotLightOuterCutoff;
+
 in vec2 fragTexCoord;
 in vec3 fragNormal;
 in vec3 fragPosition;
 out vec4 fragmentColor;
 
-vec4 getDirectionalLightColor(vec3 normalizedNormal) {
+vec3 getDirectionalLight(vec3 normalizedNormal, vec3 viewDirection) {
   // Directional light
-  // 
   vec3 lightDirection = normalize(-directionalLightDirection);
+  
   // Diffuse
   vec3 directionalDiffuse = directionalLightIntensity * max(dot(normalizedNormal, lightDirection), 0.0) * diffuse;
+  
   // Specular
-  vec3 viewDirection = normalize(viewPosition - fragPosition);
   vec3 reflectDirection = reflect(-lightDirection, normalizedNormal);
   vec3 directionalSpecular = directionalLightIntensity * pow(max(dot(viewDirection, reflectDirection), 0.0), shininess) * specular;
-  return vec4(directionalDiffuse + directionalSpecular, 1.0);
+  
+  return (directionalDiffuse + directionalSpecular) * directionalLightColor;
+}
+
+vec3 getPointLight(vec3 normalizedNormal, vec3 viewDirection) {
+	// Point Light
+	vec3 lightVector = pointLightPosition - fragPosition;
+	vec3 lightDirection = normalize(lightVector);
+    float lightDistance = length(lightVector);
+	
+    // Light Attenuation
+    float lightAttenuation = 1.0 / (lightDistance * lightDistance * pointLightAttenuation);
+	
+    // Diffuse
+    vec3 pointDiffuse = pointLightIntensity * max(dot(normalizedNormal, lightDirection), 0.0) * diffuse * lightAttenuation;  
+    
+    // Specular
+    vec3 reflectDirection = reflect(-lightDirection, normalizedNormal);
+    vec3 pointSpecular = pointLightIntensity * pow(max(dot(viewDirection, reflectDirection), 0.0), shininess) * specular * lightAttenuation;  
+        
+	return (pointDiffuse + pointSpecular) * pointLightColor;
+}
+
+vec3 getSpotLight(vec3 normalizedNormal, vec3 viewDirection) {
+	// Spot Light
+	vec3 lightVector = spotLightPosition - fragPosition;
+	vec3 lightDirection = normalize(lightVector);
+    float lightDistance = length(lightVector);
+	
+	// Attenuation
+    float lightAttenuation = 1.0 / (lightDistance * lightDistance * spotLightAttenuation);    
+	
+	// Cutoff
+    float theta = dot(lightDirection, normalize(-spotLightDirection)); 
+    float epsilon = (spotLightInnerCutoff - spotLightOuterCutoff);
+    float cutoff = clamp((theta - spotLightOuterCutoff) / epsilon, 0.0, 1.0);
+	
+	// Diffuse
+    vec3 spotDiffuse = spotLightIntensity * max(dot(normalizedNormal, lightDirection), 0.0) * diffuse * cutoff * lightAttenuation;  
+    
+    // Specular
+    vec3 reflectDirection = reflect(-lightDirection, normalizedNormal);  
+    vec3 spotSpecular = spotLightIntensity * pow(max(dot(viewDirection, reflectDirection), 0.0), shininess) * specular * cutoff * lightAttenuation;
+    
+	return (spotDiffuse + spotSpecular) * spotLightColor;
 }
 
 void main() {
   vec3 normalizedNormal = normalize(fragNormal);
+  vec3 viewDirection = normalize(viewPosition - fragPosition);
   
   // Ambient light
   vec3 ambientLight = ambientLightColor * ambientLightIntensity * ambient;
   
-  fragmentColor = (getDirectionalLightColor(normalizedNormal) + vec4(ambientLight, 0.0)) * texture2D(texSampler, fragTexCoord);
+  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 0.0) * texture2D(texSampler, fragTexCoord);
 }

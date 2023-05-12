@@ -27,11 +27,46 @@
         "y": -1.0,
         "z": -0.3
       },
-      "intensity": 0.8,
+      "intensity": 0,
       "lightColor": {
         "r": 1,
         "g": 1,
         "b": 1
+      }
+    },
+    "point": {
+      "position": {
+        "x": 0.2,
+        "y": 0.15,
+        "z": 0
+      },
+      "intensity": 0,
+      "attenuation": 5,
+      "lightColor": {
+        "r": 1,
+        "g": 0,
+        "b": 0
+      }
+    },
+    "spot": {
+      "position": {
+        "x": 0.1,
+        "y": 1,
+        "z": 0
+      },
+      "direction": {
+        "x": -1,
+        "y": -2,
+        "z": -3
+      },
+      "intensity": 0.5,
+      "attenuation": 5,
+      "innerCutoff": 0.1,
+      "outerCutoff": 0.3,
+      "lightColor": {
+        "r": 1,
+        "g": 0,
+        "b": 0
       }
     }
   },

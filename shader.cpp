@@ -43,9 +43,11 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 		shaderData.locations.directionalLightDirection = glGetUniformLocation(shaderData.program, "directionalLightDirection");
 		shaderData.locations.directionalLightIntensity = glGetUniformLocation(shaderData.program, "directionalLightIntensity");
 		shaderData.locations.directionalLightColor = glGetUniformLocation(shaderData.program, "directionalLightColor");
+		shaderData.locations.pointLightAttenuation = glGetUniformLocation(shaderData.program, "pointLightAttenuation");
 		shaderData.locations.pointLightPosition = glGetUniformLocation(shaderData.program, "pointLightPosition");
 		shaderData.locations.pointLightIntensity = glGetUniformLocation(shaderData.program, "pointLightIntensity");
 		shaderData.locations.pointLightColor = glGetUniformLocation(shaderData.program, "pointLightColor");
+		shaderData.locations.spotLightAttenuation = glGetUniformLocation(shaderData.program, "spotLightAttenuation");
 		shaderData.locations.spotLightPosition = glGetUniformLocation(shaderData.program, "spotLightPosition");
 		shaderData.locations.spotLightDirection = glGetUniformLocation(shaderData.program, "spotLightDirection");
 		shaderData.locations.spotLightIntensity = glGetUniformLocation(shaderData.program, "spotLightIntensity");

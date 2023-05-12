@@ -28,11 +28,11 @@ class MovingObject : SingleMesh
 private:
 	float maxSpeed = 5.0f;
 	float currentSpeed = 0.0f;
-	float acceleration = 0.5f;
-	float rotationSpeed = 0.75f;
-	float drag = 0.1f;
+	float acceleration = 1.0f;
+	float rotationSpeed = 60.0f;
+	float drag = 0.75f;
 
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 6.0f, 5.0f);
 	std::vector<ObjectInstance*>::iterator cameraIterator;
 	bool cameraOnObject = false;
 
@@ -51,30 +51,39 @@ public:
 		return drag;
 	}
 
-	void timerHandle(std::unordered_map<char, bool> keyPressedState, float elapsedTime, bool movingAllowed)
+	void timerHandle(std::unordered_map<char, bool> keyPressedState, bool movingAllowed)
 	{
-		float elapsedSeconds = elapsedTime * 1000;
-
 		float direction = 0;
+
+		float frameTime = getFrameTime();
+
 		if (movingAllowed)
 		{
 			direction = keyPressedState['w'] - keyPressedState['s'];
 
 			float rotation = keyPressedState['a'] - keyPressedState['d'];
 			if (rotation != 0)
-				rotateDegY(rotationSpeed * elapsedSeconds * rotation);
+				rotateDegY(rotationSpeed * frameTime * rotation);
+
 		}
 
 		if (direction == 0)
 		{
-			currentSpeed = glm::max(0.0f, currentSpeed - drag * elapsedSeconds);
+			currentSpeed = currentSpeed - currentSpeed * drag * frameTime;
+		}
+		else if (direction > 0)
+		{
+			currentSpeed = glm::min(maxSpeed, currentSpeed + direction * acceleration * frameTime);
 		}
 		else
 		{
-			currentSpeed = direction * glm::max(maxSpeed, glm::abs(currentSpeed) + acceleration * elapsedSeconds);
+			currentSpeed = glm::max(-maxSpeed, currentSpeed + direction * acceleration * frameTime);
 		}
 
-		addPosition(currentSpeed * elapsedTime * forward);
+		std::cout << currentSpeed << "      FRAME TIME: <<" << frameTime << "\n";
+
+
+		addPosition(currentSpeed * frameTime * forward);
 	}
 
 	void setCameraOnObject(ObjectInstance* camera)

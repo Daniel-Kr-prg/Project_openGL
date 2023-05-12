@@ -24,6 +24,7 @@ Camera::Camera(float fov, float aspect, float zNear, float zFar, float speed, fl
  */
 void Camera::setCameraView(glm::vec3 position, float yaw, float pitch)
 {
+	
 	setYawPitch(yaw, pitch);
 	setPosition(position);
 }

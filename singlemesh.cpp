@@ -51,6 +51,8 @@ void SingleMesh::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMa
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+		ObjectInstance::draw(viewMatrix,projectionMatrix,camera,config);
 	}
 	else {
 		std::cerr << "SingleMesh::draw(): Can't draw, mesh not initialized properly!" << std::endl;

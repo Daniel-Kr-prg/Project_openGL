@@ -54,5 +54,3 @@ private:
 	camState cameraState = STATIC_CAMERA;
 };
 
-void handleCameraMovement(Camera& camera, float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
-

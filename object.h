@@ -71,6 +71,9 @@ protected:
 
 	Shader* shaderProgram;
 
+	float lastUpdateTime;
+	float frameTime;
+
 public:
 
 	ObjectList children;
@@ -107,6 +110,7 @@ public:
 	void addPosition(glm::vec3 move)
 	{
 		this->position += move;
+		updateLocalMatrix();
 	}
 
 	/**
@@ -257,6 +261,15 @@ public:
 	{
 		return type;
 	}
+
+	float getLastUpdateTime()
+	{
+		return lastUpdateTime;
+	}
+	float getFrameTime()
+	{
+		return frameTime;
+	}
 	/**
 	* \brief Recalculates the global matrix and updates all children.
 	*   Derived classes should also call this method (using ObjectInstance::update()).
@@ -267,11 +280,10 @@ public:
 		// update model matrix - localModelMatrix - of the instance 
 		// ...
 
+		frameTime = elapsedTime - lastUpdateTime;
+		lastUpdateTime = elapsedTime;
 		// if we have parent, multiply parent's matrix with ours
-		if (parentModelMatrix != nullptr)
-			globalModelMatrix = *parentModelMatrix * localModelMatrix;
-		else
-			globalModelMatrix = localModelMatrix;
+		updateWorldMatrix(*parentModelMatrix);
 
 		// update all children
 		for (ObjectInstance* child : children) {
@@ -315,6 +327,14 @@ protected:
 		localModelMatrix = glm::translate(localModelMatrix, (glm::vec3)position);
 		localModelMatrix = localModelMatrix * glm::toMat4(rotation);
 		localModelMatrix = glm::scale(localModelMatrix, (glm::vec3)scale);
+	}
+	void updateWorldMatrix(glm::mat4 parentMatrix) {
+		globalModelMatrix = parentMatrix;
+		globalModelMatrix = glm::translate(globalModelMatrix, (glm::vec3)position);
+		globalModelMatrix = globalModelMatrix * glm::toMat4(rotation);
+		globalModelMatrix = glm::scale(globalModelMatrix, (glm::vec3)scale);
+
+		localModelMatrix = globalModelMatrix;
 	}
 };
 

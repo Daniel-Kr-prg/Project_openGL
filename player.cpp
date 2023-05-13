@@ -86,7 +86,7 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 			currentSpeed = glm::max(-maxSpeed, currentSpeed + direction * currentAcceleration * frameTime);
 	}
 
-	std::cout << currentSpeed << "      FRAME TIME: <<" << frameTime << "\n";
+	//std::cout << currentSpeed << "      FRAME TIME: <<" << frameTime << "\n";
 
 
 	addPosition(currentSpeed * frameTime * forward);

@@ -194,7 +194,8 @@ void timerCb(int)
 void initApplication() {
 	// init OpenGL
 	glEnable(GL_DEPTH_TEST);
-	//TODO glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	// - all programs (shaders), buffers, textures, ...
 	config->loadScene(*Render::getRender()->getRootNode());
 	Render::getRender()->getRootNode()->initialize();

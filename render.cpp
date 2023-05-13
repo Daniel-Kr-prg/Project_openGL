@@ -240,7 +240,7 @@ void Render::setSpotLight(SpotLight* light)
 void Render::setCameraAndLightsUniforms(Shader* shader)
 {
     // Camera
-    glUniform3fv(shader->getShaderData().locations.viewPosition, 1, glm::value_ptr(camera->getPosition()));
+    glUniform3fv(shader->getShaderData().locations.viewPosition, 1, glm::value_ptr(camera->getGlobalPosition()));
     glUniformMatrix4fv(shader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
     glUniformMatrix4fv(shader->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(camera->getView()));
 

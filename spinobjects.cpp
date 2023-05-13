@@ -9,8 +9,6 @@ Bouy::~Bouy()
 };
 
 void Bouy::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
-	ObjectInstance::update(elapsedTime, parentModelMatrix);
-	
 	getFrameTime(elapsedTime);
 	setRotationRad(glm::vec3(0.2f * glm::cos(elapsedTime * rotationPerSecond / 2), elapsedTime * rotationPerSecond, 0.2f * glm::sin(elapsedTime * rotationPerSecond)));
 	//rotateRadY(-frameTime * rotationPerSecond);

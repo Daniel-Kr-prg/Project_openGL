@@ -119,6 +119,66 @@ void Render::initializeModels() {
     //initSkyboxGeometry(skyboxFarPlaneShaderProgram.program, &skyboxGeometry);
 }
 
+void Render::initializeSkyboxGeometry(Shader* shader)
+{
+    skyboxGeometry = new ObjectGeometry();
+
+    // 2D coordinates of 2 triangles covering the whole screen (NDC), draw using triangle strip
+    static const float screenCoords[] = {
+      -1.0f, -1.0f,
+       1.0f, -1.0f,
+      -1.0f,  1.0f,
+       1.0f,  1.0f
+    };
+
+    glGenVertexArrays(1, &(skyboxGeometry->vertexArrayObject));
+    glBindVertexArray(skyboxGeometry->vertexArrayObject);
+
+    glGenBuffers(1, &(skyboxGeometry->vertexBufferObject));
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxGeometry->vertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(screenCoords), screenCoords, GL_STATIC_DRAW);
+
+    //glEnableVertexAttribArray(shader.screenCoordLocation);
+    //glVertexAttribPointer(shader.screenCoordLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindVertexArray(0);
+    glUseProgram(0);
+    CHECK_GL_ERROR();
+
+    skyboxGeometry->numTriangles = 2;
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glGenTextures(1, &(skyboxGeometry->texture));
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxGeometry->texture);
+
+    const char* suffixes[] = { "posx", "negx", "posy", "negy", "posz", "negz" };
+    GLuint targets[] = {
+      GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+      GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+    };
+
+    for (int i = 0; i < 6; i++) {
+        //std::string texName = std::string(SKYBOX_CUBE_TEXTURE_FILE_PREFIX) + "_" + suffixes[i] + ".jpg";
+        //std::cout << "Loading cube map texture: " << texName << std::endl;
+        //if (!pgr::loadTexImage2D(texName, targets[i])) {
+        //    pgr::dieWithError("Skybox cube map loading failed!");
+        //}
+    }
+
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+    // unbind the texture (just in case someone will mess up with texture calls later)
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    CHECK_GL_ERROR();
+}
+
 void cleanupGeometry(ObjectGeometry* geometry) {
 
     glDeleteVertexArrays(1, &(geometry->vertexArrayObject));

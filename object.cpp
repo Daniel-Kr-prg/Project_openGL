@@ -27,7 +27,7 @@ void ObjectInstance::addChild(ObjectInstance* child)
 		}
 		children.push_back(child);
 		child->parent = this;
-		child->iteratorAtParent = children.end() - 1;
+		child->iteratorAtParent = --children.end();
 	}
 }
 

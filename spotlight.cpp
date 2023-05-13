@@ -34,9 +34,20 @@ void SpotLight::deserialize(nlohmann::json data)
 
 void SpotLight::setUniforms(Shader* shader)
 {
+	glm::vec3 globalPosition;
+	glm::quat globalRotation;
+	glm::vec3 globalScale;
+	glm::vec3 globalSkew;
+	glm::vec4 globalPerspective;
+	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
+	glm::vec3 globalForward = {
+		-2 * (globalRotation.x * globalRotation.z + globalRotation.w * globalRotation.y),
+		-2 * (globalRotation.y * globalRotation.z - globalRotation.w * globalRotation.x),
+		-(1 - 2 * (globalRotation.x * globalRotation.x + globalRotation.y * globalRotation.y))
+	};
 	glUniform1f(shader->getShaderData().locations.spotLightAttenuation, attenuation);
-	glUniform3fv(shader->getShaderData().locations.spotLightPosition, 1, glm::value_ptr(getPosition()));
-	glUniform3fv(shader->getShaderData().locations.spotLightDirection, 1, glm::value_ptr(getForward()));
+	glUniform3fv(shader->getShaderData().locations.spotLightPosition, 1, glm::value_ptr(globalPosition));
+	glUniform3fv(shader->getShaderData().locations.spotLightDirection, 1, glm::value_ptr(globalForward));
 	glUniform1f(shader->getShaderData().locations.spotLightIntensity, intensity);
 	glUniform3fv(shader->getShaderData().locations.spotLightColor, 1, glm::value_ptr(lightColor));
 	glUniform1f(shader->getShaderData().locations.spotLightInnerCutoff, innerCutoff);

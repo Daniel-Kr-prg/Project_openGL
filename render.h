@@ -76,6 +76,7 @@ public:
 	float getCurrentAspect();
 	Shader* getShader(int index);
 
+	void initializeSkyboxGeometry(Shader* shader);
 	void initializeModels();
 	void cleanupModels();
 
@@ -91,6 +92,8 @@ private:
 	DirectionalLight* directionalLight;
 	PointLight* pointLight;
 	SpotLight* spotLight;
+
+	ObjectGeometry* skyboxGeometry;
 
 	bool initialized = false;
 };

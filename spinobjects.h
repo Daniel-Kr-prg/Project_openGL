@@ -10,7 +10,7 @@ private:
 public:
 	Bouy();
 	~Bouy();
-
+	void draw() override;
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
 };
 
@@ -23,6 +23,6 @@ private:
 public:
 	Airplane();
 	~Airplane();
-
+	void draw() override;
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
 };

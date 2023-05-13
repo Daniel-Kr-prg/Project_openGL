@@ -57,9 +57,9 @@
         "x": 0.5,
         "y": 0.5,
         "z": 0.5
-      },
-      "children": [
-        {
+      }
+    },
+	{
           "objectType": "SpotLight",
           "position": {
             "x": 0.1,
@@ -71,7 +71,7 @@
             "y": 0.0,
             "z": 0.0
           },
-          "intensity": 0.5,
+          "intensity": 0.1,
           "attenuation": 5,
           "innerCutoff": 0.1,
           "outerCutoff": 0.3,
@@ -80,9 +80,7 @@
             "g": 1,
             "b": 1
           }
-        }
-      ]
-    },
+	},
     {
       "objectType": "DirectionalLight",
       "rotation": {
@@ -111,12 +109,32 @@
       "filePath": "data/bouy.obj",
       "shaderIndex": 0,
       "position": {
-        "x": 4,
+        "x": 10,
         "y": 0,
-        "z": 3
+        "z": 8
       },
       "rotation": {
-        "x": 0,
+        "x": 0.2,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      }
+    },
+	{
+      "objectType": "Bouy",
+      "filePath": "data/bouy.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 10,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0.2,
         "y": 0,
         "z": 0
       },
@@ -130,10 +148,10 @@
           "objectType": "PointLight",
 		  "position": {
 			"x": 0,
-			"y": 0.5,
+			"y": 2,
 			"z": 0
 		  },
-		  "intensity": 0.2,
+		  "intensity": 1,
 		  "attenuation": 5,
 		  "lightColor": {
 			"r": 1,

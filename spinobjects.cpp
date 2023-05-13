@@ -8,6 +8,12 @@ Bouy::~Bouy()
 {
 };
 
+void Bouy::draw()
+{
+	glStencilFunc(GL_ALWAYS, 2, 1);
+	SingleMesh::draw();
+}
+
 void Bouy::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	getFrameTime(elapsedTime);
 	setRotationRad(glm::vec3(0.2f * glm::cos(elapsedTime * rotationPerSecond / 2), elapsedTime * rotationPerSecond, 0.2f * glm::sin(elapsedTime * rotationPerSecond)));
@@ -26,6 +32,12 @@ Airplane::Airplane() : SingleMesh()
 Airplane::~Airplane()
 {
 };
+
+void Airplane::draw()
+{
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	SingleMesh::draw();
+}
 
 void Airplane::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 

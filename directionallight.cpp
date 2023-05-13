@@ -24,6 +24,8 @@ void DirectionalLight::deserialize(nlohmann::json data)
 		intensity = data["intensity"].get<float>();
 	if (data.contains("lightColor"))
 		lightColor = readVectorFromJSON(data["lightColor"], glm::vec3(1));
+
+
 }
 
 void DirectionalLight::setUniforms(Shader* shader)

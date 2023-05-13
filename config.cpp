@@ -1,5 +1,6 @@
 #include "config.h"
 #include "singlemesh.h"
+#include "player.h"
 
 Config::Config(const char* filename)
 {
@@ -140,7 +141,7 @@ glm::vec3 Config::getAmbientLightColor() {
  * \param scene List of objects in scene
  * \param shaderList List of shaders
  */
-void Config::loadScene(ObjectInstance& rootNode, InteractableObjects &interactableObjects)
+void Config::loadScene(ObjectInstance& rootNode)
 {
 	std::ifstream file(configFilename);
 
@@ -158,7 +159,7 @@ void Config::loadScene(ObjectInstance& rootNode, InteractableObjects &interactab
 		{
 			for (nlohmann::json sceneObjectData : data["scene"])
 			{
-				getNextObject(sceneObjectData, rootNode, interactableObjects);
+				getNextObject(sceneObjectData, rootNode);
 			}
 		}
 	}
@@ -170,42 +171,32 @@ void Config::loadScene(ObjectInstance& rootNode, InteractableObjects &interactab
  * \param scene Scene objects list
  * \param shaderList List of shaders
  */
-void Config::getNextObject(nlohmann::json data, ObjectInstance& node, InteractableObjects& interactableObjects)
+void Config::getNextObject(nlohmann::json data, ObjectInstance& node)
 {
 	if (data.contains("objectType"))
 	{
-		ObjectInstance* object = createObjectByType(data["objectType"].get<std::string>(), interactableObjects);
+		ObjectInstance* object = createObjectByType(data["objectType"].get<std::string>());
 
 		object->deserialize(data);
 		node.addChild(object);
-
-		//TODO refactor
-		//if (dynamic_cast<Camera*>(object) != nullptr)
-		//{
-		//	interactableObjects.cameraIterator = scene.end() - 1;
-		//}
 
 		if (data.contains("children"))
 		{
 			for (nlohmann::json childrenData : data["children"])
 			{
-				getNextObject(childrenData, *object, interactableObjects);
+				getNextObject(childrenData, *object);
 			}
 		}
 	}
 }
 
-ObjectInstance* Config::createObjectByType(std::string typeName, InteractableObjects& interactableObjects)
+ObjectInstance* Config::createObjectByType(std::string typeName)
 {
 	if (typeName == "SingleMesh")
 		return new SingleMesh();
 	else
 	if (typeName == "Camera")
-	{
-		Camera* camera = new Camera();
-		interactableObjects.camera = camera;
-		return camera;
-	}
+		return new Camera();
 	else
 	if (typeName == "SpotLight")
 		return new SpotLight();
@@ -216,13 +207,8 @@ ObjectInstance* Config::createObjectByType(std::string typeName, InteractableObj
 	if (typeName == "PointLight")
 		return new PointLight();
 	else
-	if (typeName == "MovingObject")
-	{
-		MovingObject* player = new MovingObject();
-		//TODO remove kostil
-		interactableObjects.player = player;
-		return (ObjectInstance*) player;
-	}
+	if (typeName == "Player")
+		return (ObjectInstance*) new Player();
 	else
 		throw "Config::createObjectByType(): Type not found";
 }

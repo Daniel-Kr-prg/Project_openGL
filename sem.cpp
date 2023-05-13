@@ -61,7 +61,7 @@ void drawScene(void)
  */
 void displayCb() {
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// draw the window contents (scene objects)
 	drawScene();
@@ -140,7 +140,15 @@ void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
+
+
 void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
+	unsigned int objectID = 0;
+	glReadPixels(mouseX, mouseY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &objectID);
+
+	if (objectID > 0) {
+		std::cout << printf("Clicked on object with ID: %d\n", (int)objectID);
+	}
 }
 
 /**
@@ -194,8 +202,13 @@ void timerCb(int)
 void initApplication() {
 	// init OpenGL
 	glEnable(GL_DEPTH_TEST);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	// - all programs (shaders), buffers, textures, ...
 	config->loadScene(*Render::getRender()->getRootNode());
 	Render::getRender()->getRootNode()->initialize();
@@ -238,7 +251,7 @@ int main(int argc, char** argv) {
 	glutInitContextVersion(pgr::OGL_VER_MAJOR, pgr::OGL_VER_MINOR);
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_STENCIL | GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
 	// for each window
 	{
@@ -254,7 +267,7 @@ int main(int argc, char** argv) {
 		glutSpecialFunc(specialKeyboardCb);     // key pressed
 		glutSpecialUpFunc(specialKeyboardUpCb); // key released
 		glutPassiveMotionFunc(passiveMouseMotionCb);
-		// glutMouseFunc(mouseCb);
+		glutMouseFunc(mouseCb);
 		// glutMotionFunc(mouseMotionCb);
 #ifndef SKELETON // @task_1_0
 		glutTimerFunc(33, timerCb, 0);

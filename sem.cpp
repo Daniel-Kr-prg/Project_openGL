@@ -203,10 +203,12 @@ void initApplication() {
 	// init OpenGL
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	//TODO glCullFace(GL_BACK);
 	// - all programs (shaders), buffers, textures, ...
 	config->loadScene(*Render::getRender()->getRootNode());
 	Render::getRender()->getRootNode()->initialize();

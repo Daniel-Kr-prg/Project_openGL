@@ -2,6 +2,7 @@
 
 #include "shader.h"
 #include "render.h"
+#include <iostream>
 
 /**
  * \brief ObjectInstance constructor. Takes a pointer to the shader and must create object resources (VBO and VAO)
@@ -56,6 +57,14 @@ glm::vec3 ObjectInstance::getPosition()
 }
 
 /**
+ * \brief Returns the current global position
+ */
+glm::vec3 ObjectInstance::getGlobalPosition()
+{
+	return globalPosition;
+}
+
+/**
  * \brief Sets the current local position
  * \param position New local position
  */
@@ -93,6 +102,14 @@ glm::vec3 ObjectInstance::getRotationDeg()
 glm::quat ObjectInstance::getRotation() 
 {
 	return rotation;
+}
+
+/**
+ * \brief Returns the current global rotation (quaternion)
+ */
+glm::quat ObjectInstance::getGlobalRotation()
+{
+	return globalRotation;
 }
 
 /**
@@ -134,6 +151,15 @@ glm::vec3 ObjectInstance::getScale()
 }
 
 /**
+ * \brief Returns the current global scale
+ */
+glm::vec3 ObjectInstance::getGlobalScale()
+{
+	return globalScale;
+}
+
+
+/**
  * \brief Sets the current local scale
  * \param scale New local scale
  */
@@ -165,6 +191,14 @@ glm::vec3 ObjectInstance::getRight()
 glm::vec3 ObjectInstance::getForward() 
 {
 	return forward;
+}
+
+/**
+ * \brief Returns the current global forward vector
+ */
+glm::vec3 ObjectInstance::getGlobalForward()
+{
+	return globalForward;
 }
 
 /**
@@ -284,9 +318,26 @@ void ObjectInstance::initialize() {
 
 void ObjectInstance::onKeyPress(unsigned char key) {
 	// update all children
+	if (key == 'q' && this == Render::getRender()->getRootNode())
+	{
+		printGraph(0);
+	}
+
 	for (ObjectInstance* child : children) {
 		if (child != nullptr)
 			child->onKeyPress(key);
+	}
+}
+
+void ObjectInstance::printGraph(int level)
+{
+	for(int i = 0; i < level; i++)
+		std::cout << "\t";
+	std::cout << typeid(this).name() << std::endl;
+
+	for (ObjectInstance* child : children) {
+		if (child != nullptr)
+			child->printGraph(level + 1);
 	}
 }
 
@@ -350,4 +401,12 @@ void ObjectInstance::updateLocalMatrix() {
 
 void ObjectInstance::updateWorldMatrix(glm::mat4 parentMatrix) {
 	globalModelMatrix = parentMatrix * localModelMatrix;
+	glm::vec3 globalSkew;
+	glm::vec4 globalPerspective;
+	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
+	globalForward = {
+	-2 * (globalRotation.x * globalRotation.z + globalRotation.w * globalRotation.y),
+	-2 * (globalRotation.y * globalRotation.z - globalRotation.w * globalRotation.x),
+	-(1 - 2 * (globalRotation.x * globalRotation.x + globalRotation.y * globalRotation.y))
+	};
 }

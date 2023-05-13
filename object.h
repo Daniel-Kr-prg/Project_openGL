@@ -44,6 +44,11 @@ protected:
 	glm::mat4		localModelMatrix;
 	glm::mat4		globalModelMatrix;
 
+	glm::vec3 globalPosition;
+	glm::quat globalRotation;
+	glm::vec3 globalScale;
+	glm::vec3 globalForward;
+
 	glm::vec3 position;
 	glm::quat rotation;
 	glm::vec3 scale;
@@ -92,6 +97,11 @@ public:
 	glm::vec3 getRight();
 	glm::vec3 getForward();
 
+	glm::vec3 getGlobalPosition();
+	glm::quat getGlobalRotation();
+	glm::vec3 getGlobalScale();
+	glm::vec3 getGlobalForward();
+
 	void rotateRadX(float angleRad);
 	void rotateRadY(float angleRad);
 	void rotateRadZ(float angleRad);
@@ -138,6 +148,7 @@ public:
 	virtual void deserialize(nlohmann::json data);
 
 protected:
+	void printGraph(int level);
 
 	void updateLocalVectors();
 	void updateLocalMatrix();

@@ -1,6 +1,7 @@
 #include "config.h"
 #include "singlemesh.h"
 #include "player.h"
+#include "spinobjects.h"
 
 Config::Config(const char* filename)
 {
@@ -194,21 +195,20 @@ ObjectInstance* Config::createObjectByType(std::string typeName)
 {
 	if (typeName == "SingleMesh")
 		return new SingleMesh();
-	else
-	if (typeName == "Camera")
+	else if (typeName == "Camera")
 		return new Camera();
-	else
-	if (typeName == "SpotLight")
+	else if (typeName == "SpotLight")
 		return new SpotLight();
-	else
-	if (typeName == "DirectionalLight")
+	else if (typeName == "DirectionalLight")
 		return new DirectionalLight();
-	else
-	if (typeName == "PointLight")
+	else if (typeName == "PointLight")
 		return new PointLight();
-	else
-	if (typeName == "Player")
+	else if (typeName == "Player")
 		return (ObjectInstance*) new Player();
+	else if (typeName == "Bouy")
+		return (ObjectInstance*) new Bouy();
+	else if (typeName == "Airplane")
+		return (ObjectInstance*) new Airplane();
 	else
 		throw "Config::createObjectByType(): Type not found";
 }

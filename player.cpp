@@ -58,7 +58,7 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 	bool movingAllowed = camera->getCameraState() == CAMERA_ON_OBJECT;
 	float direction = 0;
 
-	float frameTime = getFrameTime();
+	getFrameTime(elapsedTime);
 
 	if (movingAllowed)
 	{
@@ -69,18 +69,21 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 			rotateDegY(rotationSpeed * frameTime * rotation);
 
 	}
-
+	
 	if (direction == 0)
 	{
 		currentSpeed = currentSpeed - currentSpeed * drag * frameTime;
 	}
-	else if (direction > 0)
+	else 
 	{
-		currentSpeed = glm::min(maxSpeed, currentSpeed + direction * acceleration * frameTime);
-	}
-	else
-	{
-		currentSpeed = glm::max(-maxSpeed, currentSpeed + direction * acceleration * frameTime);
+		float currentAcceleration = acceleration;
+		if (Input::getSpecialKeyPressed(GLUT_KEY_SHIFT_L))
+			acceleration *= 2;
+
+		if (direction > 0)
+			currentSpeed = glm::min(maxSpeed, currentSpeed + direction * currentAcceleration * frameTime);
+		else
+			currentSpeed = glm::max(-maxSpeed, currentSpeed + direction * currentAcceleration * frameTime);
 	}
 
 	std::cout << currentSpeed << "      FRAME TIME: <<" << frameTime << "\n";
@@ -96,7 +99,7 @@ void Player::setCameraOnObject()
 		return;
 
 	camera->setCameraState(CAMERA_ON_OBJECT);
-	camera->removeFromParent();
+	//camera->removeFromParent();
 	addChild(camera);
 	camera->setPosition(cameraPosition);
 	cameraOnObject = true;

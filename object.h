@@ -101,7 +101,7 @@ public:
 
 	float getLastUpdateTime();
 
-	float getFrameTime();
+	float getFrameTime(float elapsedTime);
 
 	template<class T>
 	T* firstNodeByType() 

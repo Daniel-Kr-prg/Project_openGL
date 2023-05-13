@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="spinobjects.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="directionallight.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="spinobjects.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="directionallight.h" />

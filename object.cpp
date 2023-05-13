@@ -232,8 +232,10 @@ float ObjectInstance::getLastUpdateTime()
 	return lastUpdateTime;
 }
 
-float ObjectInstance::getFrameTime()
+float ObjectInstance::getFrameTime(float elapsedTime)
 {
+	frameTime = elapsedTime - lastUpdateTime;
+	lastUpdateTime = elapsedTime;
 	return frameTime;
 }
 
@@ -247,8 +249,7 @@ void ObjectInstance::update(const float elapsedTime, const glm::mat4* parentMode
 	// update model matrix - localModelMatrix - of the instance 
 	// ...
 
-	frameTime = elapsedTime - lastUpdateTime;
-	lastUpdateTime = elapsedTime;
+	getFrameTime(elapsedTime);
 	// if we have parent, multiply parent's matrix with ours
 	updateWorldMatrix(*parentModelMatrix);
 

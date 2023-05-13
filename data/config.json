@@ -5,11 +5,11 @@
     "windowTitle": "Prikol"
   },
   "ambient": {
-    "intensity": 0.2,
+    "intensity": 0.6,
     "lightColor": {
       "r": 1,
-      "g": 0.5,
-      "b": 0.5
+      "g": 0.89,
+      "b": 0.89
     }
   },
   "shaders": [

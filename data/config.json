@@ -71,7 +71,7 @@
             "y": 0.0,
             "z": 0.0
           },
-          "intensity": 0.1,
+          "intensity": 0.6,
           "attenuation": 5,
           "innerCutoff": 0.1,
           "outerCutoff": 0.3,
@@ -122,26 +122,6 @@
         "x": 0.5,
         "y": 0.5,
         "z": 0.5
-      }
-    },
-	{
-      "objectType": "Bouy",
-      "filePath": "data/bouy.obj",
-      "shaderIndex": 0,
-      "position": {
-        "x": 10,
-        "y": 0,
-        "z": 8
-      },
-      "rotation": {
-        "x": 0.2,
-        "y": 0,
-        "z": 0
-      },
-      "scale": {
-        "x": 0.5,
-        "y": 0.5,
-        "z": 0.5
       },
       "children": [
         {
@@ -155,8 +135,8 @@
 		  "attenuation": 5,
 		  "lightColor": {
 			"r": 1,
-			"g": 0,
-			"b": 0
+			"g": 1,
+			"b": 1
 		  }
         }
       ]
@@ -180,7 +160,147 @@
         "y": 0.5,
         "z": 0.5
       }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/plant.3ds",
+      "shaderIndex": 0,
+      "position": {
+        "x": 3,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/WoodenBridge.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 3,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/Boat3Export.fbx",
+      "shaderIndex": 0,
+      "position": {
+        "x": 3,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
     }
-	
+	,
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/SmallArch_Obj.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": -3,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/SpiderRock02_Obj.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 6,
+        "y": 0,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/sea.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+	{
+      "objectType": "SingleMesh",
+      "filePath": "data/cloud.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 0,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    }
   ]
 }

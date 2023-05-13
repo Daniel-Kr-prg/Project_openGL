@@ -37,6 +37,7 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 		shaderData.locations.specular = glGetUniformLocation(shaderData.program, "specular");
 		shaderData.locations.shininess = glGetUniformLocation(shaderData.program, "shininess");
 		shaderData.locations.texSampler = glGetUniformLocation(shaderData.program, "texSampler");
+		shaderData.locations.useTexture = glGetUniformLocation(shaderData.program, "useTexture");
 		// light
 		shaderData.locations.ambientLightIntensity = glGetUniformLocation(shaderData.program, "ambientLightIntensity");
 		shaderData.locations.ambientLightColor = glGetUniformLocation(shaderData.program, "ambientLightColor");

@@ -8,8 +8,8 @@
     "intensity": 0.2,
     "lightColor": {
       "r": 1,
-      "g": 1,
-      "b": 1
+      "g": 0.5,
+      "b": 0.5
     }
   },
   "shaders": [

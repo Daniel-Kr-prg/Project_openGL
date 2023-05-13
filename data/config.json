@@ -163,7 +163,7 @@
     },
 	{
       "objectType": "Airplane",
-      "filePath": "data/airplane.obj",
+      "filePath": "data/airplane.fbx",
       "shaderIndex": 0,
       "position": {
         "x": 2,

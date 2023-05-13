@@ -7,115 +7,116 @@ int previousMouseY;
 int deltaX;
 int deltaY;
 Config* inputConfig;
+bool initialized = false;
 
 void Input::initialize(Config* config)
 {
 	inputConfig = config;
+
+	if (inputConfig != nullptr)
+	{
+		initialized = true;
+	}
+	else
+	{
+		initialized = false;
+	}
 }
 
 void Input::processKeyPressed(unsigned char keyPressed)
 {
-	if (keyPressed == 27)
+	if (initialized)
 	{
-		glutLeaveMainLoop();
-		exit(EXIT_SUCCESS);
-	}
-	else if (keyPressed >= 'A' && keyPressed <= 'Z') {
-		char lowerCaseKey = keyPressed + 32; // Преобразование в маленькую букву
-		keyPressedState[lowerCaseKey] = true;
-	}
-	else
-	{
-		keyPressedState[keyPressed] = true;
-	}
+		if (keyPressed == 27)
+		{
+			glutLeaveMainLoop();
+			exit(EXIT_SUCCESS);
+		}
+		else if (keyPressed >= 'A' && keyPressed <= 'Z') {
+			char lowerCaseKey = keyPressed + 32; // Преобразование в маленькую букву
+			keyPressedState[lowerCaseKey] = true;
+		}
+		else
+		{
+			keyPressedState[keyPressed] = true;
+		}
 
-	// ON KEY DOWN HANDLE
-	switch (keyPressed)
-	{
-	case 'r':
-		//RESTART
-		break;
-	case 'c':
-		//std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
-		//std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
-		break;
-	}
+		// ON KEY DOWN HANDLE
+		switch (keyPressed)
+		{
+		case 'r':
+			//RESTART
+			break;
+		case 'c':
+			//std::cout << "CAMERA POS: " << camera->getPosition().x << " " << camera->getPosition().y << " " << camera->getPosition().z << "\n";
+			//std::cout << "YAW PITCH: " << camera->getYaw() << " " << camera->getPitch() << "\n";
+			break;
+		}
 
-	Render::getRender()->getRootNode()->onKeyPress(keyPressed);
+		Render::getRender()->getRootNode()->onKeyPress(keyPressed);
+	}
 }
 
 void Input::processKeyReleased(unsigned char keyReleased) {
-	if (keyReleased >= 'A' && keyReleased <= 'Z') {
-		char lowerCaseKey = keyReleased + 32; // Преобразование в маленькую букву
-		keyPressedState[lowerCaseKey] = false;
-	}
-	else
+	if (initialized)
 	{
-		keyPressedState[keyReleased] = false;
+		if (keyReleased >= 'A' && keyReleased <= 'Z') {
+			char lowerCaseKey = keyReleased + 32; // Преобразование в маленькую букву
+			keyPressedState[lowerCaseKey] = false;
+		}
+		else
+		{
+			keyPressedState[keyReleased] = false;
+		}
 	}
 }
 
 
 void Input::processSpecialKeyPressed(int keyPressed)
 {
-	keyPressedSpecialState[keyPressed] = true;
-
-	// ON KEY DOWN HANDLE
-	switch (keyPressed)
+	if (initialized)
 	{
-	case GLUT_KEY_F1:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setStaticView1();
-		break;
-	case GLUT_KEY_F2:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setStaticView2();
-		break;
-	case GLUT_KEY_F3:
-		if (interactableObjects.player == nullptr)
-			break;
-		interactableObjects.camera->setCameraOnObject(interactableObjects.player, interactableObjects.camera, &objects, &interactableObjects);
-		break;
-	case GLUT_KEY_F4:
-		interactableObjects.player->freeCamera(&objects, &interactableObjects);
-		interactableObjects.camera->setDynamicCamera();
-		break;
+		keyPressedSpecialState[keyPressed] = true;
 
-	default:
-		break;
+		// ON KEY DOWN HANDLE
+
+		Render::getRender()->getRootNode()->onSpecialKeyPress(keyPressed);
 	}
-
-	Render::getRender()->getRootNode()->onSpecialKeyPress(keyPressed);
 }
 
 void Input::processSpecialKeyReleased(int keyReleased)
 {
-	keyPressedSpecialState[keyReleased] = false;
+	if (initialized)
+	{
+		keyPressedSpecialState[keyReleased] = false;
+	}
 }
 
 void Input::processPassiveMouseMotion(int mouseX, int mouseY)
 {
-	int halfWidth = inputConfig->getWindowWidth() / 2;
-	int halfHeight = inputConfig->getWindowHeight() / 2;
+	if (initialized)
+	{
+		int halfWidth = inputConfig->getWindowWidth() / 2;
+		int halfHeight = inputConfig->getWindowHeight() / 2;
 
-	int deltaX = previousMouseX - mouseX;
-	int deltaY = previousMouseY - mouseY;
+		int deltaX = previousMouseX - mouseX;
+		int deltaY = previousMouseY - mouseY;
 
-	Render::getRender()->getRootNode()->onMouseMove(deltaX, deltaY, mouseX, mouseY);
-	interactableObjects.camera->handlePassiveMouseMotion(mouseX, mouseY, config);
+		Render::getRender()->getRootNode()->onMouseMove(deltaX, deltaY, mouseX, mouseY);
 
-	glutWarpPointer(halfWidth, halfHeight);
+		glutWarpPointer(halfWidth, halfHeight);
 
-	previousMouseX = halfWidth;
-	previousMouseY = halfHeight;
+		previousMouseX = halfWidth;
+		previousMouseY = halfHeight;
+	}
 }
 
 bool Input::getKeyPressed(unsigned char keyPressed)
 {
-	return keyPressedSpecialState[keyPressed];
+	return keyPressedState[keyPressed];
 }
 
 bool Input::getSpecialKeyPressed(unsigned char keyPressed)
 {
-	return keyPressedState[keyPressed];
+	return keyPressedSpecialState[keyPressed];
 }

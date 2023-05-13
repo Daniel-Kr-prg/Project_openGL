@@ -1,5 +1,6 @@
 #include <iostream>
 #include "triangle.h"
+#include "shader.h"
 
 const char* TEXTURE = "data/boat.png";
 

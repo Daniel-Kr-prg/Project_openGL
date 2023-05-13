@@ -155,6 +155,8 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="directionallight.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="pointlight.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="shader.cpp" />
@@ -171,6 +173,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="jsonutils.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="pointlight.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />

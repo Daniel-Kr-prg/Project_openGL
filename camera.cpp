@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "object.h"
 #include "config.h"
+#include "player.h"
 /**
  * \brief Creates the camera object.
  * \param fov Field of view
@@ -28,7 +29,6 @@ Camera::Camera() {
  */
 void Camera::setCameraView(glm::vec3 position, float yaw, float pitch)
 {
-	
 	setYawPitch(yaw, pitch);
 	setPosition(position);
 }
@@ -57,12 +57,6 @@ void Camera::setStaticView2()
 	setCameraState(STATIC_CAMERA);
 	setCameraView(glm::vec3(5.516f, 4.74f, -2.87f), -4.31f, -0.71f);
 }
-void Camera::setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance, ObjectList* objects, InteractableObjects* interactableObjects)
-{
-	camInstance->setCameraState(CAMERA_ON_OBJECT);
-	objects->erase(interactableObjects->cameraIterator);
-	objectToFollow->setCameraOnObject(camInstance);
-}
 
 void Camera::setCameraState(camState newState)
 {
@@ -72,91 +66,6 @@ void Camera::setCameraState(camState newState)
 camState Camera::getCameraState()
 {
 	return cameraState;
-}
-
-void Camera::handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState)
-{
-	if (getCameraState() == STATIC_CAMERA)
-		return;
-
-	if (getCameraState() == DYNAMIC_CAMERA)
-	{
-		glm::vec3 movementVector(0.0f);
-
-		if (keyPressedState['w'])
-		{
-			movementVector += getForward();
-		}
-		else
-			if (keyPressedState['s'])
-			{
-				movementVector -= getForward();
-			}
-
-		if (keyPressedState['a'])
-		{
-			movementVector -= getRight();
-		}
-		else
-			if (keyPressedState['d'])
-			{
-				movementVector += getRight();
-			}
-
-		movementVector *= elapsedTime * getSpeed();
-		setPosition(getPosition() + movementVector);
-
-	}
-
-
-	float rotationX = 0;
-	float rotationY = 0;
-
-	if (keyPressedSpecialState[GLUT_KEY_UP])
-	{
-		rotationX += 1 * elapsedTime * getKeySensitivity();
-	}
-	else
-		if (keyPressedSpecialState[GLUT_KEY_DOWN])
-		{
-			rotationX -= 1 * elapsedTime * getKeySensitivity();
-		}
-
-	if (keyPressedSpecialState[GLUT_KEY_LEFT])
-	{
-		rotationY += 1 * elapsedTime * getKeySensitivity();
-	}
-	else
-		if (keyPressedSpecialState[GLUT_KEY_RIGHT])
-		{
-			rotationY -= 1 * elapsedTime * getKeySensitivity();
-		}
-
-	addYawPitch(rotationY, rotationX);
-}
-
-void Camera::handlePassiveMouseMotion(int mouseX, int mouseY, Config* config)
-{
-	int halfWidth = config->getWindowWidth() / 2;
-	int halfHeight = config->getWindowHeight() / 2;
-
-	if (cameraState == STATIC_CAMERA)
-	{
-		glutWarpPointer(halfWidth, halfHeight);
-		previousMouseX = halfWidth;
-		previousMouseY = halfHeight;
-		return;
-	}
-
-	int deltaX = previousMouseX - mouseX;
-	int deltaY = previousMouseY - mouseY;
-
-	addYawPitch(deltaX * getMouseSensitivity(), deltaY * getMouseSensitivity());
-
-	glutWarpPointer(halfWidth, halfHeight);
-
-	previousMouseX = halfWidth;
-	previousMouseY = halfHeight;
 }
 
 /**
@@ -217,6 +126,7 @@ void Camera::addYawPitch(float yaw, float pitch) {
 	rotateRadY(this->yaw);
 	rotateRadX(this->pitch);
 }
+
 void Camera::setYawPitch(float yaw, float pitch) {
 	this->yaw = yaw;
 	this->pitch = pitch;
@@ -244,10 +154,89 @@ float Camera::getPitch()
 	return this->pitch;
 }
 
+void Camera::initialize() 
+{
+	setStaticView1();
+	ObjectInstance::initialize();
+}
+
 void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 {
-	ObjectInstance::update(elapsedTime, parentModelMatrix);
 	Render::getRender()->setCamera(this);
+
+	if (getCameraState() == STATIC_CAMERA)
+	{
+		ObjectInstance::update(elapsedTime, parentModelMatrix);
+		return;
+	}
+
+	if (getCameraState() == DYNAMIC_CAMERA)
+	{
+		glm::vec3 movementVector(0.0f);
+
+		if (Input::getKeyPressed('w'))
+		{
+			movementVector += getForward();
+		}
+		else
+		if (Input::getKeyPressed('s'))
+		{
+			movementVector -= getForward();
+		}
+
+		if (Input::getKeyPressed('a'))
+		{
+			movementVector -= getRight();
+		}
+		else
+		if (Input::getKeyPressed('d'))
+		{
+			movementVector += getRight();
+		}
+
+		movementVector *= elapsedTime * getSpeed();
+		setPosition(getPosition() + movementVector);
+
+	}
+
+
+	float rotationX = 0;
+	float rotationY = 0;
+
+	if (Input::getSpecialKeyPressed(GLUT_KEY_UP))
+	{
+		rotationX += 1 * elapsedTime * getKeySensitivity();
+	}
+	else
+	if (Input::getSpecialKeyPressed(GLUT_KEY_DOWN))
+	{
+		rotationX -= 1 * elapsedTime * getKeySensitivity();
+	}
+
+	if (Input::getSpecialKeyPressed(GLUT_KEY_LEFT))
+	{
+		rotationY += 1 * elapsedTime * getKeySensitivity();
+	}
+	else
+	if (Input::getSpecialKeyPressed(GLUT_KEY_RIGHT))
+	{
+		rotationY -= 1 * elapsedTime * getKeySensitivity();
+	}
+
+	addYawPitch(rotationY, rotationX);
+	ObjectInstance::update(elapsedTime, parentModelMatrix);
+}
+
+void Camera::onMouseMove(int deltaX, int deltaY, int mouseX, int mouseY)
+{
+	if (cameraState == STATIC_CAMERA)
+	{
+		ObjectInstance::onMouseMove(deltaX, deltaY, mouseX, mouseY);
+		return;
+	}
+
+	addYawPitch(deltaX * getMouseSensitivity(), deltaY * getMouseSensitivity());
+	ObjectInstance::onMouseMove(deltaX, deltaY, mouseX, mouseY);
 }
 
 void Camera::deserialize(nlohmann::json data)

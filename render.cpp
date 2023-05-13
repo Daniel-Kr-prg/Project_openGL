@@ -3,8 +3,7 @@
 #include "pgr.h"
 #include <iostream>
 #include "singlemesh.h"
-#include "object.h"
-
+#include "render.h"
 #include "directionallight.h"
 #include "pointlight.h"
 #include "spotlight.h"

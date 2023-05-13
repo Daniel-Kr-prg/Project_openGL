@@ -41,7 +41,6 @@
 #include "config.h"
 #include "input.h"
 
-InteractableObjects interactableObjects;
 Config* config;
 
 // -----------------------  OpenGL stuff ---------------------------------
@@ -175,14 +174,8 @@ void timerCb(int)
 
 	float elapsedTime = 0.001f * static_cast<float>(glutGet(GLUT_ELAPSED_TIME)); // milliseconds => seconds
 	
-	interactableObjects.camera->handleCameraMovement(elapsedTime);
 	// update the application state
 	Render::getRender()->getRootNode()->update(elapsedTime, &sceneRootMatrix);
-
-	if (interactableObjects.player != nullptr)
-	{
-		interactableObjects.player->timerHandle(keyPressedState, interactableObjects.camera->getCameraState() == CAMERA_ON_OBJECT);
-	}
 #endif // task_1_0
 
 	
@@ -203,8 +196,9 @@ void initApplication() {
 	glEnable(GL_DEPTH_TEST);
 	//TODO glCullFace(GL_BACK);
 	// - all programs (shaders), buffers, textures, ...
-	config->loadScene(Render::getRender()->getRootNode(), interactableObjects);
-	interactableObjects.camera->setStaticView1();
+	config->loadScene(*Render::getRender()->getRootNode());
+	Render::getRender()->getRootNode()->initialize();
+	Input::initialize(config);
 	// objects.push_back(new SingleMesh(&commonShaderProgram));
 
 	// init your Application

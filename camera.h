@@ -2,9 +2,8 @@
 
 #include <pgr.h>
 #include "object.h"
-#include "singlemesh.h"
 #include <unordered_map>
-
+#include "input.h"
 
 enum camState { STATIC_CAMERA, CAMERA_ON_OBJECT, DYNAMIC_CAMERA };
 
@@ -34,14 +33,11 @@ public:
 	void setStaticView1();
 	void setStaticView2();
 	void setDynamicCamera();
-	static void setCameraOnObject(MovingObject* objectToFollow, Camera* camInstance, ObjectList* objects, InteractableObjects* interactableObjects);
 
-
-	void handlePassiveMouseMotion(int mouseX, int mouseY, Config* config);
-	void handleCameraMovement(float elapsedTime, std::unordered_map<char, bool>& keyPressedState, std::unordered_map<int, bool>& keyPressedSpecialState);
-
+	void initialize() override;
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
 	void deserialize(nlohmann::json data) override;
+	void onMouseMove(int deltaX, int deltaY, int mouseX, int mouseY) override;
 private:
 	glm::mat4 projectionMatrix;
 	float speed;

@@ -1,10 +1,15 @@
 #pragma once
 
 #include "pgr.h"
+#include "object.h"
+#include "shader.h"
 
 class DirectionalLight;
 class PointLight;
 class SpotLight;
+class Config;
+class Camera;
+class ObjectInstance;
 
 //#include "data.h"
 

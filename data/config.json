@@ -8,8 +8,8 @@
     "intensity": 0.2,
     "lightColor": {
       "r": 1,
-      "g": 1,
-      "b": 1
+      "g": 0.5,
+      "b": 0.5
     }
   },
   "shaders": [
@@ -143,7 +143,7 @@
     },
 	{
       "objectType": "Airplane",
-      "filePath": "data/airplane.obj",
+      "filePath": "data/airplane.fbx",
       "shaderIndex": 0,
       "position": {
         "x": 2,

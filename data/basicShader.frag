@@ -9,6 +9,7 @@ uniform vec3 ambient;
 uniform vec3 diffuse;
 uniform vec3 specular;
 uniform float shininess;
+uniform bool useTexture;
 
 // Ambient light
 uniform float ambientLightIntensity;
@@ -97,11 +98,14 @@ vec3 getSpotLight(vec3 normalizedNormal, vec3 viewDirection) {
 }
 
 void main() {
+  vec4 textureColor = vec4(1.0);
+  if(useTexture)
+	textureColor = texture2D(texSampler, fragTexCoord);
   vec3 normalizedNormal = normalize(fragNormal);
   vec3 viewDirection = normalize(viewPosition - fragPosition);
   
   // Ambient light
   vec3 ambientLight = ambientLightColor * ambientLightIntensity * ambient;
-  
-  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 0.0) * texture2D(texSampler, fragTexCoord);
+  //fragmentColor = vec4(normalizedNormal, 1.0);
+  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 0.0) * textureColor;  
 }

@@ -63,7 +63,7 @@ void Airplane::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 		setPosition(glm::vec3(radius * cos(rotation), pos.y, radius * sin(rotation)));
 	
 		
-		rotateRadY(- frameTime * rotationPerSecond);
+		rotateRadY(-frameTime * rotationPerSecond);
 	}
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
 }

@@ -156,6 +156,16 @@ void Config::loadScene(ObjectInstance& rootNode)
 	{
 		nlohmann::json data = nlohmann::json::parse(file);
 
+		if (data.contains("skyBox"))
+		{
+			nlohmann::json skyData = data["skyBox"];
+
+			if (skyData.contains("fragmentPath") && skyData.contains("vertexPath") && skyData.contains("texturePath"))
+			{
+				Render::getRender()->initializeSkyboxGeometry(skyData["vertexPath"].get<std::string>(), skyData["fragmentPath"].get<std::string>(), skyData["texturePath"].get<std::string>());
+			}
+		}
+
 		if (data.contains("scene"))
 		{
 			for (nlohmann::json sceneObjectData : data["scene"])

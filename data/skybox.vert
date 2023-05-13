@@ -1,4 +1,4 @@
-#version 140 core
+#version 140
 in vec3 position;
 
 out vec3 texCoord;
@@ -9,5 +9,5 @@ uniform mat4 view;
 void main()
 {
     texCoord = position;
-    gl_Position = (projection * view * vec4(position, 1.0)).xyww;
+    gl_Position = (projection * mat4(mat3(view)) * vec4(position, 1.0)).xyww;
 }  

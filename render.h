@@ -3,6 +3,7 @@
 #include "pgr.h"
 #include "object.h"
 #include "shader.h"
+#include "skyboxshader.h"
 
 class DirectionalLight;
 class PointLight;
@@ -76,9 +77,11 @@ public:
 	float getCurrentAspect();
 	Shader* getShader(int index);
 
-	void initializeSkyboxGeometry(Shader* shader);
+	void initializeSkyboxGeometry(std::string skyVertexPath, std::string skyFragmentPath, std::string filePath);
 	void initializeModels();
 	void cleanupModels();
+
+	void drawSkyBox();
 
 	ObjectInstance* getRootNode();
 
@@ -86,6 +89,7 @@ public:
 private:
 	ObjectInstance rootNode;
 	ShaderList shaders;
+	SkyBoxShader* skyShader;
 
 	Config* config;
 	Camera* camera;

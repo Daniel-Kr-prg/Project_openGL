@@ -12,6 +12,11 @@
       "b": 0.89
     }
   },
+  "skyBox": {
+    "fragmentPath": "data/skybox.frag",
+    "vertexPath": "data/skybox.vert",
+    "texturePath": "data/textures/earth"
+  },
   "shaders": [
     {
       "fragmentPath": "data/basicShader.frag",

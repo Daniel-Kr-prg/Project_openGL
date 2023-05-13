@@ -1,12 +1,12 @@
-#version 140 core
+#version 140
 
 out vec4 fragmentColor;
 
 in vec3 texCoord;
 
-uniform SamplerCube skySampler;
+uniform samplerCube skySampler;
 
 void main()
 {    
-    FragColor = texture(skySampler, texCoord);
+    fragmentColor = texture(skySampler, texCoord);
 }

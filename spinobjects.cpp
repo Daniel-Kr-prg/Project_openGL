@@ -2,17 +2,12 @@
 
 Bouy::Bouy() : SingleMesh()
 {
+	setIndex(2);
 };
 
 Bouy::~Bouy()
 {
 };
-
-void Bouy::draw()
-{
-	glStencilFunc(GL_ALWAYS, 2, 1);
-	SingleMesh::draw();
-}
 
 void Bouy::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 	getFrameTime(elapsedTime);
@@ -23,31 +18,60 @@ void Bouy::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 }
 
 
+void Bouy::Interact()
+{
+	if (lightsOn)
+	{
+
+	}
+	else 
+	{
+
+	}
+}
 
 
 Airplane::Airplane() : SingleMesh()
 {
+	setIndex(3);
 };
 
 Airplane::~Airplane()
 {
 };
 
-void Airplane::draw()
-{
-	glStencilFunc(GL_ALWAYS, 1, 1);
-	SingleMesh::draw();
-}
-
 void Airplane::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 
-	float rotation = rotationPerSecond * elapsedTime;
-
-	glm::vec3 pos = getPosition();
-	setPosition(glm::vec3(radius * cos(rotation), pos.y, radius * sin(rotation)));
-	
 	getFrameTime(elapsedTime);
-	rotateRadY(- frameTime * rotationPerSecond);
+	if (falling)
+	{
+		glm::vec3 pos = getPosition();
+		if (pos.y <= -0.2f)
+		{
+			// BOOM BABAX
+		}
+		else
+		{
+			addPosition(-getForward() * frameTime * 1.5f);
+		}
+	}
+	else
+	{
+		float rotation = rotationPerSecond * elapsedTime;
 
+		glm::vec3 pos = getPosition();
+		setPosition(glm::vec3(radius * cos(rotation), pos.y, radius * sin(rotation)));
+	
+		
+		rotateRadY(- frameTime * rotationPerSecond);
+	}
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
+}
+
+void Airplane::Interact()
+{
+	if (falling)
+		return;
+	falling = true;
+	rotateRadX(0.35f);
 }

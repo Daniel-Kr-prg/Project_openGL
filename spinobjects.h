@@ -6,12 +6,13 @@
 class Bouy : SingleMesh {
 private:
 	float rotationPerSecond = 0.5f;
+	bool lightsOn = true;
 
 public:
 	Bouy();
 	~Bouy();
-	void draw() override;
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
+	void Interact() override;
 };
 
 
@@ -20,9 +21,11 @@ private:
 	float rotationPerSecond = 0.5f;
 	float radius = 2.0f;
 
+	bool falling = false;
+
 public:
 	Airplane();
 	~Airplane();
-	void draw() override;
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
+	void Interact() override;
 };

@@ -70,6 +70,8 @@ protected:
 	ObjectInstance* parent = nullptr;
 	std::list<ObjectInstance*>::iterator iteratorAtParent;
 
+	int index = 0;
+
 public:
 	ObjectInstance(Shader* shdrPrg = nullptr);
 	~ObjectInstance();
@@ -110,9 +112,14 @@ public:
 	void rotateDegY(float angleRad);
 	void rotateDegZ(float angleRad);
 
+	int getIndex() { return index; }
+	void setIndex(int indexToSet) { index = indexToSet; }
+
 	float getLastUpdateTime();
 
 	float getFrameTime(float elapsedTime);
+
+	virtual void Interact();
 
 	template<class T>
 	T* firstNodeByType() 
@@ -125,6 +132,23 @@ public:
 			if (child != nullptr)
 			{
 				result = child->firstNodeByType<T>();
+				if (result != nullptr)
+					return result;
+			}
+		}
+
+		return nullptr;
+	}
+
+	ObjectInstance* firstNodeByIndex(int index)
+	{
+		if (index == getIndex())
+			return this;
+
+		for (ObjectInstance* child : children) {
+			if (child != nullptr)
+			{
+				ObjectInstance* result = child->firstNodeByIndex(index);
 				if (result != nullptr)
 					return result;
 			}

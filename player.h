@@ -11,10 +11,12 @@ private:
 	float rotationSpeed = 60.0f;
 	float drag = 0.75f;
 
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 6.0f, 5.0f);
+	glm::vec3 boatBoxRadius = glm::vec3(9.0f, 5.0f, 9.0f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.0f, 2.0f);
 	std::vector<ObjectInstance*>::iterator cameraIterator;
 	bool cameraOnObject = false;
 	Camera* camera;
+
 
 public:
 	Player();
@@ -33,5 +35,7 @@ public:
 	void initialize() override;
 	void update(const float elapsedTime, const glm::mat4* parentModelMatrix) override;
 	void onSpecialKeyPress(int key) override;
+
+	void Interact() override;
 };
 

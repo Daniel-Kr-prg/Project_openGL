@@ -2,6 +2,7 @@
 
 Player::Player() : SingleMesh() 
 {
+	setIndex(1);
 };
 
 Player::~Player()
@@ -88,6 +89,22 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 
 	//std::cout << currentSpeed << "      FRAME TIME: <<" << frameTime << "\n";
 
+	float x;
+	float y;
+	float z;
+
+	/*if (result.x >= 0)
+		x = glm::min(result.x, cameraBoxRadius.x);
+	else
+		x = glm::max(result.x, -cameraBoxRadius.x);
+	y = glm::max(0.1f, glm::min(result.y, cameraBoxRadius.x));
+
+	if (result.z >= 0)
+		z = glm::min(result.z, cameraBoxRadius.z);
+	else
+		z = glm::max(result.z, -cameraBoxRadius.z);
+
+	setPosition(glm::vec3(x, y, z));*/
 
 	addPosition(currentSpeed * frameTime * forward);
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
@@ -111,4 +128,9 @@ void Player::freeCamera()
 		return;
 	removeChild(camera);
 	cameraOnObject = false;
+}
+
+void Player::Interact()
+{
+	setCameraOnObject();
 }

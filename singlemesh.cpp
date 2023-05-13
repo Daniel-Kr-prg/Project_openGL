@@ -10,6 +10,12 @@ void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
 void SingleMesh::draw()
 {
 	if (initialized && (shaderProgram != nullptr)) {
+
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+		glStencilFunc(GL_ALWAYS, getIndex(), 0);
+
 		glUseProgram(shaderProgram->getShaderData().program);
 
 		Render::getRender()->setMaterialUniforms(
@@ -29,6 +35,8 @@ void SingleMesh::draw()
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+		glDisable(GL_STENCIL_TEST);
 
 		ObjectInstance::draw();
 	}

@@ -195,7 +195,25 @@ void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 		}
 
 		movementVector *= elapsedTime * getSpeed();
-		setPosition(getPosition() + movementVector);
+		glm::vec3 currentPosition = getPosition();
+		glm::vec3 result = currentPosition + movementVector;
+
+		float x;
+		float y;
+		float z;
+
+		if (result.x >= 0)
+			x = glm::min(result.x, cameraBoxRadius.x);
+		else
+			x = glm::max(result.x, -cameraBoxRadius.x);
+		y = glm::max(0.1f, glm::min(result.y, cameraBoxRadius.x));
+		
+		if (result.z >= 0)
+			z = glm::min(result.z, cameraBoxRadius.z);
+		else
+			z = glm::max(result.z, -cameraBoxRadius.z);
+
+		setPosition(glm::vec3(x, y, z));
 
 	}
 

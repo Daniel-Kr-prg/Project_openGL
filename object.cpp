@@ -80,6 +80,10 @@ void ObjectInstance::addPosition(glm::vec3 move)
 	updateLocalMatrix();
 }
 
+void ObjectInstance::Interact()
+{
+
+}
 /**
  * \brief Returns the current local rotation (Euler angeles, in radians)
  */

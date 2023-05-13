@@ -40,6 +40,8 @@
 #include "camera.h"
 #include "config.h"
 #include "input.h"
+#include "player.h"
+#include "spinobjects.h"
 
 Config* config;
 
@@ -147,7 +149,12 @@ void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
 	glReadPixels(mouseX, mouseY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &objectID);
 
 	if (objectID > 0) {
-		std::cout << printf("Clicked on object with ID: %d\n", (int)objectID);
+		std::cout << "Clicked on object with ID: " << objectID << "\n";
+		ObjectInstance* object = Render::getRender()->getRootNode()->firstNodeByIndex(objectID);
+		if (object != nullptr)
+		{
+			object->Interact();
+		}
 	}
 }
 

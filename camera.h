@@ -49,5 +49,7 @@ private:
 	int previousMouseX = 0;
 	int previousMouseY = 0;
 
+	glm::vec3 cameraBoxRadius = glm::vec3(10.0f, 5.0f, 10.0f);
+
 	camState cameraState = STATIC_CAMERA;
 };

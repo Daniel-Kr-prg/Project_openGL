@@ -3,6 +3,7 @@
 
 #include "pgr.h"
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <unordered_map>
 #include "json.hpp"
 #include "jsonutils.h"
@@ -32,7 +33,7 @@ typedef struct _ObjectGeometry {
 /**
  * \brief Linear representation of the scene objects.  The objects themselves may represent the subtrees.
  */
-typedef std::vector<ObjectInstance*> ObjectList;
+typedef std::list<ObjectInstance*> ObjectList;
 typedef std::vector<Shader*> ShaderList;
 
 class ObjectInstance {
@@ -62,7 +63,7 @@ protected:
 	float frameTime;
 	ObjectList children;
 	ObjectInstance* parent = nullptr;
-	std::vector<ObjectInstance*>::iterator iteratorAtParent;
+	std::list<ObjectInstance*>::iterator iteratorAtParent;
 
 public:
 	ObjectInstance(Shader* shdrPrg = nullptr);

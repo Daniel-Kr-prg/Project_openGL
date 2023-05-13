@@ -28,7 +28,18 @@ void DirectionalLight::deserialize(nlohmann::json data)
 
 void DirectionalLight::setUniforms(Shader* shader)
 {
-	glUniform3fv(shader->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(getForward()));
+	glm::vec3 globalPosition;
+	glm::quat globalRotation;
+	glm::vec3 globalScale;
+	glm::vec3 globalSkew;
+	glm::vec4 globalPerspective;
+	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
+	glm::vec3 globalForward = {
+		-2 * (globalRotation.x * globalRotation.z + globalRotation.w * globalRotation.y), 
+		-2 * (globalRotation.y * globalRotation.z - globalRotation.w * globalRotation.x), 
+		-(1 - 2 * (globalRotation.x * globalRotation.x + globalRotation.y * globalRotation.y)) 
+	};
+	glUniform3fv(shader->getShaderData().locations.directionalLightDirection, 1, glm::value_ptr(globalForward));
 	glUniform1f(shader->getShaderData().locations.directionalLightIntensity, intensity);
 	glUniform3fv(shader->getShaderData().locations.directionalLightColor, 1, glm::value_ptr(lightColor));
 }

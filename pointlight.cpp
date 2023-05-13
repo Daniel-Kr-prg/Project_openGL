@@ -30,8 +30,14 @@ void PointLight::deserialize(nlohmann::json data)
 
 void PointLight::setUniforms(Shader* shader)
 {
+	glm::vec3 globalPosition;
+	glm::quat globalRotation;
+	glm::vec3 globalScale;
+	glm::vec3 globalSkew;
+	glm::vec4 globalPerspective;
+	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
 	glUniform1f(shader->getShaderData().locations.pointLightAttenuation, attenuation);
-	glUniform3fv(shader->getShaderData().locations.pointLightPosition, 1, glm::value_ptr(getPosition()));
+	glUniform3fv(shader->getShaderData().locations.pointLightPosition, 1, glm::value_ptr(globalPosition));
 	glUniform1f(shader->getShaderData().locations.pointLightIntensity, intensity);
 	glUniform3fv(shader->getShaderData().locations.pointLightColor, 1, glm::value_ptr(lightColor));
 }

@@ -162,6 +162,7 @@ void Camera::initialize()
 
 void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 {
+	getFrameTime(elapsedTime);
 	Render::getRender()->setCamera(this);
 
 	if (getCameraState() == STATIC_CAMERA)
@@ -194,7 +195,7 @@ void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 			movementVector += getRight();
 		}
 
-		movementVector *= elapsedTime * getSpeed();
+		movementVector *= frameTime * getSpeed();
 		glm::vec3 currentPosition = getPosition();
 		glm::vec3 result = currentPosition + movementVector;
 
@@ -223,22 +224,22 @@ void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 
 	if (Input::getSpecialKeyPressed(GLUT_KEY_UP))
 	{
-		rotationX += 1 * elapsedTime * getKeySensitivity();
+		rotationX += 1 * frameTime * getKeySensitivity();
 	}
 	else
 	if (Input::getSpecialKeyPressed(GLUT_KEY_DOWN))
 	{
-		rotationX -= 1 * elapsedTime * getKeySensitivity();
+		rotationX -= 1 * frameTime * getKeySensitivity();
 	}
 
 	if (Input::getSpecialKeyPressed(GLUT_KEY_LEFT))
 	{
-		rotationY += 1 * elapsedTime * getKeySensitivity();
+		rotationY += 1 * frameTime * getKeySensitivity();
 	}
 	else
 	if (Input::getSpecialKeyPressed(GLUT_KEY_RIGHT))
 	{
-		rotationY -= 1 * elapsedTime * getKeySensitivity();
+		rotationY -= 1 * frameTime * getKeySensitivity();
 	}
 
 	addYawPitch(rotationY, rotationX);

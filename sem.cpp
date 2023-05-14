@@ -35,7 +35,6 @@
 #include <unordered_map>
 #include "pgr.h"
 #include "object.h"
-#include "triangle.h"
 #include "singlemesh.h"
 #include "camera.h"
 #include "config.h"

@@ -35,6 +35,11 @@ uniform vec3 spotLightColor;
 uniform float spotLightInnerCutoff;
 uniform float spotLightOuterCutoff;
 
+// Fog
+uniform float fogStart;
+uniform float fogEnd;
+uniform vec3 fogColor;
+
 in vec2 fragTexCoord;
 in vec3 fragNormal;
 in vec3 fragPosition;
@@ -97,6 +102,14 @@ vec3 getSpotLight(vec3 normalizedNormal, vec3 viewDirection) {
 	return (spotDiffuse + spotSpecular) * spotLightColor;
 }
 
+float getFog(float distance)
+{
+    if (distance >= fogEnd) return 1;
+    if (distance <= fogStart) return 0;
+
+    return 1 - (fogEnd - distance) / (fogEnd - fogStart);
+}
+
 void main() {
   vec4 textureColor = vec4(1.0);
   if(useTexture)
@@ -109,8 +122,7 @@ void main() {
   //fragmentColor = vec4(normalizedNormal, 1.0);
   //fragmentColor = textureColor;
   
-  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 1.0) * textureColor;  
- 
-	
+  vec4 lightColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 1.0) * textureColor;  
+  fragmentColor = mix(lightColor, vec4(fogColor, 1.0), getFog(length(viewPosition - fragPosition)));
  
 }

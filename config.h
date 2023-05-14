@@ -35,6 +35,9 @@ public:
 	float getMouseSensitivity();
 	float getAmbientLightIntensity();
 	glm::vec3 getAmbientLightColor();
+	float getFogStart();
+	float getFogEnd();
+	glm::vec3 getFogColor();
 
 	void loadScene(ObjectInstance& rootNode);
 	ObjectInstance* createObjectByType(std::string typeName);
@@ -60,6 +63,9 @@ private:
 	// Light options
 	float ambientLightIntensity;
 	glm::vec3  ambientLightColor;
+	float fogStart;
+	float fogEnd;
+	glm::vec3 fogColor;
 
 	// Graphics objects
 	std::vector<ShaderObject> shaders;

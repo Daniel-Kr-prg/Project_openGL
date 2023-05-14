@@ -28,6 +28,7 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 		shaderData.locations.PMatrix = glGetUniformLocation(shaderData.program, "projection");
 		shaderData.locations.VMatrix = glGetUniformLocation(shaderData.program, "view");
 		shaderData.locations.MMatrix = glGetUniformLocation(shaderData.program, "model");
+		shaderData.locations.texCoordMatrix = glGetUniformLocation(shaderData.program, "texCoordMatrix");
 		shaderData.locations.normalMatrix = glGetUniformLocation(shaderData.program, "normalMatrix");
 		// camera
 		shaderData.locations.viewPosition = glGetUniformLocation(shaderData.program, "viewPosition");

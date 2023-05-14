@@ -107,5 +107,6 @@ void main() {
   // Ambient light
   vec3 ambientLight = ambientLightColor * ambientLightIntensity * ambient;
   //fragmentColor = vec4(normalizedNormal, 1.0);
-  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 0.0) * textureColor;  
+  //fragmentColor = textureColor;
+  fragmentColor = vec4(getDirectionalLight(normalizedNormal, viewDirection) + getPointLight(normalizedNormal, viewDirection) + getSpotLight(normalizedNormal, viewDirection) + ambientLight, 1.0) * textureColor;  
 }

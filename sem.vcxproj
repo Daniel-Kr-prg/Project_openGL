@@ -166,6 +166,7 @@
     <ClCompile Include="sem.cpp" />
     <ClCompile Include="spotlight.cpp" />
     <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="skyboxshader.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="singlemesh.h" />
     <ClInclude Include="spotlight.h" />
     <ClInclude Include="triangle.h" />
+    <ClInclude Include="water.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="sem.rc" />

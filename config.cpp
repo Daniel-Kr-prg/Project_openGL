@@ -2,6 +2,7 @@
 #include "singlemesh.h"
 #include "player.h"
 #include "spinobjects.h"
+#include "water.h"
 
 Config::Config(const char* filename)
 {
@@ -215,6 +216,8 @@ ObjectInstance* Config::createObjectByType(std::string typeName)
 		return new PointLight();
 	else if (typeName == "Player")
 		return (ObjectInstance*) new Player();
+	else if (typeName == "Water")
+		return (ObjectInstance*) new Water();
 	else if (typeName == "Bouy")
 		return (ObjectInstance*) new Bouy();
 	else if (typeName == "Airplane")

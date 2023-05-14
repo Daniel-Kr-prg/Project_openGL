@@ -12,7 +12,7 @@ private:
 	float drag = 0.75f;
 
 	glm::vec3 boatBoxRadius = glm::vec3(9.0f, 5.0f, 9.0f);
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.0f, 2.0f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.5f, -1.0f);
 	std::vector<ObjectInstance*>::iterator cameraIterator;
 	bool cameraOnObject = false;
 	Camera* camera;

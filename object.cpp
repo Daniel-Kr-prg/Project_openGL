@@ -408,6 +408,6 @@ void ObjectInstance::updateWorldMatrix(glm::mat4 parentMatrix) {
 	glm::vec3 globalSkew;
 	glm::vec4 globalPerspective;
 	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
-	glm::mat3 rotationMatrix = glm::mat3(globalModelMatrix); // ћатрица вращени€ из глобальной матрицы модели
-	globalForward = -rotationMatrix[2]; // ¬ектор направлени€ взгл€да (направление -Z оси)
+	glm::mat3 rotationMatrix = glm::mat3(globalModelMatrix);
+	globalForward = -rotationMatrix[2];
 }

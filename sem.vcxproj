@@ -165,6 +165,7 @@
     <ClCompile Include="singlemesh.cpp" />
     <ClCompile Include="sem.cpp" />
     <ClCompile Include="splash.cpp" />
+    <ClCompile Include="splashshader.cpp" />
     <ClCompile Include="spotlight.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="water.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="singlemesh.h" />
     <ClInclude Include="splash.h" />
+    <ClInclude Include="splashshader.h" />
     <ClInclude Include="spotlight.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="water.h" />

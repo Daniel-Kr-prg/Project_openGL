@@ -7,6 +7,7 @@
 #include "directionallight.h"
 #include "pointlight.h"
 #include "spotlight.h"
+#include "splash.h"
 
 
 static Render render;
@@ -216,8 +217,22 @@ void Render::initializeSkyboxGeometry(std::string skyVertexPath, std::string sky
     CHECK_GL_ERROR();
 }
 
-void Render::drawSkyBox()
+void Render::splashAtPosition(glm::vec3 position)
 {
+    splash->splashAtPosition(position);
+}
+
+void Render::update(float elapsedTime)
+{
+    if (splash != nullptr)
+    {
+        splash->update(elapsedTime);
+    }
+}
+
+void Render::endDraw()
+{
+    //Draw skybox
     glDepthFunc(GL_LEQUAL);
     glUseProgram(skyShader->getShaderData().program);
     glUniformMatrix4fv(skyShader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
@@ -229,6 +244,11 @@ void Render::drawSkyBox()
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS);
+
+    if (splash != nullptr)
+    {
+        splash->draw();
+    }
 }
 
 void cleanupGeometry(ObjectGeometry* geometry) {
@@ -267,6 +287,11 @@ void Render::initialize(Config* config)
 
 void Render::addShader(Shader* shader) {
     shaders.push_back(shader);
+}
+
+void Render::setSplash(Splash* splash)
+{
+    this->splash = splash;
 }
 
 void Render::setCamera(Camera* camera)

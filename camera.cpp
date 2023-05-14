@@ -207,7 +207,7 @@ void Camera::update(float elapsedTime, const glm::mat4* parentModelMatrix)
 			x = glm::min(result.x, cameraBoxRadius.x);
 		else
 			x = glm::max(result.x, -cameraBoxRadius.x);
-		y = glm::max(0.1f, glm::min(result.y, cameraBoxRadius.x));
+		y = glm::max(0.2f, glm::min(result.y, cameraBoxRadius.x));
 		
 		if (result.z >= 0)
 			z = glm::min(result.z, cameraBoxRadius.z);

@@ -96,8 +96,20 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
+
+float y_desired = 0.0f;
+bool place_mode = true;
+
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	Input::processKeyPressed(keyPressed);
+
+	if (!place_mode)
+		return;
+
+	if (keyPressed == '[')
+		y_desired += 0.01f;
+	if (keyPressed == ']')
+		y_desired -= 0.01f;
 }
 
 // Called whenever a key on the keyboard was released. The key is given by
@@ -146,15 +158,33 @@ void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
 
 
 void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
-	unsigned int objectID = 0;
-	glReadPixels(mouseX, mouseY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &objectID);
+	
+	if (buttonState == GLUT_DOWN)
+	{
+		unsigned int objectID = 0;
+		glReadPixels(mouseX, mouseY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &objectID);
 
-	if (objectID > 0) {
-		std::cout << "Clicked on object with ID: " << objectID << "\n";
-		ObjectInstance* object = Render::getRender()->getRootNode()->firstNodeByIndex(objectID);
-		if (object != nullptr)
-		{
-			object->Interact();
+		if (objectID > 0) {
+			std::cout << "Clicked on object with ID: " << objectID << "\n";
+			ObjectInstance* object = Render::getRender()->getRootNode()->firstNodeByIndex(objectID);
+			if (object != nullptr)
+			{
+				if (objectID == 4)
+				{
+					Camera* cam = Render::getRender()->getRootNode()->firstNodeByType<Camera>();
+					glm::vec3 forward = cam->getForward();
+					glm::vec3 pos = cam->getPosition();
+
+					float t = -pos.y / forward.y;
+
+					glm::vec3 intersect = glm::vec3(pos.x + forward.x * t, 0, pos.z + forward.z * t);
+
+				}
+				else
+				{
+					object->Interact();
+				}
+			}
 		}
 	}
 }
@@ -166,6 +196,7 @@ void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
  * \param mouseY mouse (cursor) Y position
  */
 void mouseMotionCb(int mouseX, int mouseY) {
+
 }
 
 /**
@@ -175,6 +206,21 @@ void mouseMotionCb(int mouseX, int mouseY) {
  */
 void passiveMouseMotionCb(int mouseX, int mouseY) {
 	Input::processPassiveMouseMotion(mouseX, mouseY);
+
+	if (!place_mode)
+		return;
+	Camera* cam = Render::getRender()->getRootNode()->firstNodeByType<Camera>();
+	glm::vec3 forward = cam->getForward();
+	glm::vec3 pos = cam->getPosition();
+
+	float t = (- pos.y) / forward.y;
+
+	glm::vec3 intersect = glm::vec3(pos.x + forward.x * t, y_desired, pos.z + forward.z * t);
+
+	ObjectInstance* boat = Render::getRender()->getRootNode()->firstNodeByIndex(1);
+	boat->setPosition(intersect);
+
+	std::cout << "x:" << intersect.x << ",y:" << y_desired << ",z:" << intersect.z << "\n";
 }
 
 

@@ -2,7 +2,7 @@
 
 Water::Water()
 {
-
+	setIndex(4);
 }
 
 void Water::update(float elapsedTime, const glm::mat4* parentModelMatrix) {
@@ -61,6 +61,11 @@ void Water::draw()
 }
 
 Water::~Water()
+{
+
+}
+
+void Water::Interact()
 {
 
 }

@@ -10,6 +10,7 @@ public:
 
 	void update(float elapsedTime, const glm::mat4* parentModelMatrix) override;
 	void draw() override;
+	void Interact() override;
 private:
 	glm::mat3 texCoordMatrix = glm::mat3(1);
 };

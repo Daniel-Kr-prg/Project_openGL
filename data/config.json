@@ -2,7 +2,7 @@
   "window": {
     "windowWidth": 1280,
     "windowHeight": 720,
-    "windowTitle": "Prikol"
+    "windowTitle": "Sem"
   },
   "ambient": {
     "intensity": 0.6,
@@ -16,6 +16,12 @@
     "fragmentPath": "data/skybox.frag",
     "vertexPath": "data/skybox.vert",
     "texturePath": "data/textures/bluecloud"
+  },
+  "splash": {
+    "frameDuration": 0.05,
+    "fragmentPath": "data/splash.frag",
+    "vertexPath": "data/splash.vert",
+    "texturePath": "data/splash.png"
   },
   "shaders": [
     {
@@ -121,8 +127,8 @@
           },
           "intensity": 1,
           "attenuation": 1,
-          "innerCutoff": 0.1,
-          "outerCutoff": 0.3,
+          "innerCutoff": 0.97,
+          "outerCutoff": 0.95,
           "lightColor": {
             "r": 1,
             "g": 1,

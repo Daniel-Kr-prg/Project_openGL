@@ -53,7 +53,8 @@ Config* config;
 void drawScene(void)
 {
 	Render::getRender()->getRootNode()->draw();
-	Render::getRender()->drawSkyBox();
+
+	Render::getRender()->endDraw();
 }
 
 
@@ -98,7 +99,7 @@ void reshapeCb(int newWidth, int newHeight) {
  */
 
 float y_desired = 0.0f;
-bool place_mode = true;
+bool place_mode = false;
 
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	Input::processKeyPressed(keyPressed);
@@ -177,8 +178,9 @@ void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
 
 					float t = -pos.y / forward.y;
 
-					glm::vec3 intersect = glm::vec3(pos.x + forward.x * t, 0, pos.z + forward.z * t);
+					glm::vec3 intersect = glm::vec3(pos.x + forward.x * t, 0.15, pos.z + forward.z * t);
 
+					Render::getRender()->splashAtPosition(intersect);
 				}
 				else
 				{
@@ -210,7 +212,7 @@ void passiveMouseMotionCb(int mouseX, int mouseY) {
 	if (!place_mode)
 		return;
 	Camera* cam = Render::getRender()->getRootNode()->firstNodeByType<Camera>();
-	glm::vec3 forward = cam->getForward();
+	glm::vec3 forward = cam->getGlobalForward();
 	glm::vec3 pos = cam->getPosition();
 
 	float t = (- pos.y) / forward.y;
@@ -220,7 +222,7 @@ void passiveMouseMotionCb(int mouseX, int mouseY) {
 	ObjectInstance* boat = Render::getRender()->getRootNode()->firstNodeByIndex(1);
 	boat->setPosition(intersect);
 
-	std::cout << "x:" << intersect.x << ",y:" << y_desired << ",z:" << intersect.z << "\n";
+	std::cout << "x:" << forward.x << ",y:" << forward.y << ",z:" << forward.z << "\n";
 }
 
 
@@ -238,6 +240,7 @@ void timerCb(int)
 	
 	// update the application state
 	Render::getRender()->getRootNode()->update(elapsedTime, &sceneRootMatrix);
+	Render::getRender()->update(elapsedTime);
 #endif // task_1_0
 
 	

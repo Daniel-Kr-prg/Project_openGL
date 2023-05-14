@@ -3,6 +3,9 @@
 #include "player.h"
 #include "spinobjects.h"
 #include "water.h"
+#include "splashshader.h"
+#include "splash.h"
+
 
 Config::Config(const char* filename)
 {
@@ -166,6 +169,18 @@ void Config::loadScene(ObjectInstance& rootNode)
 				Render::getRender()->initializeSkyboxGeometry(skyData["vertexPath"].get<std::string>(), skyData["fragmentPath"].get<std::string>(), skyData["texturePath"].get<std::string>());
 			}
 		}
+
+		if (data.contains("splash"))
+		{
+			nlohmann::json splashData = data["splash"];
+
+			if (splashData.contains("frameDuration") && splashData.contains("fragmentPath") && splashData.contains("vertexPath") && splashData.contains("texturePath"))
+			{
+				SplashShader* shader = new SplashShader(splashData["vertexPath"].get<std::string>().c_str(), splashData["fragmentPath"].get<std::string>().c_str());
+				Render::getRender()->setSplash(new Splash(shader, splashData["texturePath"].get<std::string>(), splashData["frameDuration"].get<float>()));
+			}
+		}
+
 
 		if (data.contains("scene"))
 		{

@@ -11,6 +11,8 @@ class SpotLight;
 class Config;
 class Camera;
 class ObjectInstance;
+class Splash;
+
 
 //#include "data.h"
 
@@ -68,6 +70,9 @@ public:
 
 	void addShader(Shader* shader);
 
+	void splashAtPosition(glm::vec3 position);
+
+	void setSplash(Splash* splash);
 	void setCamera(Camera* camera);
 	void setDirectionalLight(DirectionalLight* light);
 	void setPointLight(PointLight* light);
@@ -81,7 +86,8 @@ public:
 	void initializeModels();
 	void cleanupModels();
 
-	void drawSkyBox();
+	void update(float elapsedTime);
+	void endDraw();
 
 	ObjectInstance* getRootNode();
 
@@ -98,6 +104,7 @@ private:
 	SpotLight* spotLight;
 
 	ObjectGeometry* skyboxGeometry;
+	Splash* splash;
 
 	bool initialized = false;
 };

@@ -408,9 +408,6 @@ void ObjectInstance::updateWorldMatrix(glm::mat4 parentMatrix) {
 	glm::vec3 globalSkew;
 	glm::vec4 globalPerspective;
 	glm::decompose(globalModelMatrix, globalScale, globalRotation, globalPosition, globalSkew, globalPerspective);
-	globalForward = {
-	-2 * (globalRotation.x * globalRotation.z + globalRotation.w * globalRotation.y),
-	-2 * (globalRotation.y * globalRotation.z - globalRotation.w * globalRotation.x),
-	-(1 - 2 * (globalRotation.x * globalRotation.x + globalRotation.y * globalRotation.y))
-	};
+	glm::mat3 rotationMatrix = glm::mat3(globalModelMatrix);
+	globalForward = -rotationMatrix[2];
 }

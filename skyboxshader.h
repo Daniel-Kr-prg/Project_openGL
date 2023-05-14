@@ -23,6 +23,10 @@ typedef struct _SkyShaderProgram {
 		GLint PMatrix;
 		GLint VMatrix;
 		GLint skySampler;
+		// Fog
+		GLint fogHeightStart;
+		GLint fogHeightEnd;
+		GLint fogColor;
 	} locations;
 
 	// ...

@@ -79,7 +79,7 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 	{
 		float currentAcceleration = acceleration;
 		if (Input::getSpecialKeyPressed(GLUT_KEY_SHIFT_L))
-			acceleration *= 2;
+			currentAcceleration *= 2;
 
 		if (direction > 0)
 			currentSpeed = glm::min(maxSpeed, currentSpeed + direction * currentAcceleration * frameTime);
@@ -106,7 +106,7 @@ void Player::update(const float elapsedTime, const glm::mat4* parentModelMatrix)
 
 	setPosition(glm::vec3(x, y, z));*/
 
-	addPosition(currentSpeed * frameTime * forward);
+	addPosition(currentSpeed * frameTime * -forward);
 	ObjectInstance::update(elapsedTime, parentModelMatrix);
 }
 
@@ -127,6 +127,7 @@ void Player::freeCamera()
 	if (!cameraOnObject)
 		return;
 	removeChild(camera);
+	camera->setPosition(this->globalPosition);
 	cameraOnObject = false;
 }
 

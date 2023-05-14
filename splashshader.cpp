@@ -31,14 +31,14 @@ SplashShader::SplashShader(const char* vertexFilename, const char* fragmentFilen
 		shaderData.locations.texSampler = glGetUniformLocation(shaderData.program, "texSampler");
 		shaderData.locations.frameDuration = glGetUniformLocation(shaderData.program, "frameDuration");
 
-		//assert(shaderData.locations.position != -1);
-		//assert(shaderData.locations.texCoord != -1);
-		//assert(shaderData.locations.Pmatrix != -1);
-		//assert(shaderData.locations.Vmatrix != -1);
-		//assert(shaderData.locations.Mmatrix != -1);
-		//assert(shaderData.locations.time != -1);
-		//assert(shaderData.locations.texSampler != -1);
-		//assert(shaderData.locations.frameDuration != -1);
+		assert(shaderData.locations.position != -1);
+		assert(shaderData.locations.texCoord != -1);
+		assert(shaderData.locations.Pmatrix != -1);
+		assert(shaderData.locations.Vmatrix != -1);
+		assert(shaderData.locations.Mmatrix != -1);
+		assert(shaderData.locations.time != -1);
+		assert(shaderData.locations.texSampler != -1);
+		assert(shaderData.locations.frameDuration != -1);
 		// ...
 	}
 }

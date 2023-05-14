@@ -57,6 +57,10 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 		shaderData.locations.spotLightInnerCutoff = glGetUniformLocation(shaderData.program, "spotLightInnerCutoff");
 		shaderData.locations.spotLightOuterCutoff = glGetUniformLocation(shaderData.program, "spotLightOuterCutoff");
 
+		// Fog
+		shaderData.locations.fogStart = glGetUniformLocation(shaderData.program, "fogStart");
+		shaderData.locations.fogEnd = glGetUniformLocation(shaderData.program, "fogStart");
+
 		assert(shaderData.locations.PMatrix != -1);
 		assert(shaderData.locations.VMatrix != -1);
 		assert(shaderData.locations.MMatrix != -1);

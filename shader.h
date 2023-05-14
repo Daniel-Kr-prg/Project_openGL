@@ -54,6 +54,10 @@ typedef struct _ShaderProgram {
 		GLint spotLightColor;
 		GLint spotLightInnerCutoff;
 		GLint spotLightOuterCutoff;
+
+		GLint fogStart;
+		GLint fogEnd;
+		GLint fogColor;
 	} locations;
 
 	// ...
@@ -86,6 +90,8 @@ typedef struct _ShaderProgram {
 		locations.spotLightColor = -1;
 		locations.spotLightInnerCutoff = -1;
 		locations.spotLightOuterCutoff = -1;
+		locations.fogStart = -1;
+		locations.fogEnd = -1;
 	}
 
 } ShaderProgram;

@@ -3,6 +3,7 @@
 #include "player.h"
 #include "spinobjects.h"
 #include "water.h"
+#include "pgr.h"
 
 Config::Config(const char* filename)
 {

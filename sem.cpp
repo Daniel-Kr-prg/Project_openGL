@@ -47,6 +47,16 @@ Config* config;
 
 // -----------------------  OpenGL stuff ---------------------------------
 
+
+GLuint filter;                          // Используемый фильтр для текстур
+
+GLuint fogMode = GL_LINEAR;
+
+GLuint fogfilter = 0;                    // Тип используемого тумана
+
+GLfloat fogColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Цвет тумана
+
+
 /**
  * \brief Draw all scene objects.
  */
@@ -54,6 +64,7 @@ void drawScene(void)
 {
 	Render::getRender()->getRootNode()->draw();
 	Render::getRender()->drawSkyBox();
+
 }
 
 

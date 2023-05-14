@@ -35,6 +35,11 @@ void SingleMesh::draw()
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.normalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.MMatrix, 1, GL_FALSE, glm::value_ptr(globalModelMatrix));
 
+		glUniform1f(shaderProgram->getShaderData().locations.fogStart, 6.0f);
+		glUniform1f(shaderProgram->getShaderData().locations.fogEnd, 3.0f);
+		glm::vec3 fogColor = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(shaderProgram->getShaderData().locations.fogColor, 1, glm::value_ptr(fogColor));
+
 		glBindVertexArray(geometry->vertexArrayObject);
 		glDrawElements(GL_TRIANGLES, geometry->numTriangles * 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

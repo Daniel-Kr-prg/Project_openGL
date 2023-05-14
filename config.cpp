@@ -43,6 +43,10 @@ Config::Config(const char* filename)
 				fogStart = ambientData["fogStart"].get<float>();
 			if (ambientData.contains("fogEnd"))
 				fogEnd = ambientData["fogEnd"].get<float>();
+			if (ambientData.contains("fogHeightStart"))
+				fogHeightStart = ambientData["fogHeightStart"].get<float>();
+			if (ambientData.contains("fogHeightEnd"))
+				fogHeightEnd = ambientData["fogHeightEnd"].get<float>();
 			if (ambientData.contains("fogColor"))
 				fogColor = readVectorFromJSON(ambientData["fogColor"], glm::vec3(1));
 		}
@@ -156,6 +160,16 @@ float Config::getFogStart()
 float Config::getFogEnd()
 {
 	return fogEnd;
+}
+
+float Config::getFogHeightStart()
+{
+	return fogHeightStart;
+}
+
+float Config::getFogHeightEnd()
+{
+	return fogHeightEnd;
 }
 
 glm::vec3 Config::getFogColor() 

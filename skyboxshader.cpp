@@ -26,7 +26,10 @@ SkyBoxShader::SkyBoxShader(const char* vertexFilename, const char* fragmentFilen
 		shaderData.locations.PMatrix = glGetUniformLocation(shaderData.program, "projection");
 		shaderData.locations.VMatrix = glGetUniformLocation(shaderData.program, "view");
 		shaderData.locations.skySampler = glGetUniformLocation(shaderData.program, "skySampler");
-		
+		shaderData.locations.fogHeightStart = glGetUniformLocation(shaderData.program, "fogHeightStart");
+		shaderData.locations.fogHeightEnd = glGetUniformLocation(shaderData.program, "fogHeightEnd");
+		shaderData.locations.fogColor = glGetUniformLocation(shaderData.program, "fogColor");
+
 		assert(shaderData.locations.position != -1);
 		assert(shaderData.locations.PMatrix != -1);
 		assert(shaderData.locations.VMatrix != -1);

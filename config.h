@@ -37,6 +37,8 @@ public:
 	glm::vec3 getAmbientLightColor();
 	float getFogStart();
 	float getFogEnd();
+	float getFogHeightStart();
+	float getFogHeightEnd();
 	glm::vec3 getFogColor();
 
 	void loadScene(ObjectInstance& rootNode);
@@ -65,6 +67,8 @@ private:
 	glm::vec3  ambientLightColor;
 	float fogStart;
 	float fogEnd;
+	float fogHeightStart;
+	float fogHeightEnd;
 	glm::vec3 fogColor;
 
 	// Graphics objects

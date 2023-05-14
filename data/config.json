@@ -8,10 +8,12 @@
     "intensity": 0.6,
     "fogStart": 5.0,
     "fogEnd": 10.0,
+    "fogHeightStart": 0.2,
+    "fogHeightEnd": 0.0,
     "fogColor": {
-      "r": 0.7,
-      "g": 0.7,
-      "b": 0.7
+      "r": 0.9,
+      "g": 0.9,
+      "b": 0.9
     },
     "lightColor": {
       "r": 1,

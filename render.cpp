@@ -237,6 +237,12 @@ void Render::endDraw()
     glUseProgram(skyShader->getShaderData().program);
     glUniformMatrix4fv(skyShader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
     glUniformMatrix4fv(skyShader->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(camera->getView()));
+
+    //Fog
+    glUniform1f(skyShader->getShaderData().locations.fogHeightStart, config->getFogHeightStart());
+    glUniform1f(skyShader->getShaderData().locations.fogHeightEnd, config->getFogHeightEnd());
+    glUniform3fv(skyShader->getShaderData().locations.fogColor, 1, glm::value_ptr(config->getFogColor()));
+    
     // skybox cube
     glBindVertexArray(skyboxGeometry->vertexArrayObject);
     glActiveTexture(GL_TEXTURE0);

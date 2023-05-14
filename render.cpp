@@ -321,6 +321,11 @@ void Render::setCameraAndLightsUniforms(Shader* shader)
     glUniformMatrix4fv(shader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
     glUniformMatrix4fv(shader->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(camera->getView()));
 
+    //Fog
+    glUniform1f(shader->getShaderData().locations.fogStart, config->getFogStart());
+    glUniform1f(shader->getShaderData().locations.fogEnd, config->getFogEnd());
+    glUniform3fv(shader->getShaderData().locations.fogColor, 1, glm::value_ptr(config->getFogColor()));
+
     // Ambient light
     glUniform1f(shader->getShaderData().locations.ambientLightIntensity, config->getAmbientLightIntensity());
     glUniform3fv(shader->getShaderData().locations.ambientLightColor, 1, glm::value_ptr(config->getAmbientLightColor()));

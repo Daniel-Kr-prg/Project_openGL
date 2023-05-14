@@ -59,7 +59,8 @@ Shader::Shader(const char* vertexFilename, const char* fragmentFilename)
 
 		// Fog
 		shaderData.locations.fogStart = glGetUniformLocation(shaderData.program, "fogStart");
-		shaderData.locations.fogEnd = glGetUniformLocation(shaderData.program, "fogStart");
+		shaderData.locations.fogEnd = glGetUniformLocation(shaderData.program, "fogEnd");
+		shaderData.locations.fogColor = glGetUniformLocation(shaderData.program, "fogColor");
 
 		assert(shaderData.locations.PMatrix != -1);
 		assert(shaderData.locations.VMatrix != -1);

@@ -6,6 +6,13 @@
   },
   "ambient": {
     "intensity": 0.6,
+    "fogStart": 5.0,
+    "fogEnd": 10.0,
+    "fogColor": {
+      "r": 0.7,
+      "g": 0.7,
+      "b": 0.7
+    },
     "lightColor": {
       "r": 1,
       "g": 1,
@@ -48,6 +55,25 @@
         "x": 5,
         "y": 5,
         "z": 5
+      }
+    },
+    {
+      "objectType": "Boat",
+      "shaderIndex": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 3,
+        "y": 3,
+        "z": 3
       }
     },
     {

@@ -167,7 +167,7 @@
     <ClCompile Include="splash.cpp" />
     <ClCompile Include="splashshader.cpp" />
     <ClCompile Include="spotlight.cpp" />
-    <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="boat.cpp" />
     <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +189,7 @@
     <ClInclude Include="splash.h" />
     <ClInclude Include="splashshader.h" />
     <ClInclude Include="spotlight.h" />
-    <ClInclude Include="triangle.h" />
+    <ClInclude Include="boat.h" />
     <ClInclude Include="water.h" />
   </ItemGroup>
   <ItemGroup>

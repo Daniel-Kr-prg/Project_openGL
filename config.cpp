@@ -5,6 +5,7 @@
 #include "water.h"
 #include "splashshader.h"
 #include "splash.h"
+#include "boat.h"
 #include "pgr.h"
 
 Config::Config(const char* filename)
@@ -38,6 +39,12 @@ Config::Config(const char* filename)
 				ambientLightIntensity = ambientData["intensity"].get<float>();
 			if (ambientData.contains("lightColor"))
 				ambientLightColor = readVectorFromJSON(ambientData["lightColor"], glm::vec3(1));
+			if (ambientData.contains("fogStart"))
+				fogStart = ambientData["fogStart"].get<float>();
+			if (ambientData.contains("fogEnd"))
+				fogEnd = ambientData["fogEnd"].get<float>();
+			if (ambientData.contains("fogColor"))
+				fogColor = readVectorFromJSON(ambientData["fogColor"], glm::vec3(1));
 		}
 
 		if (data.contains("shaders"))
@@ -141,6 +148,21 @@ glm::vec3 Config::getAmbientLightColor() {
 	return ambientLightColor;
 }
 
+float Config::getFogStart()
+{
+	return fogStart;
+}
+
+float Config::getFogEnd()
+{
+	return fogEnd;
+}
+
+glm::vec3 Config::getFogColor() 
+{
+	return fogColor;
+}
+
 /**
  * \brief Loads objects from json to scene
  * \param scene List of objects in scene
@@ -237,6 +259,8 @@ ObjectInstance* Config::createObjectByType(std::string typeName)
 		return (ObjectInstance*) new Bouy();
 	else if (typeName == "Airplane")
 		return (ObjectInstance*) new Airplane();
+	else if (typeName == "Boat")
+		return (ObjectInstance*) new Boat();
 	else
 		throw "Config::createObjectByType(): Type not found";
 }

@@ -103,7 +103,7 @@
       "fov": 45.0,
       "zNear": 0.1,
       "zFar": 1000.0,
-      "speed": 0.01,
+      "speed": 2,
       "keySensitivity": 0.005,
       "mouseSensitivity": 0.005,
       "children": [
@@ -190,7 +190,7 @@
     },
     {
       "objectType": "SingleMesh",
-      "filePath": "data/MY_PALM.obj",
+      "filePath": "data/Palm.obj",
       "shaderIndex": 0,
       "position": {
         "x": 3,
@@ -230,7 +230,7 @@
     },
     {
       "objectType": "SingleMesh",
-      "filePath": "data/Boat3Export.fbx",
+      "filePath": "data/Ship.obj",
       "shaderIndex": 0,
       "position": {
         "x": 3,
@@ -290,12 +290,12 @@
     },
     {
       "objectType": "SingleMesh",
-      "filePath": "data/sea.obj",
+      "filePath": "data/Grass.obj",
       "shaderIndex": 0,
       "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": -2.0,
+        "y": 0.25,
+        "z": -1.7
       },
       "rotation": {
         "x": 0,
@@ -303,19 +303,19 @@
         "z": 0
       },
       "scale": {
-        "x": 1,
-        "y": 1,
-        "z": 1
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
       }
     },
     {
       "objectType": "SingleMesh",
-      "filePath": "data/cloud.obj",
+      "filePath": "data/Grass.obj",
       "shaderIndex": 0,
       "position": {
-        "x": 0,
-        "y": 2,
-        "z": 0
+        "x": -0.3,
+        "y": 0.25,
+        "z": -1.6
       },
       "rotation": {
         "x": 0,
@@ -323,9 +323,49 @@
         "z": 0
       },
       "scale": {
-        "x": 1,
-        "y": 1,
-        "z": 1
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
+      }
+    },
+    {
+      "objectType": "SingleMesh",
+      "filePath": "data/Grass.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": -1.5,
+        "y": 0.25,
+        "z": -1.9
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
+      }
+    },
+    {
+      "objectType": "SingleMesh",
+      "filePath": "data/Grass.obj",
+      "shaderIndex": 0,
+      "position": {
+        "x": 0,
+        "y": 0.25,
+        "z": -1.8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
       }
     }
   ]

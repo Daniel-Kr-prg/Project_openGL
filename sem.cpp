@@ -47,13 +47,22 @@ Config* config;
 
 // -----------------------  OpenGL stuff ---------------------------------
 
+
+GLuint filter;                          // Èñïîëüçóåìûé ôèëüòð äëÿ òåêñòóð
+
+GLuint fogMode = GL_LINEAR;
+
+GLuint fogfilter = 0;                    // Òèï èñïîëüçóåìîãî òóìàíà
+
+GLfloat fogColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Öâåò òóìàíà
+
+
 /**
  * \brief Draw all scene objects.
  */
 void drawScene(void)
 {
 	Render::getRender()->getRootNode()->draw();
-
 	Render::getRender()->endDraw();
 }
 

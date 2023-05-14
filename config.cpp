@@ -5,7 +5,7 @@
 #include "water.h"
 #include "splashshader.h"
 #include "splash.h"
-
+#include "pgr.h"
 
 Config::Config(const char* filename)
 {

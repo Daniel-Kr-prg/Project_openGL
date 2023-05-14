@@ -119,16 +119,53 @@ void Render::initializeModels() {
     //initSkyboxGeometry(skyboxFarPlaneShaderProgram.program, &skyboxGeometry);
 }
 
-void Render::initializeSkyboxGeometry(Shader* shader)
+void Render::initializeSkyboxGeometry(std::string skyVertexPath, std::string skyFragmentPath, std::string filePath)
 {
+    skyShader = new SkyBoxShader(skyVertexPath.c_str(), skyFragmentPath.c_str());
     skyboxGeometry = new ObjectGeometry();
 
-    // 2D coordinates of 2 triangles covering the whole screen (NDC), draw using triangle strip
-    static const float screenCoords[] = {
-      -1.0f, -1.0f,
-       1.0f, -1.0f,
-      -1.0f,  1.0f,
-       1.0f,  1.0f
+    float skyboxCube[] = {         
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
     };
 
     glGenVertexArrays(1, &(skyboxGeometry->vertexArrayObject));
@@ -136,16 +173,16 @@ void Render::initializeSkyboxGeometry(Shader* shader)
 
     glGenBuffers(1, &(skyboxGeometry->vertexBufferObject));
     glBindBuffer(GL_ARRAY_BUFFER, skyboxGeometry->vertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(screenCoords), screenCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxCube), skyboxCube, GL_STATIC_DRAW);
 
-    //glEnableVertexAttribArray(shader.screenCoordLocation);
-    //glVertexAttribPointer(shader.screenCoordLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(skyShader->getShaderData().locations.position);
+    glVertexAttribPointer(skyShader->getShaderData().locations.position, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindVertexArray(0);
     glUseProgram(0);
     CHECK_GL_ERROR();
 
-    skyboxGeometry->numTriangles = 2;
+    skyboxGeometry->numTriangles = 12;
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -160,11 +197,11 @@ void Render::initializeSkyboxGeometry(Shader* shader)
     };
 
     for (int i = 0; i < 6; i++) {
-        //std::string texName = std::string(SKYBOX_CUBE_TEXTURE_FILE_PREFIX) + "_" + suffixes[i] + ".jpg";
-        //std::cout << "Loading cube map texture: " << texName << std::endl;
-        //if (!pgr::loadTexImage2D(texName, targets[i])) {
-        //    pgr::dieWithError("Skybox cube map loading failed!");
-        //}
+        std::string texName = filePath + "_" + suffixes[i] + ".jpg";
+        std::cout << "Loading cube map texture: " << texName << std::endl;
+        if (!pgr::loadTexImage2D(texName, targets[i])) {
+            pgr::dieWithError("Skybox cube map loading failed!");
+        }
     }
 
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -177,6 +214,21 @@ void Render::initializeSkyboxGeometry(Shader* shader)
     // unbind the texture (just in case someone will mess up with texture calls later)
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     CHECK_GL_ERROR();
+}
+
+void Render::drawSkyBox()
+{
+    glDepthFunc(GL_LEQUAL);
+    glUseProgram(skyShader->getShaderData().program);
+    glUniformMatrix4fv(skyShader->getShaderData().locations.PMatrix, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
+    glUniformMatrix4fv(skyShader->getShaderData().locations.VMatrix, 1, GL_FALSE, glm::value_ptr(camera->getView()));
+    // skybox cube
+    glBindVertexArray(skyboxGeometry->vertexArrayObject);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxGeometry->texture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS);
 }
 
 void cleanupGeometry(ObjectGeometry* geometry) {

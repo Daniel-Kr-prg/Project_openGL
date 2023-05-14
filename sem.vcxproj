@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="skyboxshader.cpp" />
     <ClCompile Include="spinobjects.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="config.cpp" />
@@ -165,8 +166,10 @@
     <ClCompile Include="sem.cpp" />
     <ClCompile Include="spotlight.cpp" />
     <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="skyboxshader.h" />
     <ClInclude Include="spinobjects.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="config.h" />
@@ -183,6 +186,7 @@
     <ClInclude Include="singlemesh.h" />
     <ClInclude Include="spotlight.h" />
     <ClInclude Include="triangle.h" />
+    <ClInclude Include="water.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="sem.rc" />

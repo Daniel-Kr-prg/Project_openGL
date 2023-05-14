@@ -20,6 +20,7 @@ private:
 
 	bool loadSingleMesh(std::string fileName, Shader* shader, ObjectGeometry** geometry);
 
+protected:
 	bool initialized;  ///< object has the shader with defined locations
 };
 

@@ -2,7 +2,7 @@
 # Object "Spider Rock 02":
 
 newmtl SpiderRock02_Base
-Ka 0.239 0.239 0.239
+Ka 1.000000 1.000000 1.000000
 Kd 0.447 0.447 0.447
 Ks 0.718 0.718 0.718
 Ns 738.6

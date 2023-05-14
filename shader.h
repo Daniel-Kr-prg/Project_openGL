@@ -27,6 +27,7 @@ typedef struct _ShaderProgram {
 		GLint VMatrix;
 		GLint MMatrix;
 		GLint normalMatrix;
+		GLint texCoordMatrix;
 		GLint time;
 		GLint diffuse;
 		GLint ambient;

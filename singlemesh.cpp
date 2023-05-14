@@ -29,7 +29,10 @@ void SingleMesh::draw()
 
 		Render::getRender()->setCameraAndLightsUniforms(shaderProgram);
 
-		glUniformMatrix4fv(shaderProgram->getShaderData().locations.normalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(globalModelMatrix))));
+		glm::mat3 texCoordMatrix = glm::mat3(1.0);
+		glUniformMatrix3fv(shaderProgram->getShaderData().locations.texCoordMatrix, 1, GL_FALSE, glm::value_ptr(texCoordMatrix));
+		glm::mat4 normalMatrix = glm::transpose(glm::inverse(globalModelMatrix));
+		glUniformMatrix4fv(shaderProgram->getShaderData().locations.normalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 		glUniformMatrix4fv(shaderProgram->getShaderData().locations.MMatrix, 1, GL_FALSE, glm::value_ptr(globalModelMatrix));
 
 		glBindVertexArray(geometry->vertexArrayObject);

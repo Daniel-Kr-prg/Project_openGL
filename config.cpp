@@ -2,6 +2,7 @@
 #include "singlemesh.h"
 #include "player.h"
 #include "spinobjects.h"
+#include "water.h"
 
 Config::Config(const char* filename)
 {
@@ -156,6 +157,16 @@ void Config::loadScene(ObjectInstance& rootNode)
 	{
 		nlohmann::json data = nlohmann::json::parse(file);
 
+		if (data.contains("skyBox"))
+		{
+			nlohmann::json skyData = data["skyBox"];
+
+			if (skyData.contains("fragmentPath") && skyData.contains("vertexPath") && skyData.contains("texturePath"))
+			{
+				Render::getRender()->initializeSkyboxGeometry(skyData["vertexPath"].get<std::string>(), skyData["fragmentPath"].get<std::string>(), skyData["texturePath"].get<std::string>());
+			}
+		}
+
 		if (data.contains("scene"))
 		{
 			for (nlohmann::json sceneObjectData : data["scene"])
@@ -205,6 +216,8 @@ ObjectInstance* Config::createObjectByType(std::string typeName)
 		return new PointLight();
 	else if (typeName == "Player")
 		return (ObjectInstance*) new Player();
+	else if (typeName == "Water")
+		return (ObjectInstance*) new Water();
 	else if (typeName == "Bouy")
 		return (ObjectInstance*) new Bouy();
 	else if (typeName == "Airplane")

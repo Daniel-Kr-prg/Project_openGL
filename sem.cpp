@@ -53,6 +53,7 @@ Config* config;
 void drawScene(void)
 {
 	Render::getRender()->getRootNode()->draw();
+	Render::getRender()->drawSkyBox();
 }
 
 

@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    splash.cpp : Splash effect implementation. drawas splash and sets up position for splash
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "splash.h"
 #include "render.h"
 #include "camera.h"

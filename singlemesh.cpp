@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    singlemesh.cpp : Single Mesh implementation. Single Mesh is an ObjectInstance with geometry.
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "singlemesh.h"
 
 void SingleMesh::update(float elapsedTime, const glm::mat4* parentModelMatrix) {

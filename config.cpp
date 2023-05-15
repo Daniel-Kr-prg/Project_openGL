@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    config.cpp : Config initialization from json and scene loading. 
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "config.h"
 #include "singlemesh.h"
 #include "player.h"

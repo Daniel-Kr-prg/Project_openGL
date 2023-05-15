@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    directionallight.cpp : directional light initialization and updating
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "directionallight.h"
 
 DirectionalLight::DirectionalLight()

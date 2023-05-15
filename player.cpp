@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    player.cpp : Player class implementation. Player is a class for movable object (using WASD).
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "player.h"
 
 Player::Player() : SingleMesh() 

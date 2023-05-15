@@ -1,5 +1,11 @@
 #pragma once
-
+//----------------------------------------------------------------------------------------
+/**
+\file shader.h : Shader class declaration
+\author Daniil Kryvarot
+\date 2023/05/15
+\brief Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+*/
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -96,14 +102,31 @@ typedef struct _ShaderProgram {
 
 } ShaderProgram;
 
+/**
+ * \brief Represents a shader program.
+ */
 class Shader
 {
 public:
+	/**
+	 * \brief Constructs a Shader object.
+	 * \param vertexFilename The filename of the vertex shader.
+	 * \param fragmentFilename The filename of the fragment shader.
+	 */
 	Shader(const char* vertexFilename, const char* fragmentFilename);
+
+	/**
+	 * \brief Destroys the Shader object.
+	 */
 	~Shader();
 
+	/**
+	 * \brief Returns the ShaderProgram data.
+	 * \return The ShaderProgram data.
+	 */
 	ShaderProgram getShaderData();
-private: 
-	ShaderProgram shaderData;
+
+private:
+	ShaderProgram shaderData; ///< The ShaderProgram data.
 };
 

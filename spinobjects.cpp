@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    spinobjects.cpp : Objects which are supposed to rotate or move around
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "spinobjects.h"
 
 Bouy::Bouy() : SingleMesh()

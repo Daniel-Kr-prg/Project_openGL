@@ -1,5 +1,11 @@
 #pragma once
-
+//----------------------------------------------------------------------------------------
+/**
+\file player.h : Player class declaration
+\author Daniil Kryvarot
+\date 2023/05/15
+\brief Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+*/
 #include "singlemesh.h"
 
 class Player : public SingleMesh

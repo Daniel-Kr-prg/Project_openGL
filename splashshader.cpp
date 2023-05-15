@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    splashshader.cpp : Prepares splash shader for use
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "splashShader.h"
 
 SplashShader::SplashShader(const char* vertexFilename, const char* fragmentFilename)

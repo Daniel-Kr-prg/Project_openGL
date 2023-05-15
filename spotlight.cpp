@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    spotlight.cpp : Spot light class implementation. Loads data from config and prepares uniforms for shader
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "spotlight.h"
 
 SpotLight::SpotLight()

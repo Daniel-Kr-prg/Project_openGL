@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    shader.cpp : Shader class implementation. Prepares shader for use
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "shader.h"
 
 Shader::Shader(const char* vertexFilename, const char* fragmentFilename)

@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    boat.cpp : initialization and draw of hardcoded model
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include <iostream>
 #include "boat.h"
 #include "shader.h"
@@ -9,6 +17,9 @@ Boat::Boat() : ObjectInstance(), initialized(false)
 {
 }
 
+/**
+ * \brief Overrided draw method for hardcoded Boat
+ */
 void Boat::draw()
 {
 	if (initialized && (shaderProgram != nullptr)) {
@@ -50,6 +61,10 @@ void Boat::draw()
 	}
 }
 
+/**
+ * \brief load data from config for 
+ * \param data for shader loading
+ */
 void Boat::deserialize(nlohmann::json data)
 {
 	ObjectInstance::deserialize(data);

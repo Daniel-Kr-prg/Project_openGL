@@ -1,3 +1,11 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file    camera.cpp : Camera functions implementation. All camera actions are handled there
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
+ * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
+ */
+
 #include "camera.h"
 #include "object.h"
 #include "config.h"
@@ -41,17 +49,13 @@ void Camera::setDynamicCamera()
 	setCameraState(DYNAMIC_CAMERA);
 }
 
-/**
- * \brief TODO: add parameters for cameraView
- */
+
 void Camera::setStaticView1()
 {
 	setCameraState(STATIC_CAMERA);
 	setCameraView(glm::vec3(3.98f, 0.637f, 4.60f), -5.54f, -0.14f);
 }
-/**
- * \brief TODO: add parameters for cameraView
- */
+
 void Camera::setStaticView2()
 {
 	setCameraState(STATIC_CAMERA);

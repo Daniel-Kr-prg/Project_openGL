@@ -1,9 +1,9 @@
 //----------------------------------------------------------------------------------------
 /**
- * \file    skeleton.cpp : This file contains the 'main' function and callbacks.
+ * \file    island.cpp : This file contains the 'main' function and callbacks.
 			Program execution begins and ends there.
- * \author  Jaroslav Sloup, Petr Felkel
- * \date    2022/03/03
+ * \author  Daniil Kryvarot
+ * \date    2023/05/15
  * \brief   Prepared for the Computer graphics course on FEE and FIT CTU in Prague CZ
  */
 
@@ -42,18 +42,13 @@
 #include "player.h"
 #include "spinobjects.h"
 
+
+/// <summary>
+/// Config instance;
+/// </summary>
 Config* config;
 
 // -----------------------  OpenGL stuff ---------------------------------
-
-
-GLuint filter;                          // Èñïîëüçóåìûé ôèëüòð äëÿ òåêñòóð
-
-GLuint fogMode = GL_LINEAR;
-
-GLuint fogfilter = 0;                    // Òèï èñïîëüçóåìîãî òóìàíà
-
-GLfloat fogColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Öâåò òóìàíà
 
 
 /**
@@ -87,14 +82,15 @@ void displayCb() {
  * \param newHeight New window height
  */
 void reshapeCb(int newWidth, int newHeight) {
-	// TODO: Take new window size and update the application state,
-	// window and projection.
-
 	// glViewport(...);
 };
 
 
 // -----------------------  Keyboard ---------------------------------
+
+
+float y_desired = 0.0f;
+bool place_mode = false;
 
 /**
  * \brief Handle the key pressed event.
@@ -105,10 +101,6 @@ void reshapeCb(int newWidth, int newHeight) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
-
-float y_desired = 0.0f;
-bool place_mode = false;
-
 void keyboardCb(unsigned char keyPressed, int mouseX, int mouseY) {
 	Input::processKeyPressed(keyPressed);
 
@@ -164,8 +156,6 @@ void specialKeyboardUpCb(int specKeyReleased, int mouseX, int mouseY) {
  * \param mouseX mouse (cursor) X position
  * \param mouseY mouse (cursor) Y position
  */
-
-
 void mouseCb(int buttonPressed, int buttonState, int mouseX, int mouseY) {
 	
 	if (buttonState == GLUT_DOWN)
@@ -230,7 +220,7 @@ void passiveMouseMotionCb(int mouseX, int mouseY) {
 	ObjectInstance* boat = Render::getRender()->getRootNode()->firstNodeByIndex(1);
 	boat->setPosition(intersect);
 
-	std::cout << "x:" << forward.x << ",y:" << forward.y << ",z:" << forward.z << "\n";
+	std::cout << "x:" << intersect.x << ",y:" << intersect.y << ",z:" << intersect.z << "\n";
 }
 
 
@@ -296,7 +286,6 @@ void finalizeApplication(void) {
 	// cleanupModels();
 
 	// delete shaders
-	Render::getRender()->cleanupShaderPrograms();
 }
 
 

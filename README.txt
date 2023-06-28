@@ -1,7 +1,1 @@
-This is a simple skeleton af an OpenGL application using freeGLUT and pgr libraries.
-Use it as a starting point for your homework.
-
-You will need to edit these files:
-TASK 1_0:
- -> skeleton.cpp: 236, 310
- -> triangle.cpp: 7
+This is an interactive scene made using OpenGL and GLUT. Main purpose of the task was build a scene with more than 10 objects and to implement 3D rendering, light, skybox and interactions with objects.

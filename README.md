@@ -1,4 +1,4 @@
-#OpenGL studying project
+# OpenGL studying project
 
 This is an interactive scene made using OpenGL and GLUT. Main purpose of the task was build a scene with more than 10 objects and to implement 3D rendering, light, skybox and interactions with objects.
 
